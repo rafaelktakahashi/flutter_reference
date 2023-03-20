@@ -1,11 +1,12 @@
-import 'dart:html';
-
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_reference/data/client/megastore_client.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:get_it/get_it.dart';
+
+part "product_form_bloc.freezed.dart";
 
 ///////////////
 /// PREFACE ///
@@ -68,40 +69,18 @@ enum ProductFormSubmitState {
 /// them. While we _could_ theoretically put the validation logic in a getter
 /// here, that would be wrong place for it. All business logic (including
 /// form validation) happens the bloc.
-class ProductFormState {
-  final String identifier;
-  final String name;
-  final String description;
-  final int quantity;
-  final String unit;
-
-  /// Optionally, an error that happened when submitting the form.
-  /// This will appear only during a submit, and will disappear when trying
-  /// to submit the form again.
-  final Option<MegastoreError> submitError;
-
-  /// Optionally, errors that exists in the current form.
-  /// This will be updated whenever the state is updated with form data.
-  /// You should update the form data (with an event) as frequently as you
-  /// want the validation info to be updated.
-  final Option<Map<String, String>> validationError;
-
-  /// Current state for the form submit. In case of error, an error will exist
-  /// in the submitErrorField.
-  /// We don't use subclasses for the state in this bloc because we'd like the
-  /// bloc state to be available regardless of whether the form submit is in
-  /// progress or not.
-  final ProductFormSubmitState submitState;
-
-  const ProductFormState({
-    this.identifier = "",
-    this.name = "",
-    this.description = "",
-    this.quantity = 1,
-    this.unit = "",
-    this.submitError = const None(),
-    this.validationError = const None(),
-  }) : submitState = ProductFormSubmitState.idle;
+@freezed
+class ProductFormState with _$ProductFormState {
+  const factory ProductFormState({
+    @Default("") String identifier,
+    @Default("") String name,
+    @Default("") String description,
+    @Default(0) int quantity,
+    @Default("") String unit,
+    @Default(None()) Option<MegastoreError> submitError,
+    @Default(None()) Option<Map<String, String>> validationError,
+    @Default(ProductFormSubmitState.idle) ProductFormSubmitState submitState,
+  }) = _ProductFormState;
 }
 
 ////////////
@@ -113,13 +92,13 @@ class ProductFormState {
 /// wanted to edit an existing item, you could reuse this bloc for that too.
 /// Then you'd need a flag for when an existing item is being edited.
 class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
-  ProductFormBloc(this._productRepository) : super(const ProductFormState()) {
+  ProductFormBloc() : super(const ProductFormState()) {
     // Register event handlers
     super.on<UpdateProductFormFieldsEvent>(_handleUpdateForm);
   }
 
   /// Repository for fetching a new product.
-  final ProductRepository _productRepository;
+  final ProductRepository _productRepository = GetIt.I.get<ProductRepository>();
 
   /// Handler for updating this bloc with whatever exists in the event.
   /// The update will always be successful; if some invalid field is used,

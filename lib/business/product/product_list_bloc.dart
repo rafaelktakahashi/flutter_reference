@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:get_it/get_it.dart';
 
 ///////////////
 /// PREFACE ///
@@ -77,14 +78,14 @@ class ProductStateError extends ProductState {
 
 /// Bloc for just the list of products, displayed in the list of products.
 class ProductListBloc extends Bloc<ProductEvent, ProductState> {
-  ProductListBloc(this._productRepository) : super(const ProductStateEmpty()) {
+  ProductListBloc() : super(const ProductStateEmpty()) {
     // Register event handlers
     super.on<FetchProductsEvent>(_handleFetch);
     super.on<AddProductEvent>(_handleAdd);
   }
 
   /// Repository for fetching products.
-  final ProductRepository _productRepository;
+  final ProductRepository _productRepository = GetIt.I.get<ProductRepository>();
 
   /// Handler for fetching products.
   void _handleFetch(

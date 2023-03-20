@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
+import 'package:flutter_reference/domain/error/megastore_client_error.dart';
 import 'package:flutter_reference/domain/error/megastore_error.dart';
 
 /// Example of a Client.
@@ -7,18 +8,49 @@ import 'package:flutter_reference/domain/error/megastore_error.dart';
 /// This one mocks its calls to pretend that a request is being made.
 class MegastoreClient {
   final List<Product> _mockProducts = List.from([
-    const Product("110", "Powder computer", "Finely ground computer.", 3, "g"),
-    const Product("190", "Game controller",
-        "Device for interacting with a videogame console.", 5, "unit"),
-    const Product("210", "Green ideas",
-        "Thought or suggestion of the green variety.", 8, "unit"),
+    const Product(
+      id: "110",
+      name: "Powder computer",
+      description: "Finely ground computer.",
+      stockAmount: 3,
+      unit: "g",
+    ),
+    const Product(
+      id: "190",
+      name: "Paperback",
+      description:
+          "The backside of a sheet of paper (front side purchased separately).",
+      stockAmount: 5,
+      unit: "unit",
+    ),
+    const Product(
+      id: "210",
+      name: "Green ideas",
+      description:
+          "Thought, concept or mental impression of the green variety.",
+      stockAmount: 8,
+      unit: "unit",
+    ),
   ]);
 
   /// Fetch the list of products.
-  /// This fetch does not accept any parameters. If it did (for example,
-  /// page number or a filter), the parameters would appear here.
-  Future<Either<MegastoreError, List<Product>>> fetchProducts() async {
+  /// This accept a boolean parameter [fail] as an example only. In pratice,
+  /// your real parameters (like page number of a filter) would appear here.
+  /// Use [fail]=true to cause an error to be returned, for demonstration
+  /// purposes.
+  Future<Either<MegastoreError, List<Product>>> fetchProducts({
+    bool fail = false,
+  }) async {
     await Future.delayed(const Duration(seconds: 1));
+    if (fail) {
+      return const Left(
+        MegastoreClientError(
+          "MGS-0001",
+          "There was an error fetching the list of products.",
+          responseStatus: "500",
+        ),
+      );
+    }
     return Right(_mockProducts);
   }
 
