@@ -2,7 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
+import 'package:flutter_reference/domain/error/megastore_business_error.dart';
 import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
 
@@ -25,19 +27,21 @@ abstract class ProductFormEvent {
 }
 
 /// Update this bloc with new data from the form.
-/// This will cause validation data to appear in the state.
+/// This will cause validation data to appear in the state, so you probably
+/// don't want to emit this event on every keypress, probably only on blur
+/// when all fields have been visited.
 /// Any field that is omitted will cause no changes in the state.
 class UpdateProductFormFieldsEvent extends ProductFormEvent {
   final String? identifier;
   final String? name;
   final String? description;
-  final int? quantity;
+  final int? stockAmount;
   final String? unit;
   const UpdateProductFormFieldsEvent({
     this.identifier,
     this.name,
     this.description,
-    this.quantity,
+    this.stockAmount,
     this.unit,
   });
 }
@@ -75,7 +79,7 @@ class ProductFormState with _$ProductFormState {
     @Default("") String identifier,
     @Default("") String name,
     @Default("") String description,
-    @Default(0) int quantity,
+    @Default(0) int stockAmount,
     @Default("") String unit,
     @Default(None()) Option<MegastoreError> submitError,
     @Default(None()) Option<Map<String, String>> validationError,
@@ -103,13 +107,68 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
   /// Handler for updating this bloc with whatever exists in the event.
   /// The update will always be successful; if some invalid field is used,
   /// then a validation error will appear in the state.
-  void _handleUpdateForm(
-      UpdateProductFormFieldsEvent event, Emitter<ProductFormState> emit) {
-    // First, we get a new form state.
+  void _handleUpdateForm(UpdateProductFormFieldsEvent event,
+      Emitter<ProductFormState> emit) async {
+    // First, we get a new form state and copy it with the data from
+    // the event.
+    final eventCopy = state.copyWith(
+      identifier: event.identifier ?? state.identifier,
+      name: event.name ?? state.name,
+      description: event.description ?? state.description,
+      stockAmount: event.stockAmount ?? state.stockAmount,
+      unit: event.unit ?? state.unit,
+      submitState: ProductFormSubmitState.idle,
+      submitError: const None(),
+    );
+    // Now we need to compute any errors.
+    // If you have many rules, you could place the handler in a separate file.
+    final validationErrors = <String, String>{};
+    if (int.tryParse(eventCopy.unit) == null) {
+      validationErrors["stockAmount"] = "Stock amount can't be negative.";
+    }
+
+    if (validationErrors.isEmpty) {
+      emit(eventCopy.copyWith(validationError: const None()));
+    } else {
+      emit(eventCopy.copyWith(validationError: Some(validationErrors)));
+    }
   }
 
   /// Handler for submitting the form.
   /// This can fail if there's a validation error in the form.
   void _handleSubmitForm(
-      SubmitProductFormEvent event, Emitter<ProductFormState> emit) {}
+      SubmitProductFormEvent event, Emitter<ProductFormState> emit) async {
+    // Cause an error (locally) if there's a validation error.
+    if (state.validationError.isSome()) {
+      emit(state.copyWith(
+        submitState: ProductFormSubmitState.error,
+        submitError: const Some(MegastoreBusinessError(
+          "MGS-2001",
+          "Form cannot be submitted while it has errors.",
+          blocName: "product_form",
+        )),
+      ));
+    }
+
+    // Immediately set the state to submitting while the request happens.
+    emit(state.copyWith(submitState: ProductFormSubmitState.submitting));
+    (await _productRepository.saveProduct(Product(
+      id: state.identifier,
+      name: state.name,
+      description: state.description,
+      stockAmount: state.stockAmount,
+      unit: state.unit,
+    )))
+        .fold(
+      (l) => emit(
+        state.copyWith(
+            submitState: ProductFormSubmitState.error, submitError: Some(l)),
+      ),
+      (r) => emit(
+        state.copyWith(
+          submitState: ProductFormSubmitState.success,
+        ),
+      ),
+    );
+  }
 }

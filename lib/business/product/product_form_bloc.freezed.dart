@@ -19,7 +19,7 @@ mixin _$ProductFormState {
   String get identifier => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  int get quantity => throw _privateConstructorUsedError;
+  int get stockAmount => throw _privateConstructorUsedError;
   String get unit => throw _privateConstructorUsedError;
   Option<MegastoreError> get submitError => throw _privateConstructorUsedError;
   Option<Map<String, String>> get validationError =>
@@ -41,7 +41,7 @@ abstract class $ProductFormStateCopyWith<$Res> {
       {String identifier,
       String name,
       String description,
-      int quantity,
+      int stockAmount,
       String unit,
       Option<MegastoreError> submitError,
       Option<Map<String, String>> validationError,
@@ -64,7 +64,7 @@ class _$ProductFormStateCopyWithImpl<$Res, $Val extends ProductFormState>
     Object? identifier = null,
     Object? name = null,
     Object? description = null,
-    Object? quantity = null,
+    Object? stockAmount = null,
     Object? unit = null,
     Object? submitError = null,
     Object? validationError = null,
@@ -83,9 +83,9 @@ class _$ProductFormStateCopyWithImpl<$Res, $Val extends ProductFormState>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      quantity: null == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
+      stockAmount: null == stockAmount
+          ? _value.stockAmount
+          : stockAmount // ignore: cast_nullable_to_non_nullable
               as int,
       unit: null == unit
           ? _value.unit
@@ -119,7 +119,7 @@ abstract class _$$_ProductFormStateCopyWith<$Res>
       {String identifier,
       String name,
       String description,
-      int quantity,
+      int stockAmount,
       String unit,
       Option<MegastoreError> submitError,
       Option<Map<String, String>> validationError,
@@ -140,7 +140,7 @@ class __$$_ProductFormStateCopyWithImpl<$Res>
     Object? identifier = null,
     Object? name = null,
     Object? description = null,
-    Object? quantity = null,
+    Object? stockAmount = null,
     Object? unit = null,
     Object? submitError = null,
     Object? validationError = null,
@@ -159,9 +159,9 @@ class __$$_ProductFormStateCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      quantity: null == quantity
-          ? _value.quantity
-          : quantity // ignore: cast_nullable_to_non_nullable
+      stockAmount: null == stockAmount
+          ? _value.stockAmount
+          : stockAmount // ignore: cast_nullable_to_non_nullable
               as int,
       unit: null == unit
           ? _value.unit
@@ -192,7 +192,7 @@ class _$_ProductFormState
       {this.identifier = "",
       this.name = "",
       this.description = "",
-      this.quantity = 0,
+      this.stockAmount = 0,
       this.unit = "",
       this.submitError = const None(),
       this.validationError = const None(),
@@ -209,7 +209,7 @@ class _$_ProductFormState
   final String description;
   @override
   @JsonKey()
-  final int quantity;
+  final int stockAmount;
   @override
   @JsonKey()
   final String unit;
@@ -225,7 +225,7 @@ class _$_ProductFormState
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'ProductFormState(identifier: $identifier, name: $name, description: $description, quantity: $quantity, unit: $unit, submitError: $submitError, validationError: $validationError, submitState: $submitState)';
+    return 'ProductFormState(identifier: $identifier, name: $name, description: $description, stockAmount: $stockAmount, unit: $unit, submitError: $submitError, validationError: $validationError, submitState: $submitState)';
   }
 
   @override
@@ -236,7 +236,7 @@ class _$_ProductFormState
       ..add(DiagnosticsProperty('identifier', identifier))
       ..add(DiagnosticsProperty('name', name))
       ..add(DiagnosticsProperty('description', description))
-      ..add(DiagnosticsProperty('quantity', quantity))
+      ..add(DiagnosticsProperty('stockAmount', stockAmount))
       ..add(DiagnosticsProperty('unit', unit))
       ..add(DiagnosticsProperty('submitError', submitError))
       ..add(DiagnosticsProperty('validationError', validationError))
@@ -253,8 +253,8 @@ class _$_ProductFormState
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.quantity, quantity) ||
-                other.quantity == quantity) &&
+            (identical(other.stockAmount, stockAmount) ||
+                other.stockAmount == stockAmount) &&
             (identical(other.unit, unit) || other.unit == unit) &&
             (identical(other.submitError, submitError) ||
                 other.submitError == submitError) &&
@@ -266,7 +266,7 @@ class _$_ProductFormState
 
   @override
   int get hashCode => Object.hash(runtimeType, identifier, name, description,
-      quantity, unit, submitError, validationError, submitState);
+      stockAmount, unit, submitError, validationError, submitState);
 
   @JsonKey(ignore: true)
   @override
@@ -280,7 +280,7 @@ abstract class _ProductFormState implements ProductFormState {
       {final String identifier,
       final String name,
       final String description,
-      final int quantity,
+      final int stockAmount,
       final String unit,
       final Option<MegastoreError> submitError,
       final Option<Map<String, String>> validationError,
@@ -293,7 +293,7 @@ abstract class _ProductFormState implements ProductFormState {
   @override
   String get description;
   @override
-  int get quantity;
+  int get stockAmount;
   @override
   String get unit;
   @override

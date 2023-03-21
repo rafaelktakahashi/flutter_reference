@@ -24,9 +24,9 @@ class MegastoreClientError implements MegastoreError {
   @override
   String? developerMessage() {
     if (nestedException != null) {
-      return "Status $responseStatus, exception ${nestedException.toString()}";
+      return "Status $responseStatus, error code $code, nested exception is: ${nestedException.toString()}";
     } else {
-      return "Status $responseStatus";
+      return "Status $responseStatus, error code $code";
     }
   }
 

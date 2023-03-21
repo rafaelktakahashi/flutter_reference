@@ -9,6 +9,12 @@ import 'package:get_it/get_it.dart';
 /// some of the classes that are instantiated here need to open a
 /// method channel.
 void configureDependencies() {
+  // Theoretically, we should decouple GetIt (or any other specific library)
+  // by wrapping it with our own classes.
+  // Realistically, I think it's safe to reference it directly. We get to
+  // use all of GetIt's features, with the only drawback that changing it
+  // it in the future would be more work.
+
   // Register clients
   GetIt.I.registerSingleton<MegastoreClient>(MegastoreClient());
 
