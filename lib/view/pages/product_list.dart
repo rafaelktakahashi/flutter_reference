@@ -16,24 +16,34 @@ class ProductListPage extends StatelessWidget {
           appBar: AppBar(
             title: const Text("Mega-Store Product List"),
           ),
-          body: _chooseList(context, state, context.read<ProductListBloc>()),
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _chooseList(context, state),
+              TextButton(
+                onPressed: () => context.read<ProductListBloc>().add(
+                      const FetchProductsEvent(),
+                    ),
+                child: const Text("Fetch"),
+              ),
+            ],
+          ),
         );
       },
     );
   }
 
-  Widget _chooseList(
-      BuildContext context, ProductState state, ProductListBloc bloc) {
+  Widget _chooseList(BuildContext context, ProductState state) {
     if (state is ProductStateEmpty) {
-      return _renderEmpty(context, bloc);
+      return _renderEmpty(context);
     } else if (state is ProductStateError) {
-      return _renderError(context, state, bloc);
+      return _renderError(context, state);
     } else if (state is ProductStateLoading) {
       return _renderLoadingList(context);
     } else if (state is ProductStateList) {
       return _renderList(context, state);
     } else {
-      return const Text("Unexted type of ProductState!");
+      return const Text("Unexpected type of ProductState!");
     }
   }
 
@@ -41,6 +51,7 @@ class ProductListPage extends StatelessWidget {
   Widget _renderList(BuildContext context, ProductStateList state) {
     return ListView(
       padding: const EdgeInsets.all(8),
+      shrinkWrap: true,
       children: state.products
           .map(
             (e) => Container(
@@ -57,6 +68,7 @@ class ProductListPage extends StatelessWidget {
   Widget _renderLoadingList(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(8),
+      shrinkWrap: true,
       children: <Widget>[
         Container(
           height: 50,
@@ -67,8 +79,7 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
-  Widget _renderError(
-      BuildContext context, ProductStateError state, ProductListBloc bloc) {
+  Widget _renderError(BuildContext context, ProductStateError state) {
     return ListView(
       padding: const EdgeInsets.all(8),
       children: <Widget>[
@@ -78,22 +89,11 @@ class ProductListPage extends StatelessWidget {
           child: Text(state.error.errorMessage(),
               style: TextStyle(color: Theme.of(context).colorScheme.onError)),
         ),
-        Container(
-          height: 50,
-          color: Theme.of(context).colorScheme.surface,
-          child: TextButton(
-            onPressed: () => {bloc.add(const FetchProductsEvent())},
-            child: const Text("Fetch"),
-          ),
-        ),
       ],
     );
   }
 
-  Widget _renderEmpty(BuildContext context, ProductListBloc bloc) {
-    return TextButton(
-      onPressed: () => {bloc.add(const FetchProductsEvent())},
-      child: const Text("Fetch"),
-    );
+  Widget _renderEmpty(BuildContext context) {
+    return Container();
   }
 }

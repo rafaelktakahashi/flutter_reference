@@ -33,3 +33,4 @@ class Product extends MegastoreEntity with _$Product {
 /// have to write the name by hand without autocomplete the first time
 /// because the file won't exist yet); add "with _Class" after the class
 /// declaration, and then write a factory constructor with "= _Class" after it.
+/// Classes created this way will be immutable.

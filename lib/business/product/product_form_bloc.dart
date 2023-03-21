@@ -72,7 +72,7 @@ enum ProductFormSubmitState {
 /// Just like all entity classes, bloc state classes don't have any logic in
 /// them. While we _could_ theoretically put the validation logic in a getter
 /// here, that would be wrong place for it. All business logic (including
-/// form validation) happens the bloc.
+/// form validation) happens in the bloc.
 @freezed
 class ProductFormState with _$ProductFormState {
   const factory ProductFormState({
@@ -99,6 +99,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
   ProductFormBloc() : super(const ProductFormState()) {
     // Register event handlers
     super.on<UpdateProductFormFieldsEvent>(_handleUpdateForm);
+    super.on<SubmitProductFormEvent>(_handleSubmitForm);
   }
 
   /// Repository for fetching a new product.

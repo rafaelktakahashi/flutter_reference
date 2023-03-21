@@ -4,8 +4,7 @@ import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/product/product_form_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/view/UI/themes/theme_data.dart';
-import 'package:flutter_reference/view/pages/counter.dart';
-import 'package:flutter_reference/view/pages/product_list.dart';
+import 'package:flutter_reference/view/pages/home.dart';
 import 'package:get_it/get_it.dart';
 
 class App extends StatelessWidget {
@@ -33,7 +32,7 @@ class App extends StatelessWidget {
             create: (BuildContext context) => ProductFormBloc(),
           ),
         ],
-        child: const ProductListPage(),
+        child: const HomePage(),
       ),
     );
   }
