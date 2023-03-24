@@ -20,6 +20,9 @@ class ProductRepository {
     bool fail = false,
   }) async {
     return client.fetchProducts(fail: fail);
+    // If you want to do any kind of processing, such as converting the classes,
+    // you can do it here by calling a map or flatmap on the Either that's
+    // returned by the client.
   }
 
   Future<Either<MegastoreError, Unit>> saveProduct(Product product) async {
