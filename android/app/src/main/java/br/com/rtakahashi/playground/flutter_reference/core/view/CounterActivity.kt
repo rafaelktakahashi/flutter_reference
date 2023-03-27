@@ -1,12 +1,12 @@
-package br.com.rtakahashi.playground.flutter_reference
+package br.com.rtakahashi.playground.flutter_reference.core.view
 
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import br.com.rtakahashi.playground.flutter_reference.R
 import br.com.rtakahashi.playground.flutter_reference.databinding.ActivityCounterBinding
 
 class CounterActivity : AppCompatActivity() {

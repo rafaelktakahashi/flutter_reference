@@ -1,7 +1,7 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_reference/view/nav/native_navigator.dart';
+import 'package:flutter_reference/view/nav/interop_navigator.dart';
 
 // TODO: Refactor this page to follow the principles of atomic design.
 
@@ -53,8 +53,8 @@ class CounterPage extends StatelessWidget {
                 child: const Text("Reset"),
               ),
               TextButton(
-                onPressed: () => NativeNavigator.instance()
-                    .navigate("[parameters not implemented]"),
+                onPressed: () =>
+                    InteropNavigator.instance().navigate("counter"),
                 style: TextButton.styleFrom(
                   textStyle: const TextStyle(fontSize: 20),
                 ),

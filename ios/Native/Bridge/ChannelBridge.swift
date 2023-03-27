@@ -77,7 +77,9 @@ class MethodChannelBridge {
         
         sharedChannel = newChannel
         
-        
+        // Set the one and only handler on the shared method channel. This handler checks the
+        // method name (which also contains the port name) and routes it to the correct
+        // bridge handler.
         newChannel.setMethodCallHandler() {
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
             // All calls that arrive here are coming from the other side of the bridge.
@@ -169,11 +171,14 @@ class MethodChannelBridge {
         }
         
         func unregisterAllHandlers() {
-            bridgeHandlers = bridgeHandlers.filter() {
+            let filtered = bridgeHandlers.filter() {
                 $0.key.hasPrefix("\(portName).")
             }
+            bridgeHandlers.removeAll()
+            filtered.forEach { (key: String, value: @escaping BridgeHandler) in
+                bridgeHandlers[key] = value
+            }
         }
-        
     }
 }
 

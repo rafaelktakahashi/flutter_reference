@@ -1,4 +1,4 @@
-package br.com.rtakahashi.playground.flutter_reference
+package br.com.rtakahashi.playground.flutter_reference.core.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

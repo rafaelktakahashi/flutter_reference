@@ -9,17 +9,9 @@ import Flutter
   ) -> Bool {
     
       let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
-      // TODO: Refactor the navigator to use the bridge.
-      let nativeNavigatorChannel = FlutterMethodChannel(name: "br.com.rtakahashi.playground.flutter_reference/navigator", binaryMessenger: controller.binaryMessenger)
-      nativeNavigatorChannel.setMethodCallHandler({
-          [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-          guard call.method == "navigate" else {
-              result(FlutterMethodNotImplemented)
-              return
-          }
-          self?.navigateToNativePage(result: result)
-      })
       
+      // Initialize the bridge. Any other class that needs to use the method channel, does so
+      // through the bridge.
       MethodChannelBridge.initialize(withBinaryMessenger: controller.binaryMessenger)
       
       // If you're using the project as a reference, you should use a read DI library here.
@@ -27,16 +19,10 @@ import Flutter
       // open the method channel.
       Injector.shared.registerObject(CounterBlocAdapter(), withName: "counterBlocAdapter")
       
+      Injector.shared.registerObject(InteropNavigator.buildNavigator(withFlutterController: controller), withName: "navigator")
+      
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
     
-    // Go to our native page. Of course, in a real project this would be a real navigator.
-    private func navigateToNativePage(result: FlutterResult) {
-        let sb = UIStoryboard(name: "NativePage", bundle: nil)
-        let uiController = sb.instantiateViewController(withIdentifier: "nativepage")
-        
-        let fController: FlutterViewController = window?.rootViewController as! FlutterViewController
-        fController.present(uiController, animated: true)
-    }
 }

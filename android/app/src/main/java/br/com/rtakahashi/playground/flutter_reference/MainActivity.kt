@@ -4,6 +4,7 @@ import android.content.Intent
 import br.com.rtakahashi.playground.flutter_reference.core.bloc.CounterBlocAdapter
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import br.com.rtakahashi.playground.flutter_reference.core.injection.Injector
+import br.com.rtakahashi.playground.flutter_reference.core.view.CounterActivity
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -39,7 +40,7 @@ class MainActivity: FlutterActivity() {
     private fun navigateToPage() {
         val counterActivityIntent = Intent(this, CounterActivity::class.java).apply {
             // putExtra("some_variable", someValue);
-        };
+        }
         startActivity(counterActivityIntent);
     }
 }
