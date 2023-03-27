@@ -1,10 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// This exact string must be used in the native side of the bridge.
+/// This exact string must also be used in the native side of the bridge.
 const _methodChannelName = "br.com.rtakahashi.playground.flutter_reference";
 
 /// Flutter side of the method channel bridge.
+///
 /// Use this bridge to open a port to the native side instead of opening method
 /// channels directly. Anything you would do with the method channel, do with
 /// a port instead.
@@ -13,11 +14,11 @@ const _methodChannelName = "br.com.rtakahashi.playground.flutter_reference";
 /// in the visualization layer use this class directly. It seems better to me
 /// to do this than create an additional special layer.
 ///
-/// After having obtained an instance of [FlutterMethodChannelPort], you can use
-/// it just like you would use the method channel, with a few differences:
-/// - Handlers are registered one by one, by method name. You should register
+/// After having obtained an instance of [FlutterMethodChannelBridgePort], you can
+/// use it just like you would use the method channel, with a few differences:
+/// - Handlers are registered one by one, by method name. You shouldn't register
 /// a method name that has been registered before on the same port. If you do,
-/// the previous handler will be forgotten and that may lead to bugs.
+/// the previous handler will be discarded and that may lead to bugs.
 /// - Port names work like prefixes, but you don't have to worry about
 /// constructing the names of methods.
 /// - Everything is exposed through easy-to-use async methods.
@@ -28,7 +29,7 @@ const _methodChannelName = "br.com.rtakahashi.playground.flutter_reference";
 ///
 /// final weatherPort = bridge.openMethodChannelPort("WeatherRepository");
 ///
-/// // Send a call to the native side:
+/// // Send a call to the native side and get its response:
 /// final forecast = await weatherPort.call("fetchWeatherForecast");
 /// // or register to receive calls from the native side:
 /// weatherPort.registerHandler("fetchWeatherForecast", () async {...});
@@ -41,17 +42,33 @@ const _methodChannelName = "br.com.rtakahashi.playground.flutter_reference";
 /// Additionally, you'll also receive an exception if you try to call a method
 /// before the bridge (on either side) finishes its initialization. Registering
 /// handlers, however, can be done even before the bridge is initialized.
-FlutterMethodChannelPort openMethodChannelPort(String portName) {
-  return FlutterMethodChannelPort._(portName);
+FlutterMethodChannelBridgePort openBridgePort(String portName) {
+  // It is better to "open" method channels using a method rather than letting
+  // other classes directly instantiate ports because we may want to add some
+  // more control here in the future.
+  if (portName.isEmpty || portName.contains('.')) {
+    throw ArgumentError.value(
+      portName,
+      "portName",
+      "Must not be empty and must not contain dots ('.') in it.",
+    );
+  }
+  return FlutterMethodChannelBridgePort._(portName);
 }
 
-/// Initialize this bridge. This method MUST be called, and only after
-/// ensureInitialized() is called. Calls can only be made to the native side
-/// after the Flutter bridge is initialized, and likewise, native calls will
-/// only reach the Flutter side after the Flutter bridge has been initialized.
+/// Initialize this side of the bridge. This method MUST be called at least
+/// once, and only after ensureInitialized() has been called. This bridge can
+/// be used to make calls to the native side only after initialization.
 ///
-/// You'll find a similar requirement on the native side of the bridge.
+/// It is possible to register handlers before initialization, but method calls
+/// from the native side will only reach this side of the bridge after
+/// initialization.
 void initializeBridge() {
+  if (_sharedChannel != null) {
+    // Method channel already initialized. Skipping.
+    return;
+  }
+
   _sharedChannel = const MethodChannel(
     _methodChannelName,
     JSONMethodCodec(),
@@ -61,7 +78,7 @@ void initializeBridge() {
   // channel. This handler checks the handlers that were registered on the
   // bridge, and calls a handler if there is one.
   _sharedChannel!.setMethodCallHandler((methodCall) async {
-    final handler = _handlers[methodCall.method];
+    final handler = _bridgeHandlers[methodCall.method];
     if (handler == null) {
       throw MissingPluginException("Method does not exist in Flutter.");
     } else {
@@ -88,21 +105,28 @@ void initializeBridge() {
 /// only after having called ensureInitialized().
 MethodChannel? _sharedChannel;
 
+/// Handlers on this side of the bridge (Flutter).
+///
 /// Keys are a concatenation of a port and a method name, separated by a dot.
 /// Example: "WeatherRepository.fetchWeatherForecast".
-Map<String, dynamic Function(dynamic)> _handlers = {};
+Map<String, dynamic Function(dynamic)> _bridgeHandlers = {};
 
-class FlutterMethodChannelPort {
+/// Represents a port that can communicate with the native side.
+///
+/// This class is not meant to be instantiated directly; to get an instance
+/// of this class, call [openBridgePort].
+class FlutterMethodChannelBridgePort {
   /// Name of this bridge. In pratice, only one "bridge" exists, but each
   /// instance of this class requires a name to be used as a prefix.
   final String name;
 
   /// Make a new instance of this port.
-  FlutterMethodChannelPort._(this.name);
+  FlutterMethodChannelBridgePort._(this.name);
 
   /// Send something through the shared channel.
-  /// There must be a handler on the native side with the same name as this
-  /// port, and a registered handler with the method name specified in
+  ///
+  /// There must be a port on the native side with the same name as this
+  /// port with and a registered handler with the method name specified in
   /// [methodName].
   ///
   /// If a corresponding port with a corresponding method handler doesn't
@@ -112,29 +136,39 @@ class FlutterMethodChannelPort {
     if (_sharedChannel == null) {
       throw MissingPluginException("Not initialized");
     } else {
-      return _sharedChannel!.invokeMethod("$name.$methodName", arguments);
+      return _sharedChannel!
+          .invokeMethod<dynamic>("$name.$methodName", arguments);
     }
   }
 
   /// Register a handler for a name. If a different handler was already
-  /// registered for the same name, it'll be forgotten in favor of this one.
+  /// registered for the same name, it'll be discarded in favor of this one.
   void registerHandler(String callbackName, dynamic Function(dynamic) handler) {
-    if (_handlers["$name.$callbackName"] != null) {
+    if (_bridgeHandlers["$name.$callbackName"] != null) {
       debugPrint(
         "Method $callbackName for port $name has already been registered in the bridge! Overwriting!",
       );
+      debugPrint("Previous handler for $name.$callbackName will be discarded.");
     }
 
-    _handlers["$name.$callbackName"] = handler;
+    if (callbackName.isEmpty || callbackName.contains('.')) {
+      throw ArgumentError.value(
+        callbackName,
+        "callbackName",
+        "Must not be empty and must not contain dots ('.') in it.",
+      );
+    }
+
+    _bridgeHandlers["$name.$callbackName"] = handler;
   }
 
   /// Unregister a handler by name.
   void unregisterHandler(String callbackName) {
-    _handlers.remove("$name.$callbackName");
+    _bridgeHandlers.remove("$name.$callbackName");
   }
 
   /// Unregister all handlers for this port.
   void unregisterAllHandlers() {
-    _handlers.removeWhere((key, value) => key.startsWith("$name."));
+    _bridgeHandlers.removeWhere((key, value) => key.startsWith("$name."));
   }
 }

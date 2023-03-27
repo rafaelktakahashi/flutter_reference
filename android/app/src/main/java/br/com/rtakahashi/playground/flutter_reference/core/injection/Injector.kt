@@ -1,6 +1,5 @@
 package br.com.rtakahashi.playground.flutter_reference.core.injection
 
-import br.com.rtakahashi.playground.flutter_reference.core.bloc.CounterBlocAdapter
 
 /**
  * This project isn't using a real dependency injection library.

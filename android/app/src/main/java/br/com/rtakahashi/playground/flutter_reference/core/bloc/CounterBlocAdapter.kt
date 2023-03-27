@@ -3,9 +3,13 @@ package br.com.rtakahashi.playground.flutter_reference.core.bloc
 import io.flutter.embedding.engine.FlutterEngine
 import org.json.JSONObject
 
-// This class needs to be initialized from somewhere that has access to the
-// Flutter engine.
-class CounterBlocAdapter(engine: FlutterEngine) : BaseBlocAdapter<CounterState>("counter", engine, CounterStateNumber(0)) {
+/**
+ * Example of a bloc adapter that uses the method channel to access a Flutter bloc.
+ *
+ * Even though the superclass uses the method channel, we don't need to initialize the channel
+ * itself here because that's handled by our method channel bridge.
+ */
+class CounterBlocAdapter() : BaseBlocAdapter<CounterState>("counter", CounterStateNumber(0)) {
 
     fun incrementBy(step: Int) {
         super.send(mapOf("type" to "INCREMENT", "step" to step));

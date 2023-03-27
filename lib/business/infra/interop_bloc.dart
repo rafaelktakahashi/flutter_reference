@@ -1,25 +1,29 @@
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-/// The name of the method channel needs to be exactly the same
-/// as in the native adapters. In this project I'm using this
-/// prefix plus a name that is unique to every bloc.
-const blocChannelNamePrefix =
-    "br.com.rtakahashi.playground.flutter_reference/BlocChannel/";
+import 'package:flutter_reference/data/bridge/channel_bridge.dart';
 
 /// Our own bloc that knows how to interact with the native side through
 /// events and state updates.
 abstract class InteropBloc<E, S> extends Bloc<E, S> {
-  late MethodChannel platform;
+  /// A reference to a port in our bridge. The port has the name that
+  /// is specified when this bloc is instantiated.
+  late FlutterMethodChannelBridgePort port;
 
   final List<String> _nativeSubscriptions;
 
   InteropBloc(String blocName, super.initialState)
       : _nativeSubscriptions = List.empty(growable: true) {
-    // Receive events from the native side.
-    platform = MethodChannel(
-        "$blocChannelNamePrefix$blocName", const JSONMethodCodec());
-    platform.setMethodCallHandler(_handler);
+    // Open the port with the specified name. Each port should only be
+    // opened once.
+    // Don't forget that the bloc itself needs to use this exact naming scheme.
+    port = openBridgePort("bloc/$blocName");
+
+    // Register each method on the bridge. Unlike the MethodChannel itself,
+    // our bridge expects each handler to be registered separately.
+    port.registerHandler("sendEvent", _receiveMessage);
+    port.registerHandler("registerCallback", (p) => _registerNativeCallback(p));
+    port.registerHandler(
+        "unregisterCallback", (p) => _unregisterNativeCallback(p));
+    port.registerHandler("getCurrentState", (_) => stateToMessage(state));
 
     // If we always sent messages to a fixed method, then we'd be wasting calls
     // when the other side isn't listening. Flutter blocs may exist without
@@ -28,24 +32,9 @@ abstract class InteropBloc<E, S> extends Bloc<E, S> {
     // that shouldn't be needed.
     stream.listen((event) {
       for (var subscription in _nativeSubscriptions) {
-        platform.invokeMethod(subscription, stateToMessage(event));
+        port.call(subscription, arguments: stateToMessage(event));
       }
     });
-  }
-
-  Future<dynamic> _handler(MethodCall methodCall) async {
-    switch (methodCall.method) {
-      case 'sendEvent':
-        return _receiveMessage(methodCall.arguments);
-      case 'registerCallback':
-        return _registerNativeCallback(methodCall.arguments as String);
-      case 'unregisterCallback':
-        return _unregisterNativeCallback(methodCall.arguments as String);
-      case 'getCurrentState':
-        return stateToMessage(state);
-      default:
-        throw MissingPluginException("notImplemented");
-    }
   }
 
   /// Must be overridden to produce an event that this bloc understands from
