@@ -43,7 +43,7 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
         // The callback method can be anything. I'm appending a random part to avoid collisions.
         // Collisions are theoretically impossible because only one instance of each bloc adapter
         // should exist at any given time. If you need multiple adapters for the same bloc, you'll
-        // need to make further modifications to the code, to share the method channel.
+        // need to make further modifications to the code.
         _updateStateCallbackName = "updateState-${UUID.randomUUID()}"
 
         // We could use the method channel directly, but here we're using our bridge which

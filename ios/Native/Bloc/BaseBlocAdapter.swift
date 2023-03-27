@@ -32,11 +32,9 @@ protocol BlocAdapterDelegate: AnyObject {
 class BaseBlocAdapter<D: BlocAdapterDelegate> {
     typealias BlocListener = (D.S) -> Void
     
-    // The name of the method channel must be exactly the same as in the Flutter InteropBloc.
-    // In this project I'm using this prefix plus a name that is unique to every bloc.
-    private let BLOC_CHANNEL_NAME_PREFIX = "br.com.rtakahashi.playground.flutter_reference/BlocChannel/"
-    private var _delegate: D
-    private var _channel: FlutterMethodChannel
+    private let _blocName: String
+    private let _delegate: D
+    private let _bridgePort: MethodChannelBridgePort
     private var _callbackName: String?
     private var _cachedState: D.S
     private var _listeners: [String: BlocListener]
@@ -46,9 +44,12 @@ class BaseBlocAdapter<D: BlocAdapterDelegate> {
     /// for opening the method chanel.
     /// The initial state is not very important because this class will attempt to
     /// obtain the current state from the Flutter bloc right away.
-    internal init(_ blocName: String, withDelegate delegate: D, andBinaryMessenger messenger: FlutterBinaryMessenger, andInitialState initialState: D.S) {
+    internal init(_ blocName: String, withDelegate delegate: D, andInitialState initialState: D.S) {
         self._delegate = delegate
-        _channel = FlutterMethodChannel(name: "\(BLOC_CHANNEL_NAME_PREFIX)\(blocName)", binaryMessenger: messenger, codec: FlutterJSONMethodCodec())
+        
+        _blocName = blocName
+        _bridgePort = MethodChannelBridge.openPort("bloc/\(blocName)")
+        
         _cachedState = initialState
         _listeners = Dictionary<String, BlocListener>()
     }
@@ -72,18 +73,21 @@ class BaseBlocAdapter<D: BlocAdapterDelegate> {
         // state changes.
         // The callback is not called automatically because an adapter
         // is not guaranteed to exist for every Flutter bloc.
+        //
+        // The method name can be anything. I'm appending a random part to avoid collisions.
+        // Collisions are theoretically impossible because only one instance of each bloc
+        // adapter should exist at any given time. If you need multiple adapters for the same
+        // bloc, you'll need to make further modifications to the code.
         _callbackName = "updateState-\(UUID().uuidString)"
-        _channel.invokeMethod("registerCallback", arguments: _callbackName)
         
-        _channel.setMethodCallHandler({
-            [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            switch (call.method) {
-            case self?._callbackName:
-                self?.updateState(message: call.arguments)
-            default:
-                ()
-            }
-        })
+        // Rather than use the method channel directly, here we're using our bridge which
+        // centralizes all method channel logic.
+        _bridgePort.call("registerCallback", withArguments: _callbackName)
+        
+        _bridgePort.registerHandler(_callbackName!) {
+            [weak self] (params) -> Void in
+            self?.updateState(message: params)
+        }
         
         // Get the state for the first time, otherwise this
         // adapter will use the initialState until the next
@@ -97,17 +101,18 @@ class BaseBlocAdapter<D: BlocAdapterDelegate> {
         guard let cn = _callbackName else {
             return
         }
-        _channel.invokeMethod("unregisterCallback", arguments: cn)
+        _bridgePort.unregisterHandler(cn)
     }
     
     private func syncStateWithFlutter() -> Void {
-        _channel.invokeMethod("getCurrentState", arguments: nil, result: { (value: Any?) -> Void in
-            if (value is FlutterError || FlutterMethodNotImplemented.isEqual(value)) {
-                print("Received error when syncing state with Flutter.")
-            } else {
-                self.updateState(message: value)
-            }
-        })
+        let blocName = _blocName
+        _bridgePort.call("getCurrentState", withArguments: nil, onError: { exception in
+            NSLog("Adapter \(blocName) failed to get current state. Continuing with initial state. Error: \(exception.localizedDescription)")
+        }) {
+            [weak self] (params) -> Void in
+            self?.updateState(message: params)
+        }
+        
     }
     
     private func updateState(message: Any?) -> Void {
@@ -132,7 +137,11 @@ class BaseBlocAdapter<D: BlocAdapterDelegate> {
     /// This sends a Dictionary through the method channel, and we expect the
     /// Flutter bloc to know how to interpret it.
     func send(message: [String : Any]) {
-        _channel.invokeMethod("sendEvent", arguments: message)
+        let blocName = _blocName
+        _bridgePort.call("sendEvent", withArguments: message) {
+            error in
+            NSLog("Adapter \(blocName) failed to send message: \(message), error: \(error.localizedDescription)")
+        }
     }
     
     /// Register to listen to the stream of the corresponding bloc.

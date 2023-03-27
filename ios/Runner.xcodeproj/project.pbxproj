@@ -13,6 +13,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		AC44B7C129D1D805005BD7BA /* ChannelBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC44B7C029D1D805005BD7BA /* ChannelBridge.swift */; };
 		AC7D5EF129BA2F1300B45F7E /* NativePage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC7D5EF029BA2F1300B45F7E /* NativePage.storyboard */; };
 		AC7D5EF729BA309C00B45F7E /* NativePageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7D5EF629BA309C00B45F7E /* NativePageController.swift */; };
 		AC7D5EFA29BA3C9000B45F7E /* BaseBlocAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7D5EF929BA3C9000B45F7E /* BaseBlocAdapter.swift */; };
@@ -47,6 +48,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC44B7C029D1D805005BD7BA /* ChannelBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelBridge.swift; sourceTree = "<group>"; };
 		AC7D5EF029BA2F1300B45F7E /* NativePage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NativePage.storyboard; sourceTree = "<group>"; };
 		AC7D5EF629BA309C00B45F7E /* NativePageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePageController.swift; sourceTree = "<group>"; };
 		AC7D5EF929BA3C9000B45F7E /* BaseBlocAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseBlocAdapter.swift; sourceTree = "<group>"; };
@@ -109,9 +111,18 @@
 			path = Runner;
 			sourceTree = "<group>";
 		};
+		AC44B7BF29D1D6F8005BD7BA /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+				AC44B7C029D1D805005BD7BA /* ChannelBridge.swift */,
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
 		AC7D5EED29BA296000B45F7E /* Native */ = {
 			isa = PBXGroup;
 			children = (
+				AC44B7BF29D1D6F8005BD7BA /* Bridge */,
 				ACC26C9329BB679B00DCF669 /* Injection */,
 				AC7D5EF829BA3C7F00B45F7E /* Bloc */,
 				AC7D5EF029BA2F1300B45F7E /* NativePage.storyboard */,
@@ -251,6 +262,7 @@
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				ACC26C9229BB5E8100DCF669 /* CounterBlocAdapter.swift in Sources */,
 				ACC26C9529BB67A700DCF669 /* Injector.swift in Sources */,
+				AC44B7C129D1D805005BD7BA /* ChannelBridge.swift in Sources */,
 				AC7D5EFA29BA3C9000B45F7E /* BaseBlocAdapter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

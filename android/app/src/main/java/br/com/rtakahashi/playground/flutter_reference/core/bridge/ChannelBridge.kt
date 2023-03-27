@@ -6,7 +6,7 @@ import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
 
 /**
- * A shared method channel that can be used by multiple classes.
+ * A static method channel that's shared by all ports in the bridge.
  */
 private var sharedChannel: MethodChannel? = null
 
@@ -34,21 +34,22 @@ private const val methodChannelName = "br.com.rtakahashi.playground.flutter_refe
  * and that may lead to bugs.
  * - Port names work like prefixes, but you don't have to worry about constructing the names of
  * methods.
- * - Everything is exposed through easy-to-use suspend methods.
+ * - Calls and responses are exposed through simple callbacks that are easier to use than the
+ * method channel.
  *
  * ```kotlin
- * val weatherPort = AndroidMethodChannelBridge.openPort("WeatherRepository");
+ * val weatherPort = MethodChannelBridge.openPort("WeatherRepository");
  *
  * // Send a call to the Flutter side and get its response:
- * val forecast = await weatherPort.call("fetchWeatherForecast");
+ * val forecast = weatherPort.call("fetchWeatherForecast", args, { logError(it) } ) { handleResponse(it) };
  * // or register to receive calls from the Flutter side:
- * weatherPort.registerHandler("fetchWeatherForecast", suspend { ... } );
+ * weatherPort.registerHandler("fetchWeatherForecast") { handleCall(it) };
  * ```
  */
 object MethodChannelBridge {
     // The functions in this object could've been top-level functions and they would work the same;
     // I decided to put them in an object to make their usage more explicit about that they are.
-    // That is, you call them with AndroidMethodChannelBridge.initialize() rather than just calling
+    // That is, you call them with MethodChannelBridge.initialize() rather than just calling
     // the function.
 
     /**
@@ -58,7 +59,7 @@ object MethodChannelBridge {
      *
      * "Open" might not be accurate because a port simply works as a prefix when sending and
      * receiving messages through the method channel. Many classes may "open" the same method
-     * channel port and they'll both be able to use it, but you should avoid that because only one
+     * channel port and they'll all be able to use it, but you should avoid that because only one
      * handler can be registered for each name in the same port.
      */
     @JvmStatic
@@ -97,7 +98,7 @@ object MethodChannelBridge {
         )
 
         newChannel.setMethodCallHandler { call, result ->
-            // All methods that arrive here are coming from the other side of the bridge.
+            // All calls that arrive here are coming from the other side of the bridge.
             // The method names there are constructed using the same rules as this side.
             // Therefore, we expect the method name to include the port name.
             // Our handlers in the bridge are kept in a map, where the keys are strings that also
@@ -144,7 +145,7 @@ interface AndroidMethodChannelBridgePort {
      * handler with the method name specified as [methodName].
      *
      * If a corresponding port with a corresponding method handler doesn't exist in the Flutter
-     * side, or if either side of the method channel hasn't finished initializing, the error
+     * side, or if either side of the method channel bridge hasn't finished initializing, the error
      * callback will be called receiving an exception as parameter. Otherwise, the success callback
      * will be called receiving what the Flutter method returned (may be null).
      *
@@ -170,6 +171,9 @@ interface AndroidMethodChannelBridgePort {
      * Note that this does not directly register a handler in the method channel. This handler is
      * stored on the bridge, and when some message comes through the method channel, the bridge
      * routes it to the correct handler.
+     *
+     * Handlers are allowed to throw, but avoid that because anything that's thrown gets turned
+     * into an error that's send to the Flutter side of the bridge.
      */
     fun registerHandler(callbackName: String, handler: (Any?) -> Any?)
 

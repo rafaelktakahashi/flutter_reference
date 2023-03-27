@@ -86,8 +86,8 @@ class CounterBlocDelegate: BlocAdapterDelegate {
 class CounterBlocAdapter: BaseBlocAdapter<CounterBlocDelegate> {
     typealias S = CounterState
     
-    init(withBinaryMessenger binaryMessenger: FlutterBinaryMessenger) {
-        super.init("counter", withDelegate: CounterBlocDelegate(), andBinaryMessenger: binaryMessenger, andInitialState: CounterStateNumber(value: 0))
+    init() {
+        super.init("counter", withDelegate: CounterBlocDelegate(), andInitialState: CounterStateNumber(value: 0))
     }
     
     func incrementBy(step: Int) {

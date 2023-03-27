@@ -74,7 +74,6 @@ class NativePageController: UIViewController {
     }
     
     private func showStateOnScreen(_ counterState: CounterState) {
-        print("Printing the state.")
         if let counterStateNumber = counterState as? CounterStateNumber {
             self.valueLabel.text = String(counterStateNumber.value)
         } else if let counterStateError = counterState as? CounterStateError {

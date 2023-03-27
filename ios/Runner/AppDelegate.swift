@@ -9,6 +9,7 @@ import Flutter
   ) -> Bool {
     
       let controller: FlutterViewController = window?.rootViewController as! FlutterViewController
+      // TODO: Refactor the navigator to use the bridge.
       let nativeNavigatorChannel = FlutterMethodChannel(name: "br.com.rtakahashi.playground.flutter_reference/navigator", binaryMessenger: controller.binaryMessenger)
       nativeNavigatorChannel.setMethodCallHandler({
           [weak self] (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
@@ -19,10 +20,12 @@ import Flutter
           self?.navigateToNativePage(result: result)
       })
       
+      MethodChannelBridge.initialize(withBinaryMessenger: controller.binaryMessenger)
+      
       // If you're using the project as a reference, you should use a read DI library here.
       // The main limitation is that the bloc adapters need a binary messenger in order to
       // open the method channel.
-      Injector.shared.registerObject(CounterBlocAdapter(withBinaryMessenger: controller.binaryMessenger), withName: "counterBlocAdapter")
+      Injector.shared.registerObject(CounterBlocAdapter(), withName: "counterBlocAdapter")
       
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
