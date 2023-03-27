@@ -1,10 +1,9 @@
 package br.com.rtakahashi.playground.flutter_reference.core.bloc
 
 import android.util.Log
+import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridgeException
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridgeExceptionCause
-import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
-import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import java.util.*
 
@@ -41,28 +40,31 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
         // to do it again.
         if (_updateStateCallbackName != null) return
 
-        runBlocking {
-            // The callback method can be anything. I'm appending a random part to avoid collisions.
-            // Collisions are theoretically impossible because only one instance of each bloc adapter
-            // should exist at any given time. If you need multiple adapters for the same bloc, you'll
-            // need to make further modifications to the code, to share the method channel.
-            _updateStateCallbackName = "updateState-${UUID.randomUUID()}"
+        // The callback method can be anything. I'm appending a random part to avoid collisions.
+        // Collisions are theoretically impossible because only one instance of each bloc adapter
+        // should exist at any given time. If you need multiple adapters for the same bloc, you'll
+        // need to make further modifications to the code, to share the method channel.
+        _updateStateCallbackName = "updateState-${UUID.randomUUID()}"
 
-            // We could use the method channel directly, but here we're using our bridge which
-            // centralizes all method channel logic.
-//            bridgePort.call("registerCallback", _updateStateCallbackName)
-            bridgePort.debugCall("registerCallback", _updateStateCallbackName)
-            bridgePort.registerHandler(_updateStateCallbackName!!) { updateState(it) }
+        // We could use the method channel directly, but here we're using our bridge which
+        // centralizes all method channel logic.
+        bridgePort.call(
+            "registerCallback", _updateStateCallbackName,
+            {
+                Log.d("BaseBlocAdapter", "Failed to register callback for bloc $blocName: $it")
+            },
+        )
+        bridgePort.registerHandler(_updateStateCallbackName!!) { updateState(it) }
 
-            // Attempt to sync the value here with the value from Flutter right away.
-            // If this fails, this instance will continue to use the initial state provided
-            // by the subclass, but we don't expect that to happen.
-            syncCurrentStateFromFlutter()
+        // Attempt to sync the value here with the value from Flutter right away.
+        // If this fails, this instance will continue to use the initial state provided
+        // by the subclass, but we don't expect that to happen.
+        syncCurrentStateFromFlutter()
 
-            // If kotlin had destructors, we would call "unregisterCallback" in it.
-            // Currently, we expect every bloc adapter to live forever. Whatever dependency-injection
-            // library you use should make sure that
-        }
+        // If kotlin had destructors, we would call "unregisterCallback" in it.
+        // Currently, we expect every bloc adapter to live forever. Whatever dependency-injection
+        // library you use should make sure that
+
 
     }
 
@@ -70,31 +72,35 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
     // some Java object it actually just calls its toString(), which is kinda useless.
     // It's easier to require maps instead. Those always get turned into JSONs as expected.
     protected fun send(data: Map<String, Any>) {
-        println(data.toString())
-        runBlocking {
-//            bridgePort.call("sendEvent", data)
-            bridgePort.debugCall("sendEvent", data)
-        }
+        bridgePort.call(
+            "sendEvent",
+            data,
+            { Log.d("BaseBlocAdapter", "Failed to send message: $data, error: $it") },
+        )
     }
 
     private fun syncCurrentStateFromFlutter() {
-        runBlocking {
-            try {
-//                val result = bridgePort.call("getCurrentState")
-//                updateState(result)
-                bridgePort.debugCall("getCurrentState") {
-                    updateState(it)
-                }
-            } catch (ex: MethodChannelBridgeException) {
-                if (MethodChannelBridgeExceptionCause.RECEIVER_NOT_FOUND == ex.reason) {
-                    // If this fails because the equivalent method doesn't exist in Flutter,
-                    // then that's an error.
-                    throw NotImplementedError("Could not get current state.")
-                }
-                // Probably fine to ignore. This adapter will continue using the default state
-                // provided by the subclass.
-                Log.d("BaseBlocAdapter", "Failed to get current state from $blocName bloc.")
+        try {
+            bridgePort.call(
+                "getCurrentState",
+                null,
+                {
+                    Log.d(
+                        "BaseBlocAdapter",
+                        "Adapter $blocName failed to get current state. Continuing with initial state. Error: $it"
+                    )
+                }) {
+                updateState(it)
             }
+        } catch (ex: MethodChannelBridgeException) {
+            if (MethodChannelBridgeExceptionCause.RECEIVER_NOT_FOUND == ex.reason) {
+                // If this fails because the equivalent method doesn't exist in Flutter,
+                // then that's an error.
+                throw NotImplementedError("Could not get current state.")
+            }
+            // Probably fine to ignore. This adapter will continue using the default state
+            // provided by the subclass.
+            Log.d("BaseBlocAdapter", "Failed to get current state from $blocName bloc.")
         }
     }
 
@@ -115,6 +121,11 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
     protected abstract fun messageToState(message: JSONObject): S
 
     private fun updateState(data: Any?) {
+        if (data == null) {
+            // We can never set a null state, so check for that.
+            Log.d("BaseBlocAdapter", "Skipping updateState because it received null.")
+        }
+
         val state = messageToState(data as JSONObject)
         _cachedState = state
         for (listener in _listeners) {
@@ -131,7 +142,7 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
      * if you use something else for your observables, then you should use
      * that instead. This project is a minimal example without any libraries.
      */
-    fun listen(callback: (value: S) -> Unit): String { // TODO: Breaking!
+    fun listen(callback: (value: S) -> Unit): String {
         // Setting up the callback here ensures that we do so late enough that the Flutter bloc
         // exists and is listening to the channel. This makes it so the Flutter bloc will only
         // start sending state updates once someone on the native side is listening.

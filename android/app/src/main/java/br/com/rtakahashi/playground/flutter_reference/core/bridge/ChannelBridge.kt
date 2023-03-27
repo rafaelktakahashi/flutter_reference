@@ -4,9 +4,6 @@ import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * A shared method channel that can be used by multiple classes.
@@ -16,7 +13,7 @@ private var sharedChannel: MethodChannel? = null
 /**
  * Handlers for the Android side of the method channel bridge.
  */
-private var bridgeHandlers: MutableMap<String, suspend (Any?) -> Any?> = mutableMapOf()
+private var bridgeHandlers: MutableMap<String, (Any?) -> Any?> = mutableMapOf()
 
 /**
  * This exact string must also be used in the Flutter side of the bridge.
@@ -70,8 +67,10 @@ object MethodChannelBridge {
         // classes directly instantiate ports because we may want to add some more control
         // here in the future.
         if (portName.isEmpty() || portName.contains('.')) {
-            throw IllegalArgumentException("$portName is not a valid port name;" +
-                    " it must not be empty and must not contain any dots ('.') in it.")
+            throw IllegalArgumentException(
+                "$portName is not a valid port name;" +
+                        " it must not be empty and must not contain any dots ('.') in it."
+            )
         }
         return AndroidMethodChannelBridgePortImpl(portName)
     }
@@ -92,8 +91,37 @@ object MethodChannelBridge {
             return
         }
 
-        sharedChannel = MethodChannel(engine.dartExecutor.binaryMessenger,
-                methodChannelName, JSONMethodCodec.INSTANCE)
+        val newChannel = MethodChannel(
+            engine.dartExecutor.binaryMessenger,
+            methodChannelName, JSONMethodCodec.INSTANCE
+        )
+
+        newChannel.setMethodCallHandler { call, result ->
+            // All methods that arrive here are coming from the other side of the bridge.
+            // The method names there are constructed using the same rules as this side.
+            // Therefore, we expect the method name to include the port name.
+            // Our handlers in the bridge are kept in a map, where the keys are strings that also
+            // follow that rule.
+            val methodName = call.method
+            val handler = bridgeHandlers[methodName]
+
+            if (handler == null) {
+                result.notImplemented()
+            } else {
+                try {
+                    // Execute the handler and send the result back through the method channel.
+                    result.success(handler.invoke(call.arguments))
+                } catch (e: Exception) {
+                    result.error(
+                        "bridge-handler-execution-error",
+                        "Android handler for method $methodName failed.",
+                        e.toString(),
+                    )
+                }
+            }
+        }
+
+        sharedChannel = newChannel
     }
 }
 
@@ -108,6 +136,7 @@ object MethodChannelBridge {
  * the same name) on the other side.
  */
 interface AndroidMethodChannelBridgePort {
+
     /**
      * Send something through the shared channel.
      *
@@ -115,18 +144,34 @@ interface AndroidMethodChannelBridgePort {
      * handler with the method name specified as [methodName].
      *
      * If a corresponding port with a corresponding method handler doesn't exist in the Flutter
-     * side, or if either side of the method channel hasn't finished initializing, an
-     * AndroidMethodChannelBridgeException will be thrown.
+     * side, or if either side of the method channel hasn't finished initializing, the error
+     * callback will be called receiving an exception as parameter. Otherwise, the success callback
+     * will be called receiving what the Flutter method returned (may be null).
+     *
+     * The success callback is declared last for two reasons:
+     * 1. Both callbacks are optional, but it's highly recommended to always handle the error case.
+     * 2. Having the success callback declared last allows writing it outside the parentheses when
+     * calling this method.
+     *
+     * The return type of the callbacks does not matter. They're given as "Any" to allow for not
+     * returning anything.
      */
-    suspend fun call(methodName: String, arguments: Any? = null): Any?
-
-    fun debugCall(methodName: String, arguments: Any? = null, callback: ((Any?) -> Any?)? = null)
+    fun call(
+        methodName: String,
+        arguments: Any? = null,
+        errorCallback: ((MethodChannelBridgeException) -> Any)? = null,
+        callback: ((Any?) -> Any)? = null
+    )
 
     /**
      * Register a handler for a name. If a different handler was already registered for the same
      * name, it'll be discarded in favor of this one.
+     *
+     * Note that this does not directly register a handler in the method channel. This handler is
+     * stored on the bridge, and when some message comes through the method channel, the bridge
+     * routes it to the correct handler.
      */
-    fun registerHandler(callbackName: String, handler: suspend (Any?) -> Any?)
+    fun registerHandler(callbackName: String, handler: (Any?) -> Any?)
 
     /**
      * Unregister a handler by name.
@@ -141,66 +186,49 @@ interface AndroidMethodChannelBridgePort {
 
 // (This is a private class that implements AndroidMethodChannelBridgePort in order to prevent
 // it from being instantiated elsewhere.)
-private class AndroidMethodChannelBridgePortImpl (val name: String) : AndroidMethodChannelBridgePort {
-    override suspend fun call(methodName: String, arguments: Any?): Any? = suspendCoroutine { cont ->
+private class AndroidMethodChannelBridgePortImpl(val name: String) :
+    AndroidMethodChannelBridgePort {
 
-        // This doesn't work either.
-        debugCall(methodName, arguments) {
-            cont.resume(it)
-        }
-
+    // I originally intended this to be a suspend function, but that didn't work with the method
+    // channel for some reason I can't explain (the result callbacks were never called).
+    // It's possible to use some library like RxKotlin here to simplify the callbacks, but I wanted
+    // to avoid dependencies in this part of the project.
+    override fun call(
+        methodName: String,
+        arguments: Any?,
+        errorCallback: ((MethodChannelBridgeException) -> Any)?,
+        callback: ((Any?) -> Any)?
+    ) {
         // This is just to enable a smart cast.
-//        val channel = sharedChannel
-//
-//        if (channel != null) {
-//            channel.invokeMethod("$name.$methodName", arguments, object : MethodChannel.Result {
-//                override fun success(result: Any?) {
-//                    Log.d("a", "a")
-//                    cont.resume(result)
-//                }
-//
-//                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-//                    Log.d("a", "a")
-//                    cont.resumeWithException(MethodChannelBridgeException.methodExecutionFailed())
-//                }
-//
-//                override fun notImplemented() {
-//                    Log.d("a", "a")
-//                    cont.resumeWithException(MethodChannelBridgeException.receiverNotFound())
-//                }
-//            })
-//        } else {
-//            cont.resumeWithException(MethodChannelBridgeException.bridgeNotInitialized());
-//        }
-    }
-
-    // Testing. The method channel on the Kotlin side is not receiving anything back when using
-    // coroutines.
-    // This seems to work, without using coroutines. Callbacks aren't that hard to implement anyway.
-    // I originally planned to use coroutines for this, but callbacks will do just fine.
-    override fun debugCall(methodName: String, arguments: Any?, callback: ((Any?) -> Any?)?) {
         val channel = sharedChannel
 
+        // This is the part I tried to do with a suspendCoroutine, but I couldn't get it to work.
+        // For some reason the callbacks would never get called.
         if (channel != null) {
             channel.invokeMethod("$name.$methodName", arguments, object : MethodChannel.Result {
                 override fun success(result: Any?) {
-                    callback?.invoke(result);
+                    callback?.invoke(result)
                 }
 
                 override fun notImplemented() {
-                    TODO("Not yet implemented")
+                    errorCallback?.invoke(MethodChannelBridgeException.receiverNotFound())
                 }
 
                 override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                    TODO("Not yet implemented")
+                    errorCallback?.invoke(MethodChannelBridgeException.methodExecutionFailed())
                 }
             })
+        } else {
+            errorCallback?.invoke(MethodChannelBridgeException.bridgeNotInitialized())
         }
     }
 
-    override fun registerHandler(callbackName: String, handler: suspend (Any?) -> Any?) {
+    override fun registerHandler(callbackName: String, handler: (Any?) -> Any?) {
         if (bridgeHandlers["$name.$callbackName"] !== null) {
-            Log.d("bridge", "Method $callbackName for port $name has already been registered in the bridge!")
+            Log.d(
+                "bridge",
+                "Method $callbackName for port $name has already been registered in the bridge!"
+            )
             Log.d("bridge", "Previous handler for $name.$callbackName will be discarded.")
         }
 
@@ -212,7 +240,8 @@ private class AndroidMethodChannelBridgePortImpl (val name: String) : AndroidMet
     }
 
     override fun unregisterAllHandlers() {
-        bridgeHandlers = bridgeHandlers.filter { entry -> entry.key.startsWith("$name.") }.toMutableMap()
+        bridgeHandlers =
+            bridgeHandlers.filter { entry -> entry.key.startsWith("$name.") }.toMutableMap()
     }
 
 }
@@ -220,7 +249,8 @@ private class AndroidMethodChannelBridgePortImpl (val name: String) : AndroidMet
 /**
  * Custom exception that may be thrown when calling methods on the Flutter side.
  */
-class MethodChannelBridgeException private constructor(val reason: MethodChannelBridgeExceptionCause) : Exception() {
+class MethodChannelBridgeException private constructor(val reason: MethodChannelBridgeExceptionCause) :
+    Exception() {
 
     companion object {
         @JvmStatic

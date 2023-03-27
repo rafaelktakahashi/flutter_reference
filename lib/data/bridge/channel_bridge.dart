@@ -74,15 +74,24 @@ void initializeBridge() {
     JSONMethodCodec(),
   );
 
-  // Now, this is the only time we ever register a handler on the shared
-  // channel. This handler checks the handlers that were registered on the
-  // bridge, and calls a handler if there is one.
+  // Now, this is the only time we ever register a handler on this side of the
+  // method channel.
+  // This handler checks the method name that's coming from the native
+  // side and routes the call to the correct bridge handler if there is one.
   _sharedChannel!.setMethodCallHandler((methodCall) async {
     final handler = _bridgeHandlers[methodCall.method];
     if (handler == null) {
       throw MissingPluginException("Method does not exist in Flutter.");
     } else {
-      return handler(methodCall.arguments);
+      try {
+        return handler(methodCall.arguments);
+      } catch (e) {
+        throw PlatformException(
+          code: "bridge-handler-execution-error",
+          message: "Flutter handler for method ${methodCall.method} failed.",
+          details: e.toString(),
+        );
+      }
     }
   });
 }
