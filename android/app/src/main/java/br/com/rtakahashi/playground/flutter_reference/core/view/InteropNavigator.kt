@@ -64,18 +64,9 @@ object InteropNavigator {
             "counter" -> {
                 val counterActivityIntent =
                     Intent(fActivity, CounterActivity::class.java).apply {
-                        if (parameters !== null) {
-                            parameters.forEach { entry ->
-                                val extra = entry.value // There's probably a better way to do this,
-                                when (extra) { // but the putExtra itself has all these overloads.
-                                    is Int -> putExtra(entry.key, extra)
-                                    is String -> putExtra(entry.key, extra)
-                                    is java.io.Serializable -> putExtra(entry.key, extra)
-                                    is Parcelable -> putExtra(entry.key, extra)
-                                    // etc
-                                }
-                            }
-                        }
+                        // Here, you can call .putExtra(...) to add parameters to each
+                        // page using the parameters map.
+                        // In this example we're not using them.
                     }
                 fActivity.startActivity(counterActivityIntent)
             }

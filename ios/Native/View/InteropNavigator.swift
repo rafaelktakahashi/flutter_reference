@@ -72,11 +72,10 @@ class InteropNavigator {
                 NSLog("Navigator.navigate received parameter different from a dictionary, which is not allowed.");
                 return
             }
-            
         }
     }
     
-    // This function an also be called from elsewhere in native code, but it's primarily
+    // This function can also be called from elsewhere in native code, but it's primarily
     // intended to handle calls from Flutter.
     func navigate(toPage pageName: String, withParameters parameters: Dictionary<String,Any>?) throws {
         switch (pageName) {
@@ -84,7 +83,7 @@ class InteropNavigator {
             let sb = UIStoryboard(name: "NativePage", bundle: nil)
             let uiController = sb.instantiateViewController(withIdentifier: "nativepage")
             
-            // You could also do something with the parameters that were passed from Flutter,
+            // You could also read the parameters and set them in the controller if you want,
             // but in this example we don't need them.
             
             self._fController.present(uiController, animated: true)

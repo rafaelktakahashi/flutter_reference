@@ -24,7 +24,7 @@ typealias BridgeHandler = (Any?) throws -> Any
 /// let weatherPort = MethodChannelBridge.openPort("WeatherRepository")
 ///
 /// // Send a call to the Flutter side and get its response:
-/// let forecast = weatherPort.call(
+/// weatherPort.call(
 ///   "fetchWeatherForecast",
 ///   withArguments: args,
 ///   onError: { exception in logError(exception) }
@@ -88,7 +88,6 @@ class MethodChannelBridge {
             // Our handlers in the bridge are kept in a dictionary, where the keys are strings
             // that also follow that rule.
             let methodName = call.method
-            let a = bridgeHandlers
             guard let handler = bridgeHandlers[methodName] else {
                 result(FlutterMethodNotImplemented)
                 return
