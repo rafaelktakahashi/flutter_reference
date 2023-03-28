@@ -5,21 +5,6 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
 
-/**
- * A static method channel that's shared by all ports in the bridge.
- */
-private var sharedChannel: MethodChannel? = null
-
-/**
- * Handlers for the Android side of the method channel bridge.
- */
-private var bridgeHandlers: MutableMap<String, (Any?) -> Any?> = mutableMapOf()
-
-/**
- * This exact string must also be used in the Flutter side of the bridge.
- */
-private const val methodChannelName = "br.com.rtakahashi.playground.flutter_reference"
-
 
 /**
  * Android side of the method channel bridge.
@@ -51,6 +36,21 @@ object MethodChannelBridge {
     // I decided to put them in an object to make their usage more explicit about that they are.
     // That is, you call them with MethodChannelBridge.initialize() rather than just calling
     // the function.
+
+    /**
+     * A static method channel that's shared by all ports in the bridge.
+     */
+    private var sharedChannel: MethodChannel? = null
+
+    /**
+     * Handlers for the Android side of the method channel bridge.
+     */
+    private var bridgeHandlers: MutableMap<String, (Any?) -> Any?> = mutableMapOf()
+
+    /**
+     * This exact string must also be used in the Flutter side of the bridge.
+     */
+    private const val methodChannelName = "br.com.rtakahashi.playground.flutter_reference"
 
     /**
      * Open a port to the Flutter side.
@@ -124,6 +124,73 @@ object MethodChannelBridge {
 
         sharedChannel = newChannel
     }
+
+
+    // (This is a private class that implements AndroidMethodChannelBridgePort in order to prevent
+    // it from being instantiated elsewhere. See the interface for how to use a port.)
+    private class AndroidMethodChannelBridgePortImpl(val name: String) :
+        AndroidMethodChannelBridgePort {
+
+        // I originally intended this to be a suspend function, but that didn't work with the method
+        // channel for some reason I can't explain (the result callbacks were never called).
+        // It's possible to use some library like RxKotlin here to simplify the callbacks, but I wanted
+        // to avoid dependencies in this part of the project.
+        override fun call(
+            methodName: String,
+            arguments: Any?,
+            errorCallback: ((MethodChannelBridgeException) -> Any)?,
+            callback: ((Any?) -> Any)?
+        ) {
+            // This is just to enable a smart cast.
+            val channel = sharedChannel
+
+            // This is the part I tried to do with a suspendCoroutine, but I couldn't get it to work.
+            // For some reason the callbacks would never get called.
+            if (channel != null) {
+                channel.invokeMethod("$name.$methodName", arguments, object : MethodChannel.Result {
+                    override fun success(result: Any?) {
+                        callback?.invoke(result)
+                    }
+
+                    override fun notImplemented() {
+                        errorCallback?.invoke(MethodChannelBridgeException.receiverNotFound())
+                    }
+
+                    override fun error(
+                        errorCode: String,
+                        errorMessage: String?,
+                        errorDetails: Any?
+                    ) {
+                        errorCallback?.invoke(MethodChannelBridgeException.methodExecutionFailed())
+                    }
+                })
+            } else {
+                errorCallback?.invoke(MethodChannelBridgeException.bridgeNotInitialized())
+            }
+        }
+
+        override fun registerHandler(callbackName: String, handler: (Any?) -> Any?) {
+            if (bridgeHandlers["$name.$callbackName"] !== null) {
+                Log.d(
+                    "bridge",
+                    "Method $callbackName for port $name has already been registered in the bridge!"
+                )
+                Log.d("bridge", "Previous handler for $name.$callbackName will be discarded.")
+            }
+
+            bridgeHandlers["$name.$callbackName"] = handler
+        }
+
+        override fun unregisterHandler(callbackName: String) {
+            bridgeHandlers.remove(callbackName)
+        }
+
+        override fun unregisterAllHandlers() {
+            bridgeHandlers =
+                bridgeHandlers.filter { entry -> entry.key.startsWith("$name.") }.toMutableMap()
+        }
+
+    }
 }
 
 
@@ -188,67 +255,6 @@ interface AndroidMethodChannelBridgePort {
     fun unregisterAllHandlers()
 }
 
-// (This is a private class that implements AndroidMethodChannelBridgePort in order to prevent
-// it from being instantiated elsewhere.)
-private class AndroidMethodChannelBridgePortImpl(val name: String) :
-    AndroidMethodChannelBridgePort {
-
-    // I originally intended this to be a suspend function, but that didn't work with the method
-    // channel for some reason I can't explain (the result callbacks were never called).
-    // It's possible to use some library like RxKotlin here to simplify the callbacks, but I wanted
-    // to avoid dependencies in this part of the project.
-    override fun call(
-        methodName: String,
-        arguments: Any?,
-        errorCallback: ((MethodChannelBridgeException) -> Any)?,
-        callback: ((Any?) -> Any)?
-    ) {
-        // This is just to enable a smart cast.
-        val channel = sharedChannel
-
-        // This is the part I tried to do with a suspendCoroutine, but I couldn't get it to work.
-        // For some reason the callbacks would never get called.
-        if (channel != null) {
-            channel.invokeMethod("$name.$methodName", arguments, object : MethodChannel.Result {
-                override fun success(result: Any?) {
-                    callback?.invoke(result)
-                }
-
-                override fun notImplemented() {
-                    errorCallback?.invoke(MethodChannelBridgeException.receiverNotFound())
-                }
-
-                override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
-                    errorCallback?.invoke(MethodChannelBridgeException.methodExecutionFailed())
-                }
-            })
-        } else {
-            errorCallback?.invoke(MethodChannelBridgeException.bridgeNotInitialized())
-        }
-    }
-
-    override fun registerHandler(callbackName: String, handler: (Any?) -> Any?) {
-        if (bridgeHandlers["$name.$callbackName"] !== null) {
-            Log.d(
-                "bridge",
-                "Method $callbackName for port $name has already been registered in the bridge!"
-            )
-            Log.d("bridge", "Previous handler for $name.$callbackName will be discarded.")
-        }
-
-        bridgeHandlers["$name.$callbackName"] = handler
-    }
-
-    override fun unregisterHandler(callbackName: String) {
-        bridgeHandlers.remove(callbackName)
-    }
-
-    override fun unregisterAllHandlers() {
-        bridgeHandlers =
-            bridgeHandlers.filter { entry -> entry.key.startsWith("$name.") }.toMutableMap()
-    }
-
-}
 
 /**
  * Custom exception that may be thrown when calling methods on the Flutter side.

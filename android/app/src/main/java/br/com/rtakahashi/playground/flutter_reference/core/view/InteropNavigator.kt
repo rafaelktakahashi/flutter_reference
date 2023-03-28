@@ -35,21 +35,18 @@ object InteropNavigator {
                             "InteropNavigator",
                             "InteropNavigator.navigate could not find page $pageName."
                         )
-                        return@registerHandler null
                     }
                 } else {
                     Log.d(
                         "InteropNavigator",
                         "InteropNavigator.navigate did not receive page name."
                     )
-                    return@registerHandler null
                 }
             } else {
                 Log.d(
                     "InteropNavigator",
                     "InteropNavigator.navigate received parameter different from an object."
                 )
-                return@registerHandler null
             }
 
         }
