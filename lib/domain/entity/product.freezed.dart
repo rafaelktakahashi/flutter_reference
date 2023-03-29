@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
+Product _$ProductFromJson(Map<String, dynamic> json) {
+  return _Product.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Product {
   /// The product's unique identifier.
@@ -31,6 +35,7 @@ mixin _$Product {
   /// The product's unit of measure.
   String get unit => throw _privateConstructorUsedError;
 
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
 }
@@ -149,7 +154,7 @@ class __$$_ProductCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$_Product implements _Product {
   const _$_Product(
       {required this.id,
@@ -157,6 +162,9 @@ class _$_Product implements _Product {
       required this.description,
       required this.stockAmount,
       required this.unit});
+
+  factory _$_Product.fromJson(Map<String, dynamic> json) =>
+      _$$_ProductFromJson(json);
 
   /// The product's unique identifier.
   @override
@@ -197,6 +205,7 @@ class _$_Product implements _Product {
             (identical(other.unit, unit) || other.unit == unit));
   }
 
+  @JsonKey(ignore: true)
   @override
   int get hashCode =>
       Object.hash(runtimeType, id, name, description, stockAmount, unit);
@@ -206,6 +215,13 @@ class _$_Product implements _Product {
   @pragma('vm:prefer-inline')
   _$$_ProductCopyWith<_$_Product> get copyWith =>
       __$$_ProductCopyWithImpl<_$_Product>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$_ProductToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Product implements Product {
@@ -215,6 +231,8 @@ abstract class _Product implements Product {
       required final String description,
       required final int stockAmount,
       required final String unit}) = _$_Product;
+
+  factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
 
   @override
 

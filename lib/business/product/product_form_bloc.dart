@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
-import 'package:flutter_reference/domain/error/megastore_business_error.dart';
-import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:flutter_reference/domain/error/playground_business_error.dart';
+import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:get_it/get_it.dart';
@@ -81,7 +81,7 @@ class ProductFormState with _$ProductFormState {
     @Default("") String description,
     @Default(0) int stockAmount,
     @Default("") String unit,
-    @Default(None()) Option<MegastoreError> submitError,
+    @Default(None()) Option<PlaygroundError> submitError,
     @Default(None()) Option<Map<String, String>> validationError,
     @Default(ProductFormSubmitState.idle) ProductFormSubmitState submitState,
   }) = _ProductFormState;
@@ -143,7 +143,7 @@ class ProductFormBloc extends Bloc<ProductFormEvent, ProductFormState> {
     if (state.validationError.isSome()) {
       emit(state.copyWith(
         submitState: ProductFormSubmitState.error,
-        submitError: const Some(MegastoreBusinessError(
+        submitError: const Some(PlaygroundBusinessError(
           "MGS-2001",
           "Form cannot be submitted while it has errors.",
           blocName: "product_form",

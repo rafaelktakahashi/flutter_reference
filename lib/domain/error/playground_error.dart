@@ -1,7 +1,7 @@
 /// Superclass for all errors that can be returned from operations (especially
 /// in the data layer) in this project.
-abstract class MegastoreError {
-  const MegastoreError();
+abstract class PlaygroundError {
+  const PlaygroundError();
 
   /// Readable error message that can be shown to the end-user to explain
   /// what went wrong.

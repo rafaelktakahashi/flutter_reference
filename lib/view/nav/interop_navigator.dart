@@ -17,7 +17,13 @@ class InteropNavigator {
   // Our connection to the bridge. This port communicates with the corresponding
   // port in native code.
   static final _bridgePort = () {
-    return bridge.openBridgePort("InteropNavigator");
+    final port = bridge.openBridgePort("InteropNavigator");
+
+    // As of now, we're not exposing any pages, but if you wanted to do that the
+    // place would be here.
+    port.registerHandler("navigate", (params) => "NOT IMPLEMENTED");
+
+    return port;
   }();
 
   static InteropNavigator? _instance;

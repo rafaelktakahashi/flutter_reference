@@ -1,11 +1,12 @@
-import 'package:flutter_reference/domain/entity/megastore_entity.dart';
+import 'package:flutter_reference/domain/entity/playground_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part "product.freezed.dart";
+part 'product.g.dart';
 
 /// Represents a unique product along with its quantity in stock.
 @freezed
-class Product extends MegastoreEntity with _$Product {
+class Product with _$Product implements PlaygroundEntity {
   const factory Product({
     /// The product's unique identifier.
     required String id,
@@ -22,6 +23,9 @@ class Product extends MegastoreEntity with _$Product {
     /// The product's unit of measure.
     required String unit,
   }) = _Product;
+
+  factory Product.fromJson(Map<String, Object?> json) =>
+      _$ProductFromJson(json);
 }
 
 /// This class uses freezed. If you don't know how to use it, read the

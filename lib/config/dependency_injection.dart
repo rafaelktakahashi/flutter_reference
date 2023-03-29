@@ -1,5 +1,5 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
-import 'package:flutter_reference/data/client/megastore_client.dart';
+import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,7 +16,7 @@ void configureDependencies() {
   // it in the future would be more work.
 
   // Register clients
-  GetIt.I.registerSingleton<MegastoreClient>(MegastoreClient());
+  GetIt.I.registerSingleton<PlaygroundClient>(PlaygroundClient());
 
   // Register repositories.
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());

@@ -1,12 +1,14 @@
 package br.com.rtakahashi.playground.flutter_reference.core.view
 
 import android.content.Intent
-import android.os.Parcelable
 import android.util.Log
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.AndroidMethodChannelBridgePort
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import io.flutter.embedding.android.FlutterActivity
 import org.json.JSONObject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Example of a class that uses our bridge to navigate to pages.

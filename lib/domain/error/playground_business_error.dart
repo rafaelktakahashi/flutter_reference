@@ -1,6 +1,6 @@
-import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:flutter_reference/domain/error/playground_error.dart';
 
-class MegastoreBusinessError implements MegastoreError {
+class PlaygroundBusinessError implements PlaygroundError {
   final String code;
   final String readableErrorMessage;
   final String blocName;
@@ -30,7 +30,7 @@ class MegastoreBusinessError implements MegastoreError {
     throw UnimplementedError();
   }
 
-  const MegastoreBusinessError(
+  const PlaygroundBusinessError(
     this.code,
     this.readableErrorMessage, {
     required this.blocName,

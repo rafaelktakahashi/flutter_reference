@@ -1,7 +1,7 @@
-import 'megastore_error.dart';
+import 'playground_error.dart';
 
 /// Example of an error class. It implements
-class MegastoreClientError implements MegastoreError {
+class PlaygroundClientError implements PlaygroundError {
   final String code;
   final String readableErrorMessage;
   final String responseStatus;
@@ -35,7 +35,7 @@ class MegastoreClientError implements MegastoreError {
     return nestedException;
   }
 
-  const MegastoreClientError(
+  const PlaygroundClientError(
     this.code,
     this.readableErrorMessage, {
     required this.responseStatus,

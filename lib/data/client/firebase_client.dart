@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:flutter_reference/domain/error/playground_error.dart';
 
 class FirebaseClient {
   // This class is just an example of where you could initialize a
@@ -27,7 +27,7 @@ class FirebaseClient {
   }
 }
 
-class FirebaseClientError implements MegastoreError {
+class FirebaseClientError implements PlaygroundError {
   final String _message;
   final String _devMessage;
 

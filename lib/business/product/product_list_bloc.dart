@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
-import 'package:flutter_reference/domain/error/megastore_error.dart';
+import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:get_it/get_it.dart';
 
 ///////////////
@@ -68,7 +68,7 @@ class ProductStateLoading extends ProductState {
 }
 
 class ProductStateError extends ProductState {
-  final MegastoreError error;
+  final PlaygroundError error;
   const ProductStateError(this.error);
 }
 

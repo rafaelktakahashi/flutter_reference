@@ -21,7 +21,7 @@ mixin _$ProductFormState {
   String get description => throw _privateConstructorUsedError;
   int get stockAmount => throw _privateConstructorUsedError;
   String get unit => throw _privateConstructorUsedError;
-  Option<MegastoreError> get submitError => throw _privateConstructorUsedError;
+  Option<PlaygroundError> get submitError => throw _privateConstructorUsedError;
   Option<Map<String, String>> get validationError =>
       throw _privateConstructorUsedError;
   ProductFormSubmitState get submitState => throw _privateConstructorUsedError;
@@ -43,7 +43,7 @@ abstract class $ProductFormStateCopyWith<$Res> {
       String description,
       int stockAmount,
       String unit,
-      Option<MegastoreError> submitError,
+      Option<PlaygroundError> submitError,
       Option<Map<String, String>> validationError,
       ProductFormSubmitState submitState});
 }
@@ -94,7 +94,7 @@ class _$ProductFormStateCopyWithImpl<$Res, $Val extends ProductFormState>
       submitError: null == submitError
           ? _value.submitError
           : submitError // ignore: cast_nullable_to_non_nullable
-              as Option<MegastoreError>,
+              as Option<PlaygroundError>,
       validationError: null == validationError
           ? _value.validationError
           : validationError // ignore: cast_nullable_to_non_nullable
@@ -121,7 +121,7 @@ abstract class _$$_ProductFormStateCopyWith<$Res>
       String description,
       int stockAmount,
       String unit,
-      Option<MegastoreError> submitError,
+      Option<PlaygroundError> submitError,
       Option<Map<String, String>> validationError,
       ProductFormSubmitState submitState});
 }
@@ -170,7 +170,7 @@ class __$$_ProductFormStateCopyWithImpl<$Res>
       submitError: null == submitError
           ? _value.submitError
           : submitError // ignore: cast_nullable_to_non_nullable
-              as Option<MegastoreError>,
+              as Option<PlaygroundError>,
       validationError: null == validationError
           ? _value.validationError
           : validationError // ignore: cast_nullable_to_non_nullable
@@ -215,7 +215,7 @@ class _$_ProductFormState
   final String unit;
   @override
   @JsonKey()
-  final Option<MegastoreError> submitError;
+  final Option<PlaygroundError> submitError;
   @override
   @JsonKey()
   final Option<Map<String, String>> validationError;
@@ -282,7 +282,7 @@ abstract class _ProductFormState implements ProductFormState {
       final String description,
       final int stockAmount,
       final String unit,
-      final Option<MegastoreError> submitError,
+      final Option<PlaygroundError> submitError,
       final Option<Map<String, String>> validationError,
       final ProductFormSubmitState submitState}) = _$_ProductFormState;
 
@@ -297,7 +297,7 @@ abstract class _ProductFormState implements ProductFormState {
   @override
   String get unit;
   @override
-  Option<MegastoreError> get submitError;
+  Option<PlaygroundError> get submitError;
   @override
   Option<Map<String, String>> get validationError;
   @override

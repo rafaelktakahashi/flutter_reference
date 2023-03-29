@@ -125,8 +125,8 @@ Map<String, dynamic Function(dynamic)> _bridgeHandlers = {};
 /// This class is not meant to be instantiated directly; to get an instance
 /// of this class, call [openBridgePort].
 class FlutterMethodChannelBridgePort {
-  /// Name of this bridge. In pratice, only one "bridge" exists, but each
-  /// instance of this class requires a name to be used as a prefix.
+  /// Name of this port. Every port uses the bridge, appending its name as a
+  /// prefix.
   final String name;
 
   /// Make a new instance of this port.
