@@ -41,7 +41,7 @@ abstract class InteropRepository(repositoryName: String) : Repository() {
      * side of the bridge. Anything returned should be serializable. That means primitive types,
      * strings and collections are fine, but send maps instead of objects.
      */
-    fun exposeMethod(methodName: String, handler: (Any?) -> Any?) {
+    fun exposeMethod(methodName: String, handler: (params: Any?, fulfill: (Any?) -> Unit, reject: (Any?) -> Unit) -> Unit) {
         bridgePort.registerHandler(methodName, handler)
     }
 }

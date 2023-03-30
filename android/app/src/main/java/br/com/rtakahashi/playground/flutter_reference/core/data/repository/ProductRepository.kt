@@ -2,11 +2,22 @@ package br.com.rtakahashi.playground.flutter_reference.core.data.repository
 
 import br.com.rtakahashi.playground.flutter_reference.core.data.repository.infra.InteropRepository
 import br.com.rtakahashi.playground.flutter_reference.core.domain.entity.Product
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.TimeUnit
 
 class ProductRepository : InteropRepository("product") {
 
     init {
-        super.exposeMethod("fetchProducts") { fetchProducts() }
+        super.exposeMethod("fetchProducts") { params, fulfill, reject ->
+            // This just simulates some work.
+            GlobalScope.launch {
+                delay(1500L)
+                fulfill(fetchProducts())
+            }
+        }
     }
 
     // Normally a repository would also have methods to be used by Android code,
@@ -25,7 +36,7 @@ class ProductRepository : InteropRepository("product") {
      * pretty much useless for us.
      */
     private fun fetchProducts(): List<Map<String,Any>> {
-        Thread.sleep(2000)
+        Thread.sleep(4000)
         return listOf(
             Product(
                 "0001",

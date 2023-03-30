@@ -4,8 +4,33 @@ import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 
+typealias SimpleBridgeHandlerFunction = (parameters: Any?) -> Any?
+typealias NonblockingBridgeHandlerFunction = (parameters: Any?, fulfill: (Any?) -> Unit, reject: (Any?) -> Unit) -> Unit
+
+/**
+ * We allow for different types of handlers to be registered in the bridge.
+ * Each one needs to be called in a different way.
+ */
+private sealed interface BridgeHandler
+
+/**
+ * The simplest type of handler to write and call, but also blocks the thread
+ * when it runs.
+ */
+private data class SimpleBridgeHandler(
+    val f: SimpleBridgeHandlerFunction
+) : BridgeHandler
+
+/**
+ * A non-blocking callback-based handler that may be harder to use but doesn't
+ * block the thread when it runs.
+ */
+private data class NonblockingBridgeHandler(
+    val f: NonblockingBridgeHandlerFunction
+) : BridgeHandler
+// It would be nice to also have an async handler based on coroutines, but I
+// never managed to make it work. Anybody is welcome to try.
 
 /**
  * Android side of the method channel bridge.
@@ -29,7 +54,12 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
  * // Send a call to the Flutter side and get its response:
  * val forecast = weatherPort.call("fetchWeatherForecast", args, { logError(it) } ) { handleResponse(it) };
  * // or register to receive calls from the Flutter side:
- * weatherPort.registerHandler("fetchWeatherForecast") { handleCall(it) };
+ * weatherPort.registerHandler("fetchWeatherForecast") { params -> handleCall(params) };
+ * // if you need a non-blocking handler, use the following overload:
+ * weatherPort.registerHandler("fetchWeatherForecast") { params, fulfill, reject ->
+ *  ...
+ *  fulfill(value)
+ * };
  * ```
  */
 object MethodChannelBridge {
@@ -46,7 +76,7 @@ object MethodChannelBridge {
     /**
      * Handlers for the Android side of the method channel bridge.
      */
-    private var bridgeHandlers: MutableMap<String, (Any?) -> Any?> = mutableMapOf()
+    private var bridgeHandlers: MutableMap<String, BridgeHandler> = mutableMapOf()
 
     /**
      * This exact string must also be used in the Flutter side of the bridge.
@@ -105,22 +135,38 @@ object MethodChannelBridge {
             // Our handlers in the bridge are kept in a map, where the keys are strings that also
             // follow that rule.
             val methodName = call.method
-            val handler = bridgeHandlers[methodName]
 
-            if (handler == null) {
-                result.notImplemented()
-            } else {
-                try {
-                    // Execute the handler and send the result back through the method channel.
-                    result.success(handler.invoke(call.arguments))
-                } catch (e: Exception) {
-                    result.error(
-                        "bridge-handler-execution-error",
-                        "Android handler for method $methodName failed.",
-                        e.toString(),
-                    )
+            when (val handler = bridgeHandlers[methodName]) {
+                null -> result.notImplemented()
+                is SimpleBridgeHandler -> {
+                    // A simple bridge handler is one that was registered as a simple function
+                    // of Any? to Any?, and it blocks the thread while it runs.
+                    try {
+                        // Execute the handler and send the result back through the method channel.
+                        result.success(handler.f.invoke(call.arguments))
+                    } catch (e: Exception) {
+                        result.error(
+                            "bridge-handler-execution-error",
+                            "Android handler for method $methodName failed.",
+                            e.toString(),
+                        )
+                    }
+                }
+                is NonblockingBridgeHandler -> {
+                    // A non-blocking handler is one that receives the parameters and also a fulfill
+                    // and a reject callback, and it's expected to call one of them.
+                    handler.f.invoke(call.arguments, {
+                        result.success(it)
+                    }, {
+                        result.error(
+                            "bridge-handler-execution-error",
+                            "Android handler for method $methodName failed.",
+                            it.toString()
+                        )
+                    })
                 }
             }
+
         }
 
         sharedChannel = newChannel
@@ -170,7 +216,7 @@ object MethodChannelBridge {
             }
         }
 
-        override fun registerHandler(callbackName: String, handler: (Any?) -> Any?) {
+        override fun registerHandler(callbackName: String, handler: (SimpleBridgeHandlerFunction)) {
             if (bridgeHandlers["$name.$callbackName"] !== null) {
                 Log.d(
                     "bridge",
@@ -179,7 +225,22 @@ object MethodChannelBridge {
                 Log.d("bridge", "Previous handler for $name.$callbackName will be discarded.")
             }
 
-            bridgeHandlers["$name.$callbackName"] = handler
+            bridgeHandlers["$name.$callbackName"] = SimpleBridgeHandler(handler)
+        }
+
+        override fun registerHandler(
+            callbackName: String,
+            handler: NonblockingBridgeHandlerFunction
+        ) {
+            if (bridgeHandlers["$name.$callbackName"] !== null) {
+                Log.d(
+                    "bridge",
+                    "Method $callbackName for port $name has already been registered in the bridge!"
+                )
+                Log.d("bridge", "Previous handler for $name.$callbackName will be discarded.")
+            }
+
+            bridgeHandlers["$name.$callbackName"] = NonblockingBridgeHandler(handler)
         }
 
         override fun unregisterHandler(callbackName: String) {
@@ -240,10 +301,52 @@ interface AndroidMethodChannelBridgePort {
      * stored on the bridge, and when some message comes through the method channel, the bridge
      * routes it to the correct handler.
      *
+     * This overload registers a BLOCKING handler that must not be used if you intend to make api
+     * calls or other asynchronous operation. Use the overload for a non-blocking handler instead
+     * for those cases.
+     *
      * Handlers are allowed to throw, but avoid that because anything that's thrown gets turned
      * into an error that's send to the Flutter side of the bridge.
+     *
+     * Usage:
+     * ```kotlin
+     * bridgePort.registerHandler("name") { params ->
+     *   ...
+     *   return someValue
+     *   // Or throw when there's an error.
+     * }
+     * ```
      */
-    fun registerHandler(callbackName: String, handler: (Any?) -> Any?)
+    fun registerHandler(callbackName: String, handler: SimpleBridgeHandlerFunction)
+
+    /**
+     * Register a handler for a name. If a different handler was already registered for the same
+     * name, it'll be discarded in favor of this one.
+     *
+     * Note that this does not directly register a handler in the method channel. This handler is
+     * stored on the bridge, and when some message comes through the method channel, the bridge
+     * routes it to the correct handler.
+     *
+     * This is a non-blocking overload that may be more difficult to use but is necessary for
+     * long operations in order to not block the thread.
+     * The first parameter of the handler is for the parameters received from Flutter. The second
+     * and third parameters are the fulfill and reject functions, respectively; exactly one of the
+     * two must be called eventually, and only once, with the value to be returned to the Flutter
+     * side. It's important to fulfill with null even if you don't return anything from the handler,
+     * so that the Flutter side doesn't wait for a response indefinitely.
+     *
+     * Usage:
+     * ```kotlin
+     * bridgePort.registerHandler("name") { params, fulfill, reject ->
+     *   ...
+     *   fulfill(someValue)
+     *   // Call either fulfill or reject, only once.
+     * ```
+     */
+    fun registerHandler(
+        callbackName: String,
+        handler: NonblockingBridgeHandlerFunction
+    )
 
     /**
      * Unregister a handler by name.

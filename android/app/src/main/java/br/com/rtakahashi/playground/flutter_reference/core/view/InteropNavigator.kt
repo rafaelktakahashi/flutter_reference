@@ -26,12 +26,12 @@ object InteropNavigator {
     fun initializeNavigator(flutterActivity: FlutterActivity) {
         this.flutterActivity = flutterActivity
         val port = MethodChannelBridge.openPort("InteropNavigator")
-        port.registerHandler("navigate") {
-            if (it is JSONObject) {
-                val pageName = it["pageName"]
+        port.registerHandler("navigate") { params ->
+            if (params is JSONObject) {
+                val pageName = params["pageName"]
                 if (pageName is String) {
                     try {
-                        navigate(pageName, it["parameters"] as? Map<String, Any>)
+                        navigate(pageName, params["parameters"] as? Map<String, Any>)
                     } catch (ex: InteropNavigatorException) {
                         Log.d(
                             "InteropNavigator",
