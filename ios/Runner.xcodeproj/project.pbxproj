@@ -18,6 +18,10 @@
 		AC7D5EF129BA2F1300B45F7E /* NativePage.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC7D5EF029BA2F1300B45F7E /* NativePage.storyboard */; };
 		AC7D5EF729BA309C00B45F7E /* NativePageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7D5EF629BA309C00B45F7E /* NativePageController.swift */; };
 		AC7D5EFA29BA3C9000B45F7E /* BaseBlocAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7D5EF929BA3C9000B45F7E /* BaseBlocAdapter.swift */; };
+		AC8CD33E29D4DE20000722D6 /* PlaygroundEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CD33D29D4DE20000722D6 /* PlaygroundEntity.swift */; };
+		AC8CD34229D4DED8000722D6 /* InteropRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CD34129D4DED8000722D6 /* InteropRepository.swift */; };
+		AC8CD34429D4E315000722D6 /* ProductRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CD34329D4E315000722D6 /* ProductRepository.swift */; };
+		AC8CD34629D4E371000722D6 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC8CD34529D4E371000722D6 /* Product.swift */; };
 		ACC26C9229BB5E8100DCF669 /* CounterBlocAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC26C9129BB5E8100DCF669 /* CounterBlocAdapter.swift */; };
 		ACC26C9529BB67A700DCF669 /* Injector.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACC26C9429BB67A700DCF669 /* Injector.swift */; };
 /* End PBXBuildFile section */
@@ -54,6 +58,10 @@
 		AC7D5EF029BA2F1300B45F7E /* NativePage.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NativePage.storyboard; sourceTree = "<group>"; };
 		AC7D5EF629BA309C00B45F7E /* NativePageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePageController.swift; sourceTree = "<group>"; };
 		AC7D5EF929BA3C9000B45F7E /* BaseBlocAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseBlocAdapter.swift; sourceTree = "<group>"; };
+		AC8CD33D29D4DE20000722D6 /* PlaygroundEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaygroundEntity.swift; sourceTree = "<group>"; };
+		AC8CD34129D4DED8000722D6 /* InteropRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteropRepository.swift; sourceTree = "<group>"; };
+		AC8CD34329D4E315000722D6 /* ProductRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductRepository.swift; sourceTree = "<group>"; };
+		AC8CD34529D4E371000722D6 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		ACC26C9129BB5E8100DCF669 /* CounterBlocAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterBlocAdapter.swift; sourceTree = "<group>"; };
 		ACC26C9429BB67A700DCF669 /* Injector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -134,6 +142,8 @@
 		AC7D5EED29BA296000B45F7E /* Native */ = {
 			isa = PBXGroup;
 			children = (
+				AC8CD33B29D4DDFB000722D6 /* Model */,
+				AC8CD33729D4DDA6000722D6 /* Data */,
 				AC44B7C229D22A34005BD7BA /* View */,
 				AC44B7BF29D1D6F8005BD7BA /* Bridge */,
 				ACC26C9329BB679B00DCF669 /* Injection */,
@@ -149,6 +159,40 @@
 				ACC26C9129BB5E8100DCF669 /* CounterBlocAdapter.swift */,
 			);
 			path = Bloc;
+			sourceTree = "<group>";
+		};
+		AC8CD33729D4DDA6000722D6 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				AC8CD34029D4DEC8000722D6 /* Repository */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		AC8CD33B29D4DDFB000722D6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AC8CD33C29D4DE07000722D6 /* Entity */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		AC8CD33C29D4DE07000722D6 /* Entity */ = {
+			isa = PBXGroup;
+			children = (
+				AC8CD33D29D4DE20000722D6 /* PlaygroundEntity.swift */,
+				AC8CD34529D4E371000722D6 /* Product.swift */,
+			);
+			path = Entity;
+			sourceTree = "<group>";
+		};
+		AC8CD34029D4DEC8000722D6 /* Repository */ = {
+			isa = PBXGroup;
+			children = (
+				AC8CD34129D4DED8000722D6 /* InteropRepository.swift */,
+				AC8CD34329D4E315000722D6 /* ProductRepository.swift */,
+			);
+			path = Repository;
 			sourceTree = "<group>";
 		};
 		ACC26C9329BB679B00DCF669 /* Injection */ = {
@@ -269,11 +313,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				AC8CD34229D4DED8000722D6 /* InteropRepository.swift in Sources */,
 				AC7D5EF729BA309C00B45F7E /* NativePageController.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				ACC26C9229BB5E8100DCF669 /* CounterBlocAdapter.swift in Sources */,
+				AC8CD34629D4E371000722D6 /* Product.swift in Sources */,
 				ACC26C9529BB67A700DCF669 /* Injector.swift in Sources */,
 				AC44B7C429D22A52005BD7BA /* InteropNavigator.swift in Sources */,
+				AC8CD34429D4E315000722D6 /* ProductRepository.swift in Sources */,
+				AC8CD33E29D4DE20000722D6 /* PlaygroundEntity.swift in Sources */,
 				AC44B7C129D1D805005BD7BA /* ChannelBridge.swift in Sources */,
 				AC7D5EFA29BA3C9000B45F7E /* BaseBlocAdapter.swift in Sources */,
 			);

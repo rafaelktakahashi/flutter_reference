@@ -9,6 +9,12 @@ class ProductRepository : InteropRepository("product") {
         super.exposeMethod("fetchProducts") { fetchProducts() }
     }
 
+    // Normally a repository would also have methods to be used by Android code,
+    // but this one is merely an example of an interop repository that exposes
+    // its methods to the Flutter side.
+    // In real code, you would also have methods returning Flows, or Eithers, or
+    // whatever is your return type of choice.
+
     /**
      * Method exposed to the other side of the bridge.
      * Stuff like Flow is difficult to serialize, so we use separate functions
@@ -19,6 +25,7 @@ class ProductRepository : InteropRepository("product") {
      * pretty much useless for us.
      */
     private fun fetchProducts(): List<Map<String,Any>> {
+        Thread.sleep(2000)
         return listOf(
             Product(
                 "0001",

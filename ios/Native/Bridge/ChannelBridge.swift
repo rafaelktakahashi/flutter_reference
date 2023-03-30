@@ -7,7 +7,19 @@
 
 import Foundation
 
-typealias BridgeHandler = (Any?) throws -> Any
+/// Simple handler that uses blocking execution. Parameters are received from Flutter
+/// and the return (or the thrown value) is returned to Flutter.
+typealias SimpleBridgeHandler = (Any?) throws -> Any
+
+/// Parameter 1: Parameters received from Flutter.
+/// Parameter 2: Function to be called when fulfilling the callback.
+/// Parameter 3: Function to be called when finishing with an error.
+typealias NonblockingBridgeHandler = (Any?, @escaping (Any?) -> Void, @escaping (Any?) -> Void) -> Void
+
+enum BridgeHandler {
+    case simple(SimpleBridgeHandler)
+    case nonblocking(NonblockingBridgeHandler)
+}
 
 /// iOS side of the method channel bridge.
 ///
@@ -32,7 +44,9 @@ typealias BridgeHandler = (Any?) throws -> Any
 ///   )
 ///
 /// // or register to receive calls from the Flutter side:
-/// weatherPort.registerHandler("fetchWeatherForecast") { (params) -> Void in ... }
+/// weatherPort.registerHandler("fetchWeatherForecast") { (params) -> Any in ... }
+/// // if you need a non-blocking handler, use the following overload:
+/// weatherPort.registerHandler("fetchWeatherForecast") { (params, fulfill, reject) -> Void in ... }
 /// ```
 class MethodChannelBridge {
     /// This exact string must also be used in the Flutter side of the bridge.
@@ -93,25 +107,42 @@ class MethodChannelBridge {
                 return
             }
             
-            do {
-                // This value will be whatever is returned by the handler that was registered
-                // in the bridge. It may return nothing, in which case the Flutter side will
-                // receive a null.
-                let val = try handler(call.arguments)
-                // In case the handler returns void, we'll get an empty tuple.
-                // Check if that's the case, and if so, replace it with nil. Otherwise, the
-                // empty tuple causes a crash when the method handler tries to serialize it.
-                // (If the value is not void, then the cast will fail and compare false.)
-                result(val as! () == () ? nil : val)
-            } catch let error {
-                result(FlutterError(code: "bridge-handler-execution-error", message: "iOS handler for method \(methodName) failed.", details: error.localizedDescription))
+            switch handler {
+            case .simple(let simpleHandler):
+                do {
+                    // This value will be whatever is returned by the handler that was registered
+                    // in the bridge. It may return nothing, in which case the Flutter side will
+                    // receive a null.
+                    let val = try simpleHandler(call.arguments)
+                    // In case the handler returns void, we'll get an empty tuple.
+                    // Check if that's the case, and if so, replace it with nil. Otherwise, the
+                    // empty tuple causes a crash when the method handler tries to serialize it.
+                    result(val is () ? nil : val)
+                } catch let error {
+                    result(FlutterError(code: "bridge-handler-execution-error", message: "iOS handler for method \(methodName) failed.", details: error.localizedDescription))
+                }
+            case .nonblocking(let nonblockingHandler):
+                nonblockingHandler(call.arguments, {val in
+                    // When the handler fulfills:
+                    result(val is () ? nil : val)
+                    // This callback is called manually, so we don't expect () as a possible
+                    // return, but we check for it anyway just for safety.
+                }, {err in
+                    // When the handler rejects:
+                    result(FlutterError(code: "bridge-handler-execution-error", message: "iOS handler for method \(methodName) failed.", details: "\(String(describing: err))"))
+                })
+                // "result" is not supposed to be called multiple times. This bridge doesn't have
+                // any such enforcement of its own.
             }
+            
             return
         }
     }
     
     /// Implementation of the method bridge port. See the protocol to see how to use a port.
     fileprivate class MethodChannelBridgePortImpl: MethodChannelBridgePort {
+        
+        
         private let portName: String
         
         fileprivate init(portName: String) {
@@ -156,13 +187,22 @@ class MethodChannelBridge {
             }
         }
         
-        func registerHandler(_ handlerName: String, _ handler: @escaping BridgeHandler) {
+        func registerHandler(_ handlerName: String, _ handler: @escaping SimpleBridgeHandler) {
             let fullHandlerName = "\(portName).\(handlerName)"
             if (bridgeHandlers[fullHandlerName] != nil) {
                 NSLog("Method \(handlerName) has already been registered for port \(portName) in the bridge, and will be discarded!")
             }
             
-            bridgeHandlers[fullHandlerName] = handler
+            bridgeHandlers[fullHandlerName] = BridgeHandler.simple(handler)
+        }
+        
+        func registerHandler(_ handlerName: String, _ handler: @escaping NonblockingBridgeHandler) {
+            let fullHandlerName = "\(portName).\(handlerName)"
+            if (bridgeHandlers[fullHandlerName] != nil) {
+                NSLog("Method \(handlerName) has already been registered for port \(portName) in the bridge, and will be discarded!")
+            }
+            
+            bridgeHandlers[fullHandlerName] = BridgeHandler.nonblocking(handler)
         }
         
         func unregisterHandler(_ handlerName: String) {
@@ -174,7 +214,7 @@ class MethodChannelBridge {
                 $0.key.hasPrefix("\(portName).")
             }
             bridgeHandlers.removeAll()
-            filtered.forEach { (key: String, value: @escaping BridgeHandler) in
+            filtered.forEach { (key: String, value: BridgeHandler) in
                 bridgeHandlers[key] = value
             }
         }
@@ -222,12 +262,47 @@ protocol MethodChannelBridgePort: AnyObject {
     /// Note that this does not directly register a handler in the method channel. This handler is stored on the bridge, and
     /// when some message comes through the method channel, the bridge routes it to the correct handler.
     ///
+    /// This overload registers a BLOCKING handler that must not be used if you intend to make api calls or any other asynchronous operation. Use the overload for a non-blocking handler instead for those cases.
+    ///
     /// Handlers are allowed to throw, but avoid that because anything that's thrown gets turned into an error that's sent to
     /// the Flutter side of the bridge.
     ///
     /// Anything that's returned by the handler reaches the other side of the bridge, but the return value must be void or a
     /// serializable value.
-    func registerHandler(_ handlerName: String, _ handler: @escaping BridgeHandler)
+    ///
+    /// Usage:
+    /// ```swift
+    /// bridgePort.registerHandler("name") {
+    ///   (params) in
+    ///   // (Anything done here blocks the thread)
+    ///   return value
+    /// }
+    /// ```
+    func registerHandler(_ handlerName: String, _ handler: @escaping SimpleBridgeHandler)
+    
+    /// Register a handler for a name. If a different handler was already registered for the same name, it'll be discarded
+    /// in favor of this one.
+    ///
+    /// Note that this does not directly register a handler in the method channel. This handler is stored on the bridge, and
+    /// when some message comes through the method channel, the bridge routes it to the correct handler.
+    ///
+    /// This is a non-blocking overload that may be more difficult to use but is necessarily for long operations in order to not
+    /// block the thread.
+    /// The first parameter of the handler is for the parameters received from Flutter. The second and third parameters are
+    /// the fulfill and reject functions, respectively; exactly one of the two must be called eventually, and only once, with the
+    /// value to be returned to the Flutter side. It's important to fulfill with nil even if you don't return anything from the handler,
+    /// so that the Flutter side doesn't wait for a response indefinitely.
+    ///
+    /// Usage:
+    /// ```swift
+    /// bridgePort.registerHandler("name") {
+    ///   (params, fulfill, reject) in
+    ///   // (Do asynchronous work)
+    ///   fulfill(value)
+    ///   // Call either fulfill or reject, and only once.
+    /// }
+    /// ```
+    func registerHandler(_ handlerName: String, _ handler: @escaping NonblockingBridgeHandler)
     
     /// Unregister a handler by name.
     func unregisterHandler(_ handlerName: String)

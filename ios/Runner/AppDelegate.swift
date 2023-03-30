@@ -18,6 +18,7 @@ import Flutter
       // The main limitation is that the bloc adapters need a binary messenger in order to
       // open the method channel.
       Injector.shared.registerObject(CounterBlocAdapter(), withName: "counterBlocAdapter")
+      Injector.shared.registerObject(ProductRepository(), withName: "productRepository")
       
       Injector.shared.registerObject(InteropNavigator.buildNavigator(withFlutterController: controller), withName: "navigator")
       

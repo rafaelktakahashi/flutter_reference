@@ -13,7 +13,7 @@ import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelB
  * other side, which has been instantiated with the same name.
  *
  * Most of the work this class does is simply encapsulating calls to the bridge. If that sounds like
- * it doesn't save any work, that's mostly true; this is mostly organizational, so that changes in
+ * it doesn't save any work, that's mostly true; this is just organizational, so that changes in
  * our bridge's API don't have to affect every concrete repository.
  */
 abstract class InteropRepository(repositoryName: String) : Repository() {
@@ -38,7 +38,8 @@ abstract class InteropRepository(repositoryName: String) : Repository() {
 
     /**
      * Method to be called by concrete implementations to expose a method to be used on the other
-     * side of the bridge. Anything sent as parameters should be serializable.
+     * side of the bridge. Anything returned should be serializable. That means primitive types,
+     * strings and collections are fine, but send maps instead of objects.
      */
     fun exposeMethod(methodName: String, handler: (Any?) -> Any?) {
         bridgePort.registerHandler(methodName, handler)
