@@ -6,9 +6,6 @@ import br.com.rtakahashi.playground.flutter_reference.core.bridge.AndroidMethodC
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import io.flutter.embedding.android.FlutterActivity
 import org.json.JSONObject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Example of a class that uses our bridge to navigate to pages.
@@ -26,7 +23,7 @@ object InteropNavigator {
     fun initializeNavigator(flutterActivity: FlutterActivity) {
         this.flutterActivity = flutterActivity
         val port = MethodChannelBridge.openPort("InteropNavigator")
-        port.registerHandler("navigate") { params ->
+        port.registerHandlerSuspend("navigate") { params: Any? ->
             if (params is JSONObject) {
                 val pageName = params["pageName"]
                 if (pageName is String) {

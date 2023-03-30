@@ -54,7 +54,7 @@ abstract class BaseBlocAdapter<S>(private val blocName: String, initialState: S)
                 Log.d("BaseBlocAdapter", "Failed to register callback for bloc $blocName: $it")
             },
         )
-        bridgePort.registerHandler(_updateStateCallbackName!!) { params -> updateState(params) }
+        bridgePort.registerHandlerSuspend(_updateStateCallbackName!!) { params -> updateState(params) }
 
         // Attempt to sync the value here with the value from Flutter right away.
         // If this fails, this instance will continue to use the initial state provided

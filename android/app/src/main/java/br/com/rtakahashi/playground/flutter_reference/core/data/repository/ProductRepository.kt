@@ -11,13 +11,7 @@ import java.util.concurrent.TimeUnit
 class ProductRepository : InteropRepository("product") {
 
     init {
-        super.exposeMethod("fetchProducts") { params, fulfill, reject ->
-            // This just simulates some work.
-            GlobalScope.launch {
-                delay(1500L)
-                fulfill(fetchProducts())
-            }
-        }
+        super.exposeMethod("fetchProducts") { _ -> fetchProducts() }
     }
 
     // Normally a repository would also have methods to be used by Android code,
@@ -35,8 +29,8 @@ class ProductRepository : InteropRepository("product") {
      * get turned to strings using their implementation of toString(), which is
      * pretty much useless for us.
      */
-    private fun fetchProducts(): List<Map<String,Any>> {
-        Thread.sleep(4000)
+    private suspend fun fetchProducts(): List<Map<String,Any>> {
+        delay(4000)
         return listOf(
             Product(
                 "0001",
