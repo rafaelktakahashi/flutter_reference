@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_reference/view/pages/counter.dart';
 import 'package:flutter_reference/view/pages/home.dart';
+import 'package:flutter_reference/view/pages/life.dart';
 import 'package:flutter_reference/view/pages/product_list.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,6 +26,12 @@ final GoRouter router = GoRouter(
           path: 'products',
           builder: (BuildContext context, GoRouterState state) {
             return const ProductListPage();
+          },
+        ),
+        GoRoute(
+          path: 'life',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LifePage();
           },
         ),
       ],

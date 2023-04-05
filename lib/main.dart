@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
+import 'package:flutter_reference/business/life/life_bloc.dart';
 import 'package:flutter_reference/business/product/product_form_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/config/dependency_injection.dart';
@@ -42,6 +43,9 @@ Widget _wrapProviders(Widget child) {
       ),
       BlocProvider<ProductFormBloc>(
         create: (BuildContext context) => ProductFormBloc(),
+      ),
+      BlocProvider<LifeBloc>(
+        create: (BuildContext context) => LifeBloc(),
       ),
     ],
     child: child,

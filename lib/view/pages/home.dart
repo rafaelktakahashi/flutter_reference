@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reference/view/pages/counter.dart';
+import 'package:flutter_reference/view/pages/life.dart';
 import 'package:flutter_reference/view/pages/product_list.dart';
 
 class HomePage extends StatelessWidget {
@@ -36,6 +37,20 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text("Interop bloc"),
+            )),
+          ),
+          SizedBox(
+            height: 50,
+            child: Center(
+                child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const LifePage(),
+                  ),
+                );
+              },
+              child: const Text("Conway's game of life"),
             )),
           ),
         ],
