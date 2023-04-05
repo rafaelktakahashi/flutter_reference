@@ -66,7 +66,9 @@ class FirstFragment : Fragment() {
             _counterBlocAdapter.reset();
         };
 
-        _blocListenerHandle = _counterBlocAdapter.listen() { value -> updateOnscreenText(value) }
+        _blocListenerHandle = _counterBlocAdapter.listen() { value ->
+            activity?.runOnUiThread { updateOnscreenText(value) }
+        }
 
         // Initialize the text with whatever state exists in the adapter.
         updateOnscreenText(_counterBlocAdapter.currentState());

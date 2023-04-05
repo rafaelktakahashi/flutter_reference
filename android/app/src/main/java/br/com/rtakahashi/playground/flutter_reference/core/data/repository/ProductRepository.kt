@@ -30,7 +30,7 @@ class ProductRepository : InteropRepository("product") {
      * pretty much useless for us.
      */
     private suspend fun fetchProducts(): List<Map<String,Any>> {
-        delay(4000)
+        delay(1500)
         return listOf(
             Product(
                 "0001",
