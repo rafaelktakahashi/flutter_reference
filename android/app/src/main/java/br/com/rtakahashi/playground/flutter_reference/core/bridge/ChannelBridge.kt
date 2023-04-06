@@ -328,7 +328,7 @@ interface AndroidMethodChannelBridgePort {
      * stored on the bridge, and when some message comes through the method channel, the bridge
      * routes it to the correct handler.
      *
-     * It is always recommended to call `registerHandler()`, which accepts a suspend function.
+     * It is always recommended to call `registerHandlerSuspend()`, which accepts a suspend function.
      * This function registers a BLOCKING handler that must not be used if you intend to make api
      * calls or other asynchronous operation.
      *
@@ -354,7 +354,7 @@ interface AndroidMethodChannelBridgePort {
      * stored on the bridge, and when some message comes through the method channel, the bridge
      * routes it to the correct handler.
      *
-     * This is a non-blocking overload that may be more difficult to use, but unlike the
+     * This is a non-blocking method that may be more difficult to use, but unlike the
      * `registerHandlerBlocking()` function, it doesn't block the thread. However, do consider
      * using `registerHandlerSuspend()` instead of this.
      *
@@ -370,6 +370,7 @@ interface AndroidMethodChannelBridgePort {
      *   ...
      *   fulfill(someValue)
      *   // Call either fulfill or reject, only once.
+     * }
      * ```
      */
     fun registerHandlerPromise(
