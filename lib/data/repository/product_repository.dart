@@ -13,6 +13,8 @@ class ProductRepository extends InteropRepository {
   /// Reference to the Megastore backend client.
   final PlaygroundClient client = GetIt.I.get<PlaygroundClient>();
 
+  // When using an interop repository, there must be a corresponding repository
+  // in native code that also uses the same name.
   ProductRepository() : super("product");
 
   /// The [fail] parameter is just an example. In real code,

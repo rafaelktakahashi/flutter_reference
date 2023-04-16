@@ -5,7 +5,7 @@ import 'package:flutter_reference/domain/entity/life.dart';
 ///
 /// I'm unsure if this should be receiving an instance of [LifeBoard] directly,
 /// but it seems unnecessarily restrictive to convert it to a boolean matrix
-/// first. And also the cells individually didn't make sense to be as atoms.
+/// first. And also the cells individually didn't make sense as atoms.
 ///
 /// This molecule doesn't provide any actions. It's a scrollable component that
 /// renders the life board that is given to it.
@@ -36,6 +36,9 @@ class LifeBoardViewer extends StatelessWidget {
             (e) => Container(
               height: 15,
               width: 15,
+              // Technically these cells should be atoms, but they're so
+              // specific to this purpose that it doesn't seem right to make
+              // them reusable.
               decoration: BoxDecoration(
                 color: e.alive ? Colors.green[400] : Colors.grey[300],
                 border: Border.all(color: Colors.black45),

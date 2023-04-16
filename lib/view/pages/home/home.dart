@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reference/view/pages/counter.dart';
-import 'package:flutter_reference/view/pages/life.dart';
-import 'package:flutter_reference/view/pages/product_list.dart';
+import 'package:flutter_reference/view/pages/counter/counter.dart';
+import 'package:flutter_reference/view/pages/life/life.dart';
+import 'package:flutter_reference/view/pages/product/product_list.dart';
+import 'package:flutter_reference/view/templates/simple_template.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Flutter reference architecture")),
-      body: Column(
+    return SimpleTemplate(
+      title: "Flutter reference architecture",
+      child: Column(
         children: [
           SizedBox(
             height: 50,

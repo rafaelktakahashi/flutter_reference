@@ -5,9 +5,9 @@ import 'package:get_it/get_it.dart';
 
 /// Initialize dependency injection. This function creates all instances
 /// that need to exist from the start.
-/// Make sure to call this _after_ a call to ensureInitialized() because
-/// some of the classes that are instantiated here need to open a
-/// method channel.
+///
+/// It is not necessary to call `ensureInitialize()` before this, because all
+/// of our classes use method channels through the bridge.
 void configureDependencies() {
   // Theoretically, we should decouple GetIt (or any other specific library)
   // by wrapping it with our own classes.
@@ -19,6 +19,9 @@ void configureDependencies() {
   GetIt.I.registerSingleton<PlaygroundClient>(PlaygroundClient());
 
   // Register repositories.
+  // All repositories should be registered here, even the ones that don't
+  // extend from InteropRepository. That's to enable blocs to obtain references
+  // to any repository using GetIt.
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());
 
   // Register singletons of blocs that inherit from InteropBloc, because

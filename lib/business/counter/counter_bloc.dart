@@ -72,6 +72,8 @@ class CounterBloc extends InteropBloc<CounterEvent, CounterState> {
   @override
   CounterEvent messageToEvent(dynamic message) {
     // Interpret a message that came from the native bloc adapter.
+    // Optionally, you can standardize this with a serializer, but be careful
+    // with polymorphic events and states.
     switch (message["type"]) {
       case "INCREMENT":
         return CounterEventIncrement.by(message["step"]);

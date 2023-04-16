@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'palette.dart';
 
+// Declare here anything that's specific to one theme. If you want to customize
+// behavior across the board (in all themes), then declare that in the
+// `_customize(...)` function. Everything you declare there will apply to all
+// themes.
 var _informativeTheme = ThemeData(
   brightness: Brightness.light,
   visualDensity: VisualDensity.adaptivePlatformDensity,

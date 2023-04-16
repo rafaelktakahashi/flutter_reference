@@ -33,7 +33,7 @@ class LifeState with _$LifeState {
 }
 
 const height = 24;
-const width = 72;
+const width = 48;
 
 /// This bloc is provided as a demo of business rules living in the bloc.
 /// Strictly speaking, you could hardly call Conway's game of life a set of
