@@ -1,10 +1,15 @@
 import 'package:flutter_reference/domain/error/playground_error.dart';
 
-class PlaygroundBusinessError implements PlaygroundError {
+class PlaygroundNavigationError implements PlaygroundError {
   final String code;
   final String readableErrorMessage;
-  final String blocName;
   final Exception? nestedException;
+
+  const PlaygroundNavigationError(
+    this.code, {
+    required this.readableErrorMessage,
+    this.nestedException,
+  });
 
   @override
   Exception? cause() {
@@ -14,9 +19,9 @@ class PlaygroundBusinessError implements PlaygroundError {
   @override
   String? developerMessage() {
     if (nestedException != null) {
-      return "Bloc $blocName, error code $code, nested exception is: ${nestedException.toString()}";
+      return "$readableErrorMessage / found error ${nestedException.toString()}";
     } else {
-      return "Bloc $blocName, eror code $code";
+      return readableErrorMessage;
     }
   }
 
@@ -29,11 +34,4 @@ class PlaygroundBusinessError implements PlaygroundError {
   String errorMessage() {
     return readableErrorMessage;
   }
-
-  const PlaygroundBusinessError(
-    this.code,
-    this.readableErrorMessage, {
-    required this.blocName,
-    this.nestedException,
-  });
 }

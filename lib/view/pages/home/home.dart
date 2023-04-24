@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reference/view/pages/counter/counter.dart';
-import 'package:flutter_reference/view/pages/life/life.dart';
-import 'package:flutter_reference/view/pages/product/product_list.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -17,11 +15,7 @@ class HomePage extends StatelessWidget {
             child: Center(
                 child: TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const ProductListPage(),
-                  ),
-                );
+                context.push("/products");
               },
               child: const Text("Simple list"),
             )),
@@ -31,11 +25,7 @@ class HomePage extends StatelessWidget {
             child: Center(
                 child: TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const CounterPage(),
-                  ),
-                );
+                context.push("/interop");
               },
               child: const Text("Interop bloc"),
             )),
@@ -45,11 +35,7 @@ class HomePage extends StatelessWidget {
             child: Center(
                 child: TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const LifePage(),
-                  ),
-                );
+                context.push("/life");
               },
               child: const Text("Conway's game of life"),
             )),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reference/view/UI/organisms/product/product_list.dart';
-import 'package:flutter_reference/view/pages/product/product_details.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
+import 'package:go_router/go_router.dart';
 
 /// Minimal example of a list page. In a real app, there's a number of clear
 /// improvements one could make to this code.
@@ -19,11 +19,9 @@ class ProductListPage extends StatelessWidget {
       title: "Playground Product List",
       child: ProductList(
         onOpenDetails: (id) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ProductDetailsPage(productId: id),
-            ),
-          );
+          // Generally you should avoid passing parameters to pages (because
+          // doing so adds coupling). "Small" data like an id is typically ok.
+          context.push('/products/$id');
         },
       ),
     );

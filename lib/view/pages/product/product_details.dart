@@ -6,6 +6,12 @@ import 'package:flutter_reference/view/UI/organisms/product/product_details.dart
 import 'package:flutter_reference/view/templates/fullscreen_error.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
 
+/// Page for showing details of a product.
+///
+/// This page receives a product id in the form of parameters. Generally, you
+/// should avoid passing parameters to pages because that adds coupling; but
+/// when it makes sense to use parameters, receive them in the constructor.
+/// Route configuration (including parameters) is decided in the router file.
 class ProductDetailsPage extends StatelessWidget {
   final String productId;
 
