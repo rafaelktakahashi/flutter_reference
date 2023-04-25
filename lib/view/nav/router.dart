@@ -7,8 +7,12 @@ import 'package:flutter_reference/view/pages/product/product_details.dart';
 import 'package:flutter_reference/view/pages/product/product_list.dart';
 import 'package:go_router/go_router.dart';
 
-/// The exact way you configure navigation isn't actually important for this
-/// architecture. This is provided as an example.
+/// Router configuration that is provided as an example. You may choose to use
+/// a different router library, or something else entirely.
+///
+/// Here, we're using GoRouter because that lets us refer to pages using urls,
+/// and that's very useful for deep linking. It also lets native pages send
+/// navigation calls to our InteropNavigator using urls.
 
 final GoRouter router = GoRouter(
   routes: [

@@ -10,7 +10,8 @@ import Foundation
 /// This native navigator is provided mostly just as an example of how you can use the bridge from your own navigator
 /// in order to receive messages from Flutter.
 ///
-/// Once created, this navigator will listen to calls from the Flutter side.
+/// Once created, this navigator will listen to calls from the Flutter side, and can be used to navigate Flutter pages (but
+/// cannot be used to manipulate native pages).
 class InteropNavigator {
     // Prevent more than one instance of this class from existing.
     // This is not mandatory, and your navigator may work in a different way.
@@ -18,8 +19,12 @@ class InteropNavigator {
     // from Flutter.
     static var _instance: InteropNavigator?
     
+    // This navigator works by having a reference to a Flutter view controller. If you
+    // have more than one Flutter view controller in you app (I do not recommend that!),
+    // then you'll need to make modifications to this class.
     private let _fController: FlutterViewController
     
+    // Keep only one reference to a bridge port.
     private let _bridgePort: MethodChannelBridgePort
     
     /// Creates a new navigator, but returns a previous instance if one has been built before.
@@ -54,9 +59,9 @@ class InteropNavigator {
                 if let pageName = paramsDict["pageName"] as? String {
                     do {
                         if let pageParameters = paramsDict["parameters"] as? Dictionary<String, Any>? {
-                            try self?.navigate(toPage: pageName, withParameters: pageParameters)
+                            try self?.handleNavigate(toPage: pageName, withParameters: pageParameters)
                         } else {
-                            try self?.navigate(toPage: pageName, withParameters: nil)
+                            try self?.handleNavigate(toPage: pageName, withParameters: nil)
                         }
                         
                         return
@@ -75,9 +80,34 @@ class InteropNavigator {
         }
     }
     
+    /// Navigate to a Flutter page in a view that's already loaded.
+    ///
+    /// Be careful! This probably doesn't work in the way you expect. This sends a command to the Flutter navigator,
+    /// but that won't affect any native pages.
+    ///
+    /// For example, if you have the following stack:
+    ///
+    /// A -> B
+    ///
+    /// Where A is a Flutter page and B is a native page, then navigating to a new Flutter page C will NOT make that page
+    /// appear over B. It'll affect only the preexisting Flutter view:
+    ///
+    /// A -> C -> B
+    ///
+    /// If you're in a native page and you want to navigate to a new Flutter page, you'll have to also show the Flutter view.
+    /// Calling the InteropNavigator only affects the Flutter pages inside the Flutter view.
+    func navigateInFlutter(toPageWithUrl url: String, withMethod method: String = "push") {
+        // There's an InteropNavigator in Flutter that exposes a "navigate" method, expecting
+        // a url and a method.
+        // Urls in the Flutter side are implemented in GoRouter, but depending on the project,
+        // you can choose a different way of identifying pages.
+        self._bridgePort.call("navigate", withArguments: ["url": url, "method": method], onError: {exception in print(exception) }
+        )
+    }
+    
     // This function can also be called from elsewhere in native code, but it's primarily
     // intended to handle calls from Flutter.
-    func navigate(toPage pageName: String, withParameters parameters: Dictionary<String,Any>?) throws {
+    private func handleNavigate(toPage pageName: String, withParameters parameters: Dictionary<String,Any>?) throws {
         switch (pageName) {
         case "counter":
             let sb = UIStoryboard(name: "NativePage", bundle: nil)

@@ -45,8 +45,6 @@ class NativePageController: UIViewController {
         // You can use RxSwift or another library if you prefer (you probably should).
         // I'm using a simple, hand-made observable because this project is a
         // minimal example of Flutter blocs being used in native code.
-        // Everything else, including the navigators and dependency injection,
-        // is merely an example and is not important.
         if (self._listenerHandle != nil) {
             self._counterBlocAdapter.clearListener(ofHandle: self._listenerHandle!)
         }
@@ -103,4 +101,14 @@ class NativePageController: UIViewController {
         self._counterBlocAdapter.reset()
     }
 
+    @IBAction func mainMenuButtonPressed(_ sender: Any) {
+        // First, we navigate to the main menu page _inside_ the Flutter view.
+        InteropNavigator._instance?.navigateInFlutter(toPageWithUrl: "/", withMethod: "replace")
+        // Next, we go to the Flutter view, where we expect the main manu to already
+        // be loaded.
+        // In this particular case, we only need to dismiss the current view, because we
+        // know the Flutter view is the previous one. Your circumstances may differ,
+        // so adapt accordingly.
+        self.dismiss(animated: true)
+    }
 }

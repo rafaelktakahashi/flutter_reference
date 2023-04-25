@@ -49,6 +49,15 @@
                                     <action selector="addFiveButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="yQk-C1-e3D"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xqZ-Ll-mt8">
+                                <rect key="frame" x="122" y="299" width="149" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Double"/>
+                                <connections>
+                                    <action selector="doubleButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="AcE-Ao-tLU"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="N6S-TL-FlR">
                                 <rect key="frame" x="122" y="342" width="149" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -67,13 +76,13 @@
                                     <action selector="resetButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="QO6-Mv-jzP"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xqZ-Ll-mt8">
-                                <rect key="frame" x="122" y="299" width="149" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Shc-u9-8sI">
+                                <rect key="frame" x="120" y="450" width="154" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" title="Double"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Go to main menu"/>
                                 <connections>
-                                    <action selector="doubleButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="AcE-Ao-tLU"/>
+                                    <action selector="mainMenuButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="edX-nv-wDH"/>
                                 </connections>
                             </button>
                         </subviews>

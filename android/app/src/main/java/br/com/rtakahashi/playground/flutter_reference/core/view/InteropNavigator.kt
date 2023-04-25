@@ -20,7 +20,7 @@ object InteropNavigator {
     /**
      * Navigate to a Flutter page in a context that's already loaded.
      *
-     * Be careful! This probably doesn't work in the way you expect.. This sends a command to the
+     * Be careful! This probably doesn't work in the way you expect. This sends a command to the
      * Flutter navigator, but that won't affect any native pages.
      *
      * For example, if you have the following stack:
@@ -38,7 +38,11 @@ object InteropNavigator {
      */
     @JvmStatic
     fun navigateInFlutter(url: String, method: String = "push") {
-        bridgePort?.call("navigate", mapOf("url" to url, "method" to method));
+        // There's an InteropNavigator in Flutter that exposes a "navigate" method, expecting
+        // a url and a method.
+        // Urls in the Flutter side are implemented in GoRouter, but depending on the project,
+        // you can choose a different way of identifying pages.
+        bridgePort?.call("navigate", mapOf("url" to url, "method" to method), { error -> println(error) });
     }
 
     // This isn't a particularly good example of how you should configure a navigator.
@@ -47,7 +51,10 @@ object InteropNavigator {
     fun initializeNavigator(flutterActivity: FlutterActivity) {
         this.flutterActivity = flutterActivity
         val port = MethodChannelBridge.openPort("InteropNavigator")
+
         port.registerHandlerSuspend("navigate") { params: Any? ->
+            // This code runs when this InteropNavigator receives a call from the Flutter
+            // InteropNavigator. In a real project, you could probably improve this a lot.
             if (params is JSONObject) {
                 val pageName = params["pageName"]
                 if (pageName is String) {
@@ -78,6 +85,16 @@ object InteropNavigator {
     }
 
 
+    /**
+     * Handle a navigation call from Flutter.
+     *
+     * Note that the Flutter code in this project uses GoRouter, but the native pages don't use
+     * any kind of navigation library. In a real project, you probably should, and that would
+     * make it easier to handle calls and navigate.
+     *
+     * For example, because the Flutter code uses GoRouter, we only need to send a url string
+     * to Flutter code.
+     */
     @JvmStatic
     private fun handleNavigate(pageName: String, parameters: Map<String, Any>? = null) {
         val fActivity =
