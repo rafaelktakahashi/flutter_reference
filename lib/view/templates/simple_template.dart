@@ -12,13 +12,20 @@ import 'package:flutter/material.dart';
 class SimpleTemplate extends StatelessWidget {
   final String title;
   final Widget child;
+  final Widget? floatingButton;
 
-  const SimpleTemplate({super.key, required this.title, required this.child});
+  const SimpleTemplate({
+    super.key,
+    required this.title,
+    required this.child,
+    this.floatingButton,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
+      floatingActionButton: floatingButton,
       body: child,
     );
   }

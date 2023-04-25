@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/view/UI/organisms/product/product_details.dart';
-import 'package:flutter_reference/view/templates/fullscreen_error.dart';
+import 'package:flutter_reference/view/templates/fullscreen_message.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
+import 'package:go_router/go_router.dart';
 
 /// Page for showing details of a product.
 ///
@@ -38,7 +39,15 @@ class ProductDetailsPage extends StatelessWidget {
           ),
         );
       } else {
-        return const FullscreenErrorTemplate(message: "Product not found");
+        return FullscreenMessageTemplate(
+          centerWidget: const Text("Product not found"),
+          actionButton: TextButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text("Back"),
+          ),
+        );
       }
     });
   }

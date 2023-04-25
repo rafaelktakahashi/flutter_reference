@@ -17,11 +17,16 @@ class ProductListPage extends StatelessWidget {
     // to the bloc, so we don't need to connect anything.
     return SimpleTemplate(
       title: "Playground Product List",
+      floatingButton: FloatingActionButton(
+        onPressed: () {
+          context.push("/products/new");
+        },
+      ),
       child: ProductList(
         onOpenDetails: (id) {
           // Generally you should avoid passing parameters to pages (because
           // doing so adds coupling). "Small" data like an id is typically ok.
-          context.push('/products/$id');
+          context.push('/products/details/$id');
         },
       ),
     );

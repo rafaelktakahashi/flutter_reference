@@ -4,7 +4,9 @@ import 'package:flutter_reference/view/pages/counter/counter.dart';
 import 'package:flutter_reference/view/pages/home/home.dart';
 import 'package:flutter_reference/view/pages/life/life.dart';
 import 'package:flutter_reference/view/pages/product/product_details.dart';
+import 'package:flutter_reference/view/pages/product/product_form.dart';
 import 'package:flutter_reference/view/pages/product/product_list.dart';
+import 'package:flutter_reference/view/pages/product/product_result.dart';
 import 'package:go_router/go_router.dart';
 
 /// Router configuration that is provided as an example. You may choose to use
@@ -35,9 +37,21 @@ final GoRouter router = GoRouter(
             return const ProductListPage();
           },
         ),
+        GoRoute(
+          path: 'products/new',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ProductFormPage();
+          },
+        ),
+        GoRoute(
+          path: 'products/new/result',
+          builder: (BuildContext context, GoRouterState state) {
+            return const ProductResultPage();
+          },
+        ),
         // To go here, use "/products/1".
         GoRoute(
-          path: 'products/:productId',
+          path: 'products/details/:productId',
           builder: (BuildContext context, GoRouterState state) {
             final productId = state.params['productId'];
             if (productId == null) {
