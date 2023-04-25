@@ -13,4 +13,5 @@
     <string name="double_number">Double</string>
     <string name="triple_number">Triple</string>
     <string name="reset">Reset</string>
+    <string name="go_to_main_menu">Go to main menu</string>
 </resources>

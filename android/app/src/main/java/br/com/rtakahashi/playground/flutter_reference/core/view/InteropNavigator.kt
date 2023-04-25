@@ -20,8 +20,8 @@ object InteropNavigator {
     /**
      * Navigate to a Flutter page in a context that's already loaded.
      *
-     * Be careful! This probably doesn't do what you want. This sends a command to the Flutter
-     * navigator, but that won't affect any native pages.
+     * Be careful! This probably doesn't work in the way you expect.. This sends a command to the
+     * Flutter navigator, but that won't affect any native pages.
      *
      * For example, if you have the following stack:
      *
@@ -33,15 +33,11 @@ object InteropNavigator {
      * A -> C -> B
      *
      * If you're in a native page and you want to navigate to a new Flutter page, you'll have to
-     * create a new Flutter activity. Calling the Flutter InteropNavigator is only useful in cases
-     * where you're already in a Flutter page and running native code. But even in those cases,
-     * you should probably avoid calling navigation logic from here.
-     *
-     * In any case, I do not recommend using this "navigate" function in your code. It's fine to
-     * only implement the handler.
+     * go to the Flutter activity. Calling the Flutter InteropNavigator only affects the Flutter
+     * pages inside the Flutter activity.
      */
     @JvmStatic
-    fun navigate(url: String, method: String = "push") {
+    fun navigateInFlutter(url: String, method: String = "push") {
         bridgePort?.call("navigate", mapOf("url" to url, "method" to method));
     }
 

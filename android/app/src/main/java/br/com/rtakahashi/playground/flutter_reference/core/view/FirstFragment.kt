@@ -50,6 +50,10 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // These listeners are merely sending events to the bloc.
+        // What you should find interesting is that the bloc exists in Flutter code, but we
+        // can use adapters to send events to them, and listen to state changes.
+
         binding.buttonAddOne.setOnClickListener {
             _counterBlocAdapter.incrementBy(1);
         };
@@ -66,6 +70,22 @@ class FirstFragment : Fragment() {
             _counterBlocAdapter.reset();
         };
 
+        binding.buttonMainMenu.setOnClickListener {
+            // First, we navigate to the main menu page _inside_ the Flutter activity.
+            InteropNavigator.navigateInFlutter("/", method = "replace")
+            // Next, we go to the Flutter activity, where we expect the main menu
+            // to already be loaded.
+            // In this particular case, we only need to end the current activity, because
+            // we know the Flutter activity is the previous one. Your circumstances
+            // may differ, so adapt accordingly.
+            activity?.finish()
+        }
+
+        // Here we use the adapter to listen to the bloc's state.
+        // The bloc itself exists in Flutter. The adapter lets us listen to its state.
+        // This listener is an example, and it has been implemented with a simple
+        // callback function. In your project, you could also implement this with a
+        // different strategy, such as a Flow.
         _blocListenerHandle = _counterBlocAdapter.listen() { value ->
             activity?.runOnUiThread { updateOnscreenText(value) }
         }

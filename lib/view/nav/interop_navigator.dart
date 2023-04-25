@@ -26,11 +26,11 @@ class InteropNavigator {
 
     final port = bridge.openBridgePort("InteropNavigator");
 
-    // This is an example of how you _could_ theoretically receive calls from
-    // native code to trigger navigation, but be careful! This probably doesn't
-    // do what you want. GoRouter (and any other navigation) can only affect
-    // the Flutter context, so you can't make Flutter pages appear above native
-    // pages, and you can't pop native pages using the Flutter navigator.
+    // This is an example of you you can receive calls from native code to
+    // trigger flutter navigation from native code, but be careful! Flutter code
+    // can't affect the native page stack. This means you can't make Flutter
+    // pages appear above native pages, and you can't pop native pages using
+    // the Flutter navigator.
     port.registerHandler("navigate", (params) {
       final url = params["url"] as String;
       final method = (params["method"] ?? "push") as String; // default "push"
@@ -72,7 +72,8 @@ class InteropNavigator {
   ///
   /// If you're in a native page and want to navigate to a new Flutter screen,
   /// then this function will do not what you want. You have to create a new
-  /// Flutter activity or a new Flutter view.
+  /// Flutter activity or a new Flutter view, and then call the InteropNavigator
+  /// after the context exists here.
   Future<void> _handleNavigate(String url, String method) async {
     // If we have a cached context, use that one. I believe this will fail if
     // you're trying to navigate to a "first" Flutter page, without having
