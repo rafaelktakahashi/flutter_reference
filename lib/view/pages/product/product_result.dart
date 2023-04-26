@@ -8,7 +8,7 @@ import 'package:flutter_reference/view/templates/three_state_result.dart';
 import 'package:go_router/go_router.dart';
 
 /// Shows a loading screen while the new product is being saved, and then
-/// switches to a
+/// switches to a success page or an error page.
 class ProductResultPage extends StatelessWidget {
   const ProductResultPage({super.key});
 
