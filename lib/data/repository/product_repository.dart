@@ -66,6 +66,24 @@ class ProductRepository extends InteropRepository {
   }
 
   Future<Either<PlaygroundError, Unit>> saveProduct(Product product) async {
-    return client.saveProduct(product);
+    try {
+      // The parameters that we send here must match what the native code
+      // is expecting to receive. In this case, it's an object with a field
+      // named product, containing the product as a json.
+      await super.callNativeMethod(
+        "addProduct",
+        {"product": product.toJson()},
+      );
+      return const Right(unit);
+    } catch (exception) {
+      return const Left(
+        PlaygroundClientError(
+          "0199",
+          "Error saving product natively.",
+          // Presumably, you'll have this information in a real app:
+          responseStatus: "0",
+        ),
+      );
+    }
   }
 }

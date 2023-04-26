@@ -54,7 +54,8 @@ object InteropNavigator {
 
         port.registerHandlerSuspend("navigate") { params: Any? ->
             // This code runs when this InteropNavigator receives a call from the Flutter
-            // InteropNavigator. In a real project, you could probably improve this a lot.
+            // InteropNavigator. In a real project, you could probably improve this a lot
+            // and make this code safer.
             if (params is JSONObject) {
                 val pageName = params["pageName"]
                 if (pageName is String) {

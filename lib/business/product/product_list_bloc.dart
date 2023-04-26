@@ -26,19 +26,22 @@ abstract class ProductEvent {
 }
 
 /// Causes a remote request to fetch the list of products.
-class FetchProductsEvent extends ProductEvent {
-  const FetchProductsEvent();
-}
-
-/// Immediately add a product to the local bloc, without making requests.
-/// Use this when a product has already been uploaded and needs to be added
-/// to the local list. However, this will cause a remote request if a local
-/// list isn't already available.
 ///
-/// In either case, the product in this event will not be uploaded.
-class AddProductEvent extends ProductEvent {
-  final Product product;
-  const AddProductEvent(this.product);
+/// Normally, this always causes a fetch, regardless of whether there's data
+/// loaded or not. However, the fetch will **always** be skipped if there's
+/// already a fetch in progress. This means that sending this event multiple
+/// times in sequence will not cause multiple requests.
+///
+/// Also, this will typically cause a new request even if there's already
+/// some data loaded. Specifying [skipIfAlreadyLoaded] as true will make the
+/// bloc ignore this event if the list is already loaded.
+///
+/// Please, always document your events and what they do.
+class FetchProductsEvent extends ProductEvent {
+  final bool skipIfAlreadyLoaded;
+  const FetchProductsEvent({
+    this.skipIfAlreadyLoaded = false,
+  });
 }
 
 /////////////
@@ -81,7 +84,6 @@ class ProductListBloc extends Bloc<ProductEvent, ProductState> {
   ProductListBloc() : super(const ProductStateEmpty()) {
     // Register event handlers
     super.on<FetchProductsEvent>(_handleFetch);
-    super.on<AddProductEvent>(_handleAdd);
   }
 
   /// Repository for fetching products.
@@ -90,6 +92,20 @@ class ProductListBloc extends Bloc<ProductEvent, ProductState> {
   /// Handler for fetching products.
   void _handleFetch(
       FetchProductsEvent event, Emitter<ProductState> emit) async {
+    // As we describe in the documentation for the event, there are two cases
+    // when we ignore the fetch:
+
+    // 1. When there's already a fetch in progress.
+    if (state is ProductStateLoading) {
+      return;
+    }
+
+    // 2. When there's data already loaded and the event has a flag for not
+    // refetching data.
+    if (state is ProductStateList && event.skipIfAlreadyLoaded) {
+      return;
+    }
+
     // Immediately set the state to loading.
     emit(const ProductStateLoading());
 
@@ -98,24 +114,5 @@ class ProductListBloc extends Bloc<ProductEvent, ProductState> {
       (l) => emit(ProductStateError(l)),
       (r) => emit(ProductStateList(r)),
     );
-  }
-
-  /// Handler for adding a product to the local list (does not upload the
-  /// product to the server).
-  void _handleAdd(AddProductEvent event, Emitter<ProductState> emit) async {
-    // Only respond if the current state has a loaded list.
-    // If it doesn't, then we add an event to load the list remotely.
-    // (This is an example of a business rule. You'll have your own rules
-    // to implement in your handlers.)
-    ProductState currentState = state;
-    if (currentState is! ProductStateList) {
-      add(const FetchProductsEvent());
-      return;
-    }
-
-    // Add the product to the local list. This causes no side effects.
-    final newList = currentState.products.followedBy([event.product]);
-    // Then emit a new state with the new list.
-    emit(ProductStateList(newList.toList()));
   }
 }

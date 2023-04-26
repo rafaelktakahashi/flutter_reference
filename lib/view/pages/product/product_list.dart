@@ -6,9 +6,20 @@ import 'package:go_router/go_router.dart';
 /// Minimal example of a list page. In a real app, there's a number of clear
 /// improvements one could make to this code.
 ///
-/// The template provides no more than a title and a body. Templates can be
-/// more complicated, accepting widgets to render in different places, for
-/// example floating buttons, footers, sidebars, etc.
+/// The template provides no more than a title, a body and a FAB. Templates can
+/// be more complicated, accepting widgets to render in different places, for
+/// example floating buttons, footers, sidebars, etc. So in this case it would
+/// be more useful to use the Scaffold directly, but the main idea is that your
+/// templates can be as complicated as you want (for example, automatically
+/// creating a header).
+///
+/// This page uses the simple template where the main body is the list of
+/// products. Because the list is an organism that connects to the bloc, we
+/// don't need to worry about providing its data here.
+///
+/// This page doesn't automatically load any data. Data loading happens together
+/// with navigation, in the button that leads here. Thus, when the user arrives
+/// here, the event for fetching data will already have been sent.
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
   @override
@@ -21,6 +32,7 @@ class ProductListPage extends StatelessWidget {
         onPressed: () {
           context.push("/products/new");
         },
+        child: const Icon(Icons.add),
       ),
       child: ProductList(
         onOpenDetails: (id) {

@@ -9,12 +9,10 @@ import 'package:go_router/go_router.dart';
 // This particular navigator (to be used as an example) simply has a `navigate`
 // method that needs to be implemented natively.
 
-/// Example of a native navigator. This class has a native implementation in
-/// native code that can open certain native pages by name.
-///
-/// We don't have a Flutter navigator that receives native calls in this
-/// example, but you could implement one in a similar way because both sides
-/// of our bridge work in the same way.
+/// Example of a native navigator. This class can be used to navigate to a
+/// native page, and can also receive calls from native code to navigate to a
+/// Flutter page (but in that case, pages outside of the Flutter view/activity
+/// will not be affected.)
 class InteropNavigator {
   InteropNavigator._();
 

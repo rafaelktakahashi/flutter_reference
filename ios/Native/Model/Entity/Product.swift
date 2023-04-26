@@ -14,11 +14,16 @@ struct Product : PlaygroundEntity {
     public let stockAmount: Int
     public let unit: String
     
-    // You might also want a factory method that accepts a dictionary, in case this
-    // entity also needs to be sent from Flutter to native.
+    // Certainly there are safer ways to implement conversion to and from dictionaries,
+    // such as using a library, but this project just uses a simple example to convey
+    // what is the thing you need.
     
     func toDictionary() -> Dictionary<String,Any> {
         return ["id": id, "name": name, "description": description,
                 "stockAmount": stockAmount, "unit": unit]
+    }
+    
+    static func fromDictionary(_ dict:Dictionary<String,Any>) -> Product {
+        return Product(id: dict["id"] as! String, name: dict["name"] as! String, description: dict["description"] as! String, stockAmount: dict["stockAmount"] as! Int, unit: dict["unit"] as! String)
     }
 }

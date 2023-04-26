@@ -26,18 +26,23 @@ class ProductList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductListBloc, ProductState>(
         builder: (context, state) {
-      // In a real project, should probably organize this as a container.
-      // Also, this is very rudimentary and simply shows a "fetch" button while
-      // there's no loaded data.
+      // In a real project, should probably organize this as a container and not
+      // just a column; this example is pretty simple.
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Padding(
+            padding: EdgeInsets.all(5),
+            child: Text(
+              "Touch an item to open details. Use the floating button down below to add a new item.",
+            ),
+          ),
           _chooseList(context, state),
           TextButton(
             onPressed: () => context.read<ProductListBloc>().add(
                   const FetchProductsEvent(),
                 ),
-            child: const Text("Fetch"),
+            child: const Text("Refetch"),
           ),
         ],
       );

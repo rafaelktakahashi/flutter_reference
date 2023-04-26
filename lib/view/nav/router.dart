@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/error/playground_navigation_error.dart';
 import 'package:flutter_reference/view/pages/counter/counter.dart';
 import 'package:flutter_reference/view/pages/home/home.dart';
@@ -34,6 +36,18 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: 'products',
           builder: (BuildContext context, GoRouterState state) {
+            // You can run initialization logic in the pages before navigation
+            // before calling push() or go()), or here. Doing it here ensures
+            // you won't forget the call, no matter where the page is being
+            // called from.
+            // Both cases are better than leaving initialization logic in the
+            // destination page. It lets the pages be stateless widgets that
+            // don't do anything special on the first render.
+            // Note that all the complicated logic should be in the blocs, so
+            // this initialization logic is no more than emitting an event.
+            context
+                .read<ProductListBloc>()
+                .add(const FetchProductsEvent(skipIfAlreadyLoaded: true));
             return const ProductListPage();
           },
         ),
@@ -49,14 +63,14 @@ final GoRouter router = GoRouter(
             return const ProductResultPage();
           },
         ),
-        // To go here, use "/products/1".
+        // To go here, use "/products/details/1".
         GoRoute(
           path: 'products/details/:productId',
           builder: (BuildContext context, GoRouterState state) {
             final productId = state.params['productId'];
             if (productId == null) {
-              // This one is not supposed to be possible, because only our own
-              // code decides the url of pages. If we ever get this kind of
+              // This condition is not supposed to be possible, because only our
+              // own code decides the url of pages. If we ever get this kind of
               // exception, that means that there's a bug that should be solved
               // in code.
               throw const PlaygroundNavigationError(

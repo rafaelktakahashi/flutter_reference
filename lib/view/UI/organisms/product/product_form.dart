@@ -49,19 +49,81 @@ class _ProductFormState extends State<ProductForm> {
 
   final _formKey = GlobalKey<FormState>();
 
+  /// These are our validators. They're declared here, outside the form, because
+  /// we use them in two places:
+  /// - In the forms, to validate the inputs as the user types.
+  /// - To decide whether to enable or disable the button when the form changes.
+  ///
+  /// You can find on the internet examples callilng
+  /// `_formKey.currentState!.validate()` manually, but that causes validation
+  /// errors to appear for inputs that they user may not have even touched.
+  ///
+  /// If your validation logic is in a bloc, you can export an object of this
+  /// kind to be used in forms.
+  final _validators = {
+    "description": (String? value) {
+      if (value == null || value == "") {
+        return "Cannot be empty.";
+      } else if (value.length > 40) {
+        return "Please, limit the name to 40 characters.";
+      }
+      return null;
+    },
+    "name": (String? value) {
+      if (value == null || value == "") {
+        return "Cannot be empty.";
+      } else if (value.length > 160) {
+        return "Please, limit the description to 160 characters.";
+      }
+      return null;
+    },
+    "stockAmount": (String? value) {
+      if (value == null || value == "") {
+        return "Cannot be empty.";
+      }
+      final int? parsed = int.tryParse(value);
+      if (parsed == null) {
+        return "Please input a valid number.";
+      } else if (parsed < 0) {
+        return "Plase input a non-negative number.";
+      }
+      return null;
+    },
+    "unit": (String? value) {
+      return null;
+    },
+  };
+
+  /// Callback for the submit button. When null, the button will be disabled.
+  Function()? _submitCallback;
+
   @override
   void dispose() {
     // Don't forget this. Dispose of all controllers to avoid memory leaks.
     _descriptionController.dispose();
+    _nameController.dispose();
+    _stockAmountController.dispose();
+    _unitController.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     // The best way to build the form depends on the libraries you're using.
-    // For examples, here I'm using controlled components, but that may not be
+    // For example, here I'm using controlled components, but that may not be
     // recommended for the components of your project.
     return Form(
       key: _formKey,
+      // Using automatic validation in the whole form may cause validation
+      // errors in fields that the user hasn't touched yet (because they're empty).
+      // It's better to enable automatic validation in each field individually,
+      // so that the validation only runs after the user interacts with each
+      // input.
+      autovalidateMode: AutovalidateMode.disabled,
+      onChanged: () => setState(() {
+        _submitCallback = _calculateButtonCallback();
+      }),
       child: Column(
         children: [
           TextFormField(
@@ -75,14 +137,8 @@ class _ProductFormState extends State<ProductForm> {
               labelText: "Name",
             ),
             controller: _nameController,
-            validator: (String? value) {
-              if (value == null || value == "") {
-                return "Cannot be empty.";
-              } else if (value.length > 40) {
-                return "Please, limit the name to 40 characters.";
-              }
-              return null;
-            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: _validators["name"],
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -91,14 +147,8 @@ class _ProductFormState extends State<ProductForm> {
               labelText: "Description",
             ),
             controller: _descriptionController,
-            validator: (String? value) {
-              if (value == null || value == "") {
-                return "Cannot be empty.";
-              } else if (value.length > 160) {
-                return "Please, limit the description to 160 characters.";
-              }
-              return null;
-            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: _validators["description"],
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -107,18 +157,8 @@ class _ProductFormState extends State<ProductForm> {
               labelText: "Amount",
             ),
             controller: _stockAmountController,
-            validator: (String? value) {
-              if (value == null || value == "") {
-                return "Cannot be empty.";
-              }
-              final int? parsed = int.tryParse(value);
-              if (parsed == null) {
-                return "Please input a valid number.";
-              } else if (parsed < 0) {
-                return "Plase input a non-negative number.";
-              }
-              return null;
-            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: _validators["stockAmount"],
           ),
           TextFormField(
             decoration: const InputDecoration(
@@ -127,34 +167,63 @@ class _ProductFormState extends State<ProductForm> {
               labelText: "Unit",
             ),
             controller: _unitController,
-            validator: (String? value) {
-              return null;
-            },
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: _validators["unit"],
           ),
           TextButton(
             // If the validate() call returns false (meaning error), we use null
             // to make the TextButton render disabled.
             // The validate() function will be called every time this button
             // renders, so we shouldn't use computationally expensive validators.
-            onPressed: _formKey.currentState!.validate()
-                ? () {
-                    // Create the product and call the callback.
-                    final result = Product(
-                      id: const Uuid().v4(),
-                      name: _nameController.text,
-                      description: _descriptionController.text,
-                      stockAmount:
-                          int.tryParse(_stockAmountController.text) ?? 0,
-                      unit: _unitController.text,
-                    );
-
-                    widget.onSubmit(result);
-                  }
-                : null,
+            onPressed: _submitCallback,
             child: const Text("Submit"),
           ),
         ],
       ),
     );
+  }
+
+  /// Calculates the button callback.
+  ///
+  /// The purpose of this is to automatically enable/disable the button as the
+  /// fields are edited. If some validation becomes computationally expensive,
+  /// then it may not be worth it to have this automatic enable/disable.
+  Function()? _calculateButtonCallback() {
+    // You can find examples on the internet telling you to call
+    // _formKey.currentState!.validate(), but that causes validation errors to
+    // appear on screen. In this case, this is not what we want because this
+    // function will be called whenever the form changes. This means that an
+    // error could appear in fields that the user hasn't touched yet, and that's
+    // a bad experience.
+
+    // To know if there's a validation error, we call every validation manually.
+    final validationErrors = [
+      _validators["name"]!(_nameController.text),
+      _validators["description"]!(_descriptionController.text),
+      _validators["stockAmount"]!(_stockAmountController.text),
+      _validators["unit"]!(_unitController.text),
+    ];
+
+    if (validationErrors.any((element) => element != null)) {
+      // There are validation errors. Return null, because that'll make the
+      // button render in its disabled state.
+      return null;
+    }
+
+    // If there aren't any validation errors, we return a function.
+    return _buttonCallbackWhenEnabled;
+  }
+
+  /// Only used in _buttonCallback().
+  void _buttonCallbackWhenEnabled() {
+    final result = Product(
+      id: const Uuid().v4(),
+      name: _nameController.text,
+      description: _descriptionController.text,
+      stockAmount: int.tryParse(_stockAmountController.text) ?? 0,
+      unit: _unitController.text,
+    );
+
+    widget.onSubmit(result);
   }
 }

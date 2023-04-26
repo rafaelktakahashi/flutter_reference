@@ -4,10 +4,15 @@ import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 
 /// Example of a Client.
-/// In practice, a client should make requests to a remote server somewhere.
-/// This one mocks its calls to pretend that a request is being made.
+/// Of course, a real client should make requests to a remote server somewhere.
+/// This one mocks its calls to pretend that a request is being made. It does
+/// not persist any changes.
+///
+/// IMPORTANT! Currently, this client is not being used. Instead, we're making
+/// native calls to demonstrate a request through the bridge. The repository
+/// decides what client to use.
 class PlaygroundClient {
-  final List<Product> _mockProducts = List.from([
+  List<Product> _mockProducts = List.from([
     const Product(
       id: "110",
       name: "Powder computer",
@@ -57,7 +62,12 @@ class PlaygroundClient {
   /// Save a new product. It'll be added to the end of the list.
   Future<Either<PlaygroundError, Unit>> saveProduct(Product product) async {
     await Future.delayed(const Duration(seconds: 1));
-    _mockProducts.add(product);
+    // Make a new list to avoid any possible problems with references.
+    // Don't worry about this; in a real app, you'll be fetching fresh data
+    // every time. This ensures that the list is a different reference after
+    // adding a product, which should be the case automatically when you fetch
+    // data remotely.
+    _mockProducts = _mockProducts.followedBy([product]).toList();
     return const Right(unit);
   }
 }

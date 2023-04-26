@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_reference/view/UI/molecules/icon_with_label.dart';
 
 /// Shows a simple message at the center of the screen, with an icon, and
 /// optionally a button.
@@ -10,7 +9,7 @@ import 'package:flutter_reference/view/UI/molecules/icon_with_label.dart';
 class FullscreenMessageTemplate extends StatelessWidget {
   final Widget centerWidget;
   final Color? backgroundColor;
-  final TextButton? actionButton;
+  final Widget? actionButton;
 
   const FullscreenMessageTemplate({
     super.key,
@@ -22,20 +21,25 @@ class FullscreenMessageTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const SizedBox.square(
-              dimension: 1,
-            ),
-            centerWidget,
-            actionButton ??
+      body: Container(
+        color: backgroundColor ?? Colors.white24,
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 const SizedBox.square(
                   dimension: 1,
                 ),
-          ],
+                centerWidget,
+                actionButton ??
+                    const SizedBox.square(
+                      dimension: 1,
+                    ),
+              ],
+            ),
+          ),
         ),
       ),
     );
