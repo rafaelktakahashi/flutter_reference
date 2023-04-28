@@ -1,69 +1,39 @@
-import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/view/UI/organisms/counter/counter_viewer.dart';
 import 'package:flutter_reference/view/nav/interop_navigator.dart';
+import 'package:flutter_reference/view/templates/simple_template.dart';
 
-// TODO: Refactor this page to follow the principles of atomic design.
-
+/// Page that contains a counter, with buttons for controlling the number.
+/// This is not meant to be "interesting" on its own; it's a showcase of the
+/// counter bloc.
+///
+/// The user can navigate to a native page that displays the same information,
+/// and changing the counter in one page instantly updates it in the other,
+/// even though one page is native and the other is Flutter. This is possible
+/// thanks to our InteropBloc.
 class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CounterBloc, CounterState>(
-        builder: (context, counterState) {
-      var counterText = counterState is CounterStateNumber
-          ? counterState.value.toString()
-          : counterState is CounterStateError
-              ? counterState.errorMessage
-              : "";
-      var counterBloc = context.read<CounterBloc>();
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text("Counter"),
+    // We could also have a different template here that specifically
+    // renders a center-aligned list of children. Anything that exists in
+    // many pages can be considered as a template, and you can choose to use
+    // a template for anything that will save you time.
+    return SimpleTemplate(
+      title: "Counter",
+      child: Center(
+        child: CounterViewer(
+          // Keep navigation logic in the page whenever possible, not in the
+          // organism. Having navigation logic inside an organism makes it
+          // harder to reuse.
+          onNavigateToNative: () {
+            // The interop navigator is used to navigate to a native page.
+            // There's another interop navigator in native code that receives
+            // this call.
+            InteropNavigator.instance().navigate("counter");
+          },
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'Bloc state:',
-              ),
-              Text(
-                counterText,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              TextButton(
-                onPressed: () => counterBloc.add(CounterEventIncrement.by(1)),
-                child: const Text("Add 1"),
-              ),
-              TextButton(
-                onPressed: () => counterBloc.add(CounterEventIncrement.by(5)),
-                child: const Text("Add 5"),
-              ),
-              TextButton(
-                onPressed: () => counterBloc.add(CounterEventMultiply.by(2)),
-                child: const Text("Double"),
-              ),
-              TextButton(
-                onPressed: () => counterBloc.add(CounterEventMultiply.by(3)),
-                child: const Text("Triple"),
-              ),
-              TextButton(
-                onPressed: () => counterBloc.add(CounterEventReset()),
-                child: const Text("Reset"),
-              ),
-              TextButton(
-                onPressed: () =>
-                    InteropNavigator.instance().navigate("counter"),
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-                child: const Text("GO TO NATIVE PAGE"),
-              ),
-            ],
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
 }

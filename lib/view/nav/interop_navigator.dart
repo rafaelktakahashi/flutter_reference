@@ -46,6 +46,9 @@ class InteropNavigator {
   /// This function can be called from Flutter code to navigate to native
   /// pages. A corresponding InteropNavigator in native code will receive this
   /// call.
+  ///
+  /// If you want to navigate to a Flutter page, you should navigate normally
+  /// without using this InteropNavigator. This is only for native pages.
   Future<void> navigate(String pageName,
       [Map<String, dynamic>? parameters]) async {
     // We always send an object as a parameter, with 'pageName' and optionally

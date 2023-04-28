@@ -38,6 +38,21 @@ class ProductResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Here I'm using a Template that renders one of three possible bodies.
+    // This is one of many examples in this project where the solution doesn't
+    // look very efficient, but that's simply because the examples are simple.
+    //
+    // This is meant to illustrate one way that templates can have layout logic.
+    // In this case, the "layout logic" isn't just the location of widgets in
+    // the page, but also logic for deciding which widgets to show.
+    //
+    // Also, remember that templates are for common logic. If there's logic
+    // that only happens once in the entire app, then it might not be worth the
+    // effort to put that in a template. Always observe the common layout
+    // elements in your pages and extract them into templates.
+    //
+    // In this example, a "ThreeStateResultTemplate" would make sense for you
+    // if you want to have many pages that switch between three possible states.
     return _withListener(
       BlocBuilder<ProductFormBloc, ProductFormState>(
         builder: (context, state) {

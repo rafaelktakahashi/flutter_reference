@@ -17,8 +17,8 @@ import 'package:go_router/go_router.dart';
 /// products. Because the list is an organism that connects to the bloc, we
 /// don't need to worry about providing its data here.
 ///
-/// This page doesn't automatically load any data. Data loading happens together
-/// with navigation, in the button that leads here. Thus, when the user arrives
+/// This page doesn't automatically load any data. All initialization logic is
+/// in the bloc, and is triggered in the router. Thus, when the user arrives
 /// here, the event for fetching data will already have been sent.
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
