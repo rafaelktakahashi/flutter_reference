@@ -2,13 +2,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/error/playground_navigation_error.dart';
-import 'package:flutter_reference/view/pages/counter/counter.dart';
-import 'package:flutter_reference/view/pages/home/home.dart';
-import 'package:flutter_reference/view/pages/life/life.dart';
-import 'package:flutter_reference/view/pages/product/product_details.dart';
-import 'package:flutter_reference/view/pages/product/product_form.dart';
-import 'package:flutter_reference/view/pages/product/product_list.dart';
-import 'package:flutter_reference/view/pages/product/product_result.dart';
+import 'package:flutter_reference/view/pages/counter/counter_page.dart';
+import 'package:flutter_reference/view/pages/home/home_page.dart';
+import 'package:flutter_reference/view/pages/life/life_page.dart';
+import 'package:flutter_reference/view/pages/product/product_details_page.dart';
+import 'package:flutter_reference/view/pages/product/product_form_page.dart';
+import 'package:flutter_reference/view/pages/product/product_list_page.dart';
+import 'package:flutter_reference/view/pages/product/product_result_page.dart';
+import 'package:flutter_reference/view/pages/settings/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// Router configuration that is provided as an example. You may choose to use
@@ -89,6 +90,12 @@ final GoRouter router = GoRouter(
           path: 'life',
           builder: (BuildContext context, GoRouterState state) {
             return const LifePage();
+          },
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (BuildContext context, GoRouterState state) {
+            return const SettingsPage();
           },
         ),
       ],
