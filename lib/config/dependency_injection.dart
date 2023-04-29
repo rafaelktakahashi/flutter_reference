@@ -1,6 +1,7 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
+import 'package:flutter_reference/data/service/local_storage_service.dart';
 import 'package:get_it/get_it.dart';
 
 /// Initialize dependency injection. This function creates all instances
@@ -18,11 +19,12 @@ void configureDependencies() {
   // Register clients
   GetIt.I.registerSingleton<PlaygroundClient>(PlaygroundClient());
 
-  // Register repositories.
-  // All repositories should be registered here, even the ones that don't
-  // extend from InteropRepository. That's to enable blocs to obtain references
-  // to any repository using GetIt.
+  // Register repositories and services.
+  // All repositories and services should be registered here, even the ones that
+  // don't extend from InteropRepository. That's to enable blocs to obtain
+  // references to any repository using GetIt.
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());
+  GetIt.I.registerSingleton<LocalStorageService>(LocalStorageService());
 
   // Register singletons of blocs that inherit from InteropBloc, because
   // they need to always be available in case native code needs to use them.

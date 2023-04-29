@@ -54,15 +54,15 @@ class _SettingsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (subLabel == null) {
-      return Text(mainLabel, style: const TextStyle(fontSize: 18));
+      return Text(mainLabel, style: const TextStyle(fontSize: 16));
     } else {
       return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(mainLabel, style: const TextStyle(fontSize: 18)),
+          Text(mainLabel, style: const TextStyle(fontSize: 16)),
           const SizedBox(height: 3), // spacer
-          Text(subLabel!, style: const TextStyle(fontSize: 12)),
+          Text(subLabel!, style: const TextStyle(fontSize: 11)),
         ],
       );
     }

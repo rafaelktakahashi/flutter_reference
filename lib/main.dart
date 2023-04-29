@@ -4,6 +4,7 @@ import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/life/life_bloc.dart';
 import 'package:flutter_reference/business/product/product_form_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
+import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/config/dependency_injection.dart';
 import 'package:flutter_reference/data/bridge/channel_bridge.dart' as bridge;
 import 'package:flutter_reference/view/infra/app.dart';
@@ -48,6 +49,9 @@ Widget _wrapProviders(Widget child) {
       ),
       BlocProvider<LifeBloc>(
         create: (BuildContext context) => LifeBloc(),
+      ),
+      BlocProvider<SettingsBloc>(
+        create: (BuildContext context) => SettingsBloc(),
       ),
     ],
     child: child,
