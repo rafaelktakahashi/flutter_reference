@@ -25,6 +25,7 @@ class ProductRepository : InteropRepository("product") {
             "Finely ground computer",
             3,
             "g",
+            799, // 7,99 €
         ),
         Product(
             "0090",
@@ -32,6 +33,7 @@ class ProductRepository : InteropRepository("product") {
             "The backside of a sheet of paper (front side purchased separately).",
             5,
             "unit",
+            299,
         ),
         Product(
             "0022",
@@ -39,6 +41,7 @@ class ProductRepository : InteropRepository("product") {
             "Thought, concept or mental impression of the green variety.",
             8,
             "unit",
+            2599,
         ),
     );
 

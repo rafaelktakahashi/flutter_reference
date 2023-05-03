@@ -37,9 +37,9 @@ class ProductRepository : InteropRepository {
     }
     
     private var source: [Product] = [
-            Product(id: "0001", name: "Powder computer", description: "Finely ground computer", stockAmount: 3, unit: "g"),
-            Product(id: "0090", name: "Paperback", description: "The backside of a sheet of paper (front side purchased separately).", stockAmount: 5, unit: "unit"),
-            Product(id: "0022", name: "Green ideas", description: "Thought, concept or mental impression of the green variety.", stockAmount: 8, unit: "unit")
+        Product(id: "0001", name: "Powder computer", description: "Finely ground computer", stockAmount: 3, unit: "g", pricePerUnitCents: 799),
+        Product(id: "0090", name: "Paperback", description: "The backside of a sheet of paper (front side purchased separately).", stockAmount: 5, unit: "unit", pricePerUnitCents: 299),
+        Product(id: "0022", name: "Green ideas", description: "Thought, concept or mental impression of the green variety.", stockAmount: 8, unit: "unit", pricePerUnitCents: 2599)
         ]
     
     

@@ -19,6 +19,7 @@ class PlaygroundClient {
       description: "Finely ground computer.",
       stockAmount: 3,
       unit: "g",
+      pricePerUnitCents: 799, // 7,99 €
     ),
     const Product(
       id: "190",
@@ -27,6 +28,7 @@ class PlaygroundClient {
           "The backside of a sheet of paper (front side purchased separately).",
       stockAmount: 5,
       unit: "unit",
+      pricePerUnitCents: 299,
     ),
     const Product(
       id: "210",
@@ -35,6 +37,7 @@ class PlaygroundClient {
           "Thought, concept or mental impression of the green variety.",
       stockAmount: 8,
       unit: "unit",
+      pricePerUnitCents: 2599,
     ),
   ]);
 

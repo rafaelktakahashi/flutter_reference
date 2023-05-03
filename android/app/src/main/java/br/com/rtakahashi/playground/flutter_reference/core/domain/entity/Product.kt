@@ -8,6 +8,13 @@ class Product(
     val description: String,
     val stockAmount: Int,
     val unit: String,
+    /**
+     * Price per unit, in cents of Euros.
+     *
+     * The reason why this example uses Euros is to demonstrate formatting. Euros use the
+     * comma as decimal separator.
+     */
+    val pricePerUnitCents: Int,
 ) : PlaygroundEntity {
 
     // Certainly there are safer ways to implement conversion to and from maps,
@@ -21,6 +28,7 @@ class Product(
             "description" to description,
             "stockAmount" to stockAmount,
             "unit" to unit,
+            "pricePerUnitCents" to pricePerUnitCents
         )
     }
 
@@ -30,5 +38,6 @@ class Product(
         map["description"] as String,
         map["stockAmount"] as Int,
         map["unit"] as String,
+        map["pricePerUnitCents"] as Int,
     )
 }

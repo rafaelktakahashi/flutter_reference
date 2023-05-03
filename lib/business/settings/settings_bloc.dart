@@ -161,6 +161,23 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         // a bug and you must debug this line to investigate.
         return;
       }
+
+      // A note on generic parameters: It would be very useful if we could write
+      // a list of settings, each with a key, a default value and a type, to
+      // avoid repeated code.
+      // However, variables of type Type cannot be used as generic parameters:
+      //
+      // Type settingType = bool;
+      // String settingKey = "some_key";
+      // localStorageService.read<settingType>(settingKey); // Doesn't work
+      //
+      // We could rewrite the `read()` method to receive a Type parameter, as in
+      // `read(String key, Type type)`, but then we lose the generic parameter
+      // and can't return instances of T, only dynamic.
+      // That would be alright for this specific use case (since this bloc
+      // treats all returns as dynamic anyway), but then we get a service with
+      // an unsafe return just because of the way a bloc works, and that is not
+      // correct.
     });
 
     super.on<UpdateSettingEvent>((event, emit) async {

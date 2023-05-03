@@ -35,6 +35,12 @@ mixin _$Product {
   /// The product's unit of measure.
   String get unit => throw _privateConstructorUsedError;
 
+  /// The product's price per unit, in cents of US$.
+  /// For example, 2550 means 25 US dollars and 50 cents.
+  /// This is merely and example, and you should store monetary quantities
+  /// according to what is most appropriate to your project.
+  int get pricePerUnitCents => throw _privateConstructorUsedError;
+
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
@@ -50,7 +56,8 @@ abstract class $ProductCopyWith<$Res> {
       String name,
       String description,
       int stockAmount,
-      String unit});
+      String unit,
+      int pricePerUnitCents});
 }
 
 /// @nodoc
@@ -71,6 +78,7 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? description = null,
     Object? stockAmount = null,
     Object? unit = null,
+    Object? pricePerUnitCents = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,6 +101,10 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String,
+      pricePerUnitCents: null == pricePerUnitCents
+          ? _value.pricePerUnitCents
+          : pricePerUnitCents // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -109,7 +121,8 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
       String name,
       String description,
       int stockAmount,
-      String unit});
+      String unit,
+      int pricePerUnitCents});
 }
 
 /// @nodoc
@@ -127,6 +140,7 @@ class __$$_ProductCopyWithImpl<$Res>
     Object? description = null,
     Object? stockAmount = null,
     Object? unit = null,
+    Object? pricePerUnitCents = null,
   }) {
     return _then(_$_Product(
       id: null == id
@@ -149,6 +163,10 @@ class __$$_ProductCopyWithImpl<$Res>
           ? _value.unit
           : unit // ignore: cast_nullable_to_non_nullable
               as String,
+      pricePerUnitCents: null == pricePerUnitCents
+          ? _value.pricePerUnitCents
+          : pricePerUnitCents // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -161,7 +179,8 @@ class _$_Product implements _Product {
       required this.name,
       required this.description,
       required this.stockAmount,
-      required this.unit});
+      required this.unit,
+      required this.pricePerUnitCents});
 
   factory _$_Product.fromJson(Map<String, dynamic> json) =>
       _$$_ProductFromJson(json);
@@ -186,9 +205,16 @@ class _$_Product implements _Product {
   @override
   final String unit;
 
+  /// The product's price per unit, in cents of US$.
+  /// For example, 2550 means 25 US dollars and 50 cents.
+  /// This is merely and example, and you should store monetary quantities
+  /// according to what is most appropriate to your project.
+  @override
+  final int pricePerUnitCents;
+
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, description: $description, stockAmount: $stockAmount, unit: $unit)';
+    return 'Product(id: $id, name: $name, description: $description, stockAmount: $stockAmount, unit: $unit, pricePerUnitCents: $pricePerUnitCents)';
   }
 
   @override
@@ -202,13 +228,15 @@ class _$_Product implements _Product {
                 other.description == description) &&
             (identical(other.stockAmount, stockAmount) ||
                 other.stockAmount == stockAmount) &&
-            (identical(other.unit, unit) || other.unit == unit));
+            (identical(other.unit, unit) || other.unit == unit) &&
+            (identical(other.pricePerUnitCents, pricePerUnitCents) ||
+                other.pricePerUnitCents == pricePerUnitCents));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, description, stockAmount, unit);
+  int get hashCode => Object.hash(
+      runtimeType, id, name, description, stockAmount, unit, pricePerUnitCents);
 
   @JsonKey(ignore: true)
   @override
@@ -230,7 +258,8 @@ abstract class _Product implements Product {
       required final String name,
       required final String description,
       required final int stockAmount,
-      required final String unit}) = _$_Product;
+      required final String unit,
+      required final int pricePerUnitCents}) = _$_Product;
 
   factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
 
@@ -254,6 +283,13 @@ abstract class _Product implements Product {
 
   /// The product's unit of measure.
   String get unit;
+  @override
+
+  /// The product's price per unit, in cents of US$.
+  /// For example, 2550 means 25 US dollars and 50 cents.
+  /// This is merely and example, and you should store monetary quantities
+  /// according to what is most appropriate to your project.
+  int get pricePerUnitCents;
   @override
   @JsonKey(ignore: true)
   _$$_ProductCopyWith<_$_Product> get copyWith =>

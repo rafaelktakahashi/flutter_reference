@@ -12,6 +12,7 @@ _$_Product _$$_ProductFromJson(Map<String, dynamic> json) => _$_Product(
       description: json['description'] as String,
       stockAmount: json['stockAmount'] as int,
       unit: json['unit'] as String,
+      pricePerUnitCents: json['pricePerUnitCents'] as int,
     );
 
 Map<String, dynamic> _$$_ProductToJson(_$_Product instance) =>
@@ -21,4 +22,5 @@ Map<String, dynamic> _$$_ProductToJson(_$_Product instance) =>
       'description': instance.description,
       'stockAmount': instance.stockAmount,
       'unit': instance.unit,
+      'pricePerUnitCents': instance.pricePerUnitCents,
     };
