@@ -51,7 +51,7 @@ Widget _wrapProviders(Widget child) {
         create: (BuildContext context) => LifeBloc(),
       ),
       BlocProvider<SettingsBloc>(
-        create: (BuildContext context) => SettingsBloc(),
+        create: (BuildContext context) => GetIt.I.get<SettingsBloc>(),
       ),
     ],
     child: child,

@@ -1,4 +1,5 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
+import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
@@ -30,4 +31,11 @@ void configureDependencies() {
   // they need to always be available in case native code needs to use them.
   // For this reason, we can't use factories here, only singletons.
   GetIt.I.registerSingleton<CounterBloc>(CounterBloc());
+
+  // This bloc is a special case. It gets initialized using data from local
+  // storage, so it's better if we initialize it here, rather than only when
+  // a page renders. This avoids visual bugs.
+  final settingsBloc = SettingsBloc();
+  settingsBloc.add(const InitializeSettingsEvent());
+  GetIt.I.registerSingleton<SettingsBloc>(settingsBloc);
 }

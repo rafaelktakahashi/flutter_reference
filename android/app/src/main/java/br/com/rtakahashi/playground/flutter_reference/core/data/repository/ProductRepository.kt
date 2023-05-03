@@ -14,7 +14,7 @@ class ProductRepository : InteropRepository("product") {
     init {
         super.exposeMethod("fetchProducts") { _ -> fetchProducts() }
         // Be careful here. In Android, objects received from Flutter are instances of
-        // JsonObject. In iOS, they're Dictionaries just like the objects send to Flutter.
+        // JsonObject. In iOS, they're Dictionaries just like the objects sent to Flutter.
         super.exposeMethod("addProduct") { params -> addProduct((params as JSONObject)["product"] as JSONObject) }
     }
 

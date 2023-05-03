@@ -6,11 +6,14 @@ import 'package:flutter_reference/view/UI/molecules/settings_item.dart';
 
 /// Settings for the app.
 ///
-/// This is a fixed list of settings.
+/// This is a fixed list of settings. Its main purpose is to showcase the
+/// settings bloc, but things that are written to local storage don't
+/// necessarily need to be through
 class SettingsControls extends StatelessWidget {
   const SettingsControls({super.key});
 
   final settingsAbcOptions = const ['A', 'B', 'C'];
+  final settingsNumberOptions = const [20, 40, 60];
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,16 @@ class SettingsControls extends StatelessWidget {
           // list to be relatively small.
           physics: const ClampingScrollPhysics(),
           children: [
+            const Padding(
+              padding: EdgeInsets.all(5),
+              child: Text("These settings are stored in the local storage."),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                "You can close the app, open it again, and the data will be as you left it.",
+              ),
+            ),
             const SettingsHeader(text: "First Section"),
             SettingsItem(
               mainLabel: "Setting One",
@@ -88,8 +101,25 @@ class SettingsControls extends StatelessWidget {
                 },
               ),
             ),
-            // There's an integer setting too, but I didn't write a control
-            // for it.
+            SettingsItem(
+              mainLabel: "Choose a number:",
+              control: ToggleButtons(
+                isSelected: settingsNumberOptions
+                    .map(
+                      (e) => e == state.values[SettingsState.settingNumberKey],
+                    )
+                    .toList(),
+                children: settingsNumberOptions.map((e) => Text("$e")).toList(),
+                onPressed: (index) {
+                  context.read<SettingsBloc>().add(
+                        UpdateSettingEvent(
+                          settingKey: SettingsState.settingNumberKey,
+                          newValue: settingsNumberOptions[index],
+                        ),
+                      );
+                },
+              ),
+            ),
           ],
         );
       },

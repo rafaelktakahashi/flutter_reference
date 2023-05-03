@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Example of a service. This stores values of different kinds, such as
 /// booleans, strings and numbers in the local device (the smartphone).
@@ -15,50 +16,127 @@ import 'package:flutter_reference/domain/error/playground_error.dart';
 ///
 /// Do not use this to store large amounts of data.
 class LocalStorageService {
-  // The current implementation of this service writes to temporary memory.
-  // The next step is to access real device storage to persist information.
-  final Map<String, dynamic> _storage = {};
+  // A NOTE ABOUT FLUTTER_SECURE_STORAGE:
+  // The library is not trivial to use, and it makes some changes to the native
+  // projects that you may not want, depending on the project's configuration.
+  // I'm using this library because it's a simple way of demonstrating the
+  // implementation of this service. Depending on your circumstances, it may be
+  // better to write your own native code to write and read files.
+  // If you do that, you'd have a corresponding LocalStorageService in Android
+  // code, and another in iOS code. The read<T>(...) and write<T>(...) methods
+  // here would use the bridge to call the corresponding native methods.
 
-  /// Attempts to read a value from storage with type T. Causes an error if the
-  /// value doesn't exist or if it has the wrong type.
-  Future<Either<PlaygroundError, T>> readSafe<T>(String key) async {
-    final value = _storage[key];
-    if (value == null) {
-      return Left(LocalStorageValueNotFoundError(valueName: key));
-    }
+  /// This instance interacts with the system API.
+  final storage = const FlutterSecureStorage();
 
-    if (value is T) {
-      return Right(value);
-    } else {
-      return Left(LocalStorageTypeError(valueName: key));
-    }
-  }
-
-  /// Attempts to read a value from storage without validating its type.
-  Future<Either<PlaygroundError, dynamic>> readDynamic(String key) async {
-    return _storage[key];
-  }
-
-  /// Attempts to read multiple values from storage in a single operation.
-  /// Causes an error if any of the requested values doesn't exist.
+  /// Reads a value as the specified type. Only some specific types are
+  /// supported, since everything is stored as string and conversions are done
+  /// manually in this method.
   ///
-  /// The result is not type-safe. If successful, the list will contain exactly
-  /// as many items as the array of [keys] that was provided.
-  Future<Either<PlaygroundError, Map<String, dynamic>>> readMultiple(
-      List<String> keys) async {
-    // Real implementation with the system API should be better than just this.
-    final resultMap = <String, dynamic>{};
-    for (final key in keys) {
-      resultMap[key] = _storage[key];
+  /// If the key is not present in storage, this will return null. When the app
+  /// runs for the first time, you should expect the storage to be empty.
+  ///
+  /// Currently the generic parameter supports String, int, double and bool.
+  /// Other types must be implemented if necessary.
+  Future<Either<PlaygroundError, T?>> read<T>(String key) async {
+    // This can throw a platform exception, but that likely would be caused by
+    // a bug.
+    final String? stringValue = await storage.read(key: key);
+
+    // Whenever a key is not present in storage, return null, but don't consider
+    // it a failure (a Left). Nulls are expected during the app's maiden flight.
+    if (stringValue == null) {
+      return const Right(null);
     }
-    return Right(resultMap);
+
+    // Now, we have a string. We need to convert the value depending on what is
+    // expected. For example, if T is Int, then we need to convert the string to
+    // int.
+    //
+    // -- A note on functional programming:
+    // There's an argument to be made that it's not "correct" to do if-elses
+    // with types, because anything that's generic is supposed to work the same
+    // regardless of type, using the same logic. However, pattern-matching on
+    // values and on types is common in functional programming. Effectly, that
+    // one describes a function that's defined in different ways depending on
+    // the input.
+    switch (T) {
+      case String:
+        // Simplest case, return the value as it is.
+        return Right(stringValue as T);
+      case int:
+        // Attempt to cast to integer.
+        try {
+          return Right(int.parse(stringValue) as T);
+        } on FormatException catch (e) {
+          return Left(
+            LocalStorageCastError(
+              actualValue: stringValue,
+              expectedType: T,
+              keyName: key,
+              parseException: e,
+            ),
+          );
+        }
+      case double:
+        // Attempt to cast to double.
+        try {
+          return Right(double.parse(stringValue) as T);
+        } on FormatException catch (e) {
+          return Left(
+            LocalStorageCastError(
+              actualValue: stringValue,
+              expectedType: T,
+              keyName: key,
+              parseException: e,
+            ),
+          );
+        }
+      case bool:
+        switch (stringValue.toLowerCase()) {
+          // The linter suggests returning const Right(true as T), but that
+          // causes a compilation error because T is Never for constants
+          // (I think).
+          case 'true':
+            // ignore: prefer_const_constructors
+            return Right(true as T);
+          case 'false':
+            // ignore: prefer_const_constructors
+            return Right(false as T);
+          default:
+            return Left(
+              LocalStorageCastError(
+                actualValue: stringValue,
+                expectedType: T,
+                keyName: key,
+              ),
+            );
+        }
+      default:
+        // Getting the name of a generic type is something you can't do in just
+        // about any language. Dart supports it.
+        return Left(LocalStorageUnsupportedTypeError(typeName: T.toString()));
+    }
   }
 
-  /// Attempts to write a value to storage. Generally, this should always
-  /// succeed, unless you try to write a value of unsupported type.
+  /// Write a [value] to local storage, under a specified [key].
+  ///
+  /// The types supported for [T] are String, int, double and bool, because
+  /// those are the values that can be read using this class.
   Future<Either<PlaygroundError, Unit>> write<T>(String key, T value) async {
-    _storage[key] = value;
-    return const Right(unit);
+    // Everything gets converted to String, but first we need to verify that
+    // the value is of a supported type. This is just because we don't want to
+    // write a value that this class can't read.
+    switch (T) {
+      case String:
+      case int:
+      case double:
+      case bool:
+        await storage.write(key: key, value: "$value");
+        return const Right(unit);
+      default:
+        return Left(LocalStorageUnsupportedTypeError(typeName: T.toString()));
+    }
   }
 }
 
@@ -151,7 +229,7 @@ class LocalStorageUnsupportedTypeError extends PlaygroundError {
 
   @override
   String? developerMessage() {
-    return "Tried to write value of unsupported type $typeName to local storage.";
+    return "Tried to read or write value of unsupported type $typeName to local storage.";
   }
 
   @override
@@ -162,5 +240,38 @@ class LocalStorageUnsupportedTypeError extends PlaygroundError {
   @override
   String errorMessage() {
     return "A value could not be written to storage.";
+  }
+}
+
+class LocalStorageCastError extends PlaygroundError {
+  final String actualValue;
+  final Type expectedType;
+  final String keyName;
+  final Exception? parseException;
+  const LocalStorageCastError({
+    required this.actualValue,
+    required this.expectedType,
+    required this.keyName,
+    this.parseException,
+  });
+
+  @override
+  Exception? cause() {
+    return parseException;
+  }
+
+  @override
+  String? developerMessage() {
+    return "Tried to read value of type $expectedType from key $keyName, but could not cast its value $actualValue";
+  }
+
+  @override
+  String errorCode() {
+    return "LS-0005";
+  }
+
+  @override
+  String errorMessage() {
+    return "A value could not be read from storage.";
   }
 }
