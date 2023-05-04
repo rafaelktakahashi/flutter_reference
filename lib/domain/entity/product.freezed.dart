@@ -35,10 +35,22 @@ mixin _$Product {
   /// The product's unit of measure.
   String get unit => throw _privateConstructorUsedError;
 
-  /// The product's price per unit, in cents of US$.
-  /// For example, 2550 means 25 US dollars and 50 cents.
-  /// This is merely and example, and you should store monetary quantities
-  /// according to what is most appropriate to your project.
+  /// The product's price per unit, in cents of Euro.
+  ///
+  /// For example, 2550 means 25 euros and 50 cents.
+  /// This is merely an example, and you should store monetary quantities
+  /// according to what is most appropriate to your project. Generally, it is
+  /// not recommended to use double (or any floating-point numbers) for
+  /// monetary values.
+  ///
+  /// The reason why I'm using Euro is to demonstrate formatting. Euro uses
+  /// a decimal comma (ex.: 1,50 €, not €1.50). Because the default decimal
+  /// separator in programming languages is the dot (.), using commas requires
+  /// additional logic. Writing this example with American dollars would be
+  /// too easy and less useful.
+  ///
+  /// Many other currencies use the comma as the decimal separator, like the
+  /// Argentine Peso or the Brazilian Real.
   int get pricePerUnitCents => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -173,14 +185,15 @@ class __$$_ProductCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Product implements _Product {
+class _$_Product extends _Product {
   const _$_Product(
       {required this.id,
       required this.name,
       required this.description,
       required this.stockAmount,
       required this.unit,
-      required this.pricePerUnitCents});
+      required this.pricePerUnitCents})
+      : super._();
 
   factory _$_Product.fromJson(Map<String, dynamic> json) =>
       _$$_ProductFromJson(json);
@@ -205,10 +218,22 @@ class _$_Product implements _Product {
   @override
   final String unit;
 
-  /// The product's price per unit, in cents of US$.
-  /// For example, 2550 means 25 US dollars and 50 cents.
-  /// This is merely and example, and you should store monetary quantities
-  /// according to what is most appropriate to your project.
+  /// The product's price per unit, in cents of Euro.
+  ///
+  /// For example, 2550 means 25 euros and 50 cents.
+  /// This is merely an example, and you should store monetary quantities
+  /// according to what is most appropriate to your project. Generally, it is
+  /// not recommended to use double (or any floating-point numbers) for
+  /// monetary values.
+  ///
+  /// The reason why I'm using Euro is to demonstrate formatting. Euro uses
+  /// a decimal comma (ex.: 1,50 €, not €1.50). Because the default decimal
+  /// separator in programming languages is the dot (.), using commas requires
+  /// additional logic. Writing this example with American dollars would be
+  /// too easy and less useful.
+  ///
+  /// Many other currencies use the comma as the decimal separator, like the
+  /// Argentine Peso or the Brazilian Real.
   @override
   final int pricePerUnitCents;
 
@@ -252,7 +277,7 @@ class _$_Product implements _Product {
   }
 }
 
-abstract class _Product implements Product {
+abstract class _Product extends Product {
   const factory _Product(
       {required final String id,
       required final String name,
@@ -260,6 +285,7 @@ abstract class _Product implements Product {
       required final int stockAmount,
       required final String unit,
       required final int pricePerUnitCents}) = _$_Product;
+  const _Product._() : super._();
 
   factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
 
@@ -285,10 +311,22 @@ abstract class _Product implements Product {
   String get unit;
   @override
 
-  /// The product's price per unit, in cents of US$.
-  /// For example, 2550 means 25 US dollars and 50 cents.
-  /// This is merely and example, and you should store monetary quantities
-  /// according to what is most appropriate to your project.
+  /// The product's price per unit, in cents of Euro.
+  ///
+  /// For example, 2550 means 25 euros and 50 cents.
+  /// This is merely an example, and you should store monetary quantities
+  /// according to what is most appropriate to your project. Generally, it is
+  /// not recommended to use double (or any floating-point numbers) for
+  /// monetary values.
+  ///
+  /// The reason why I'm using Euro is to demonstrate formatting. Euro uses
+  /// a decimal comma (ex.: 1,50 €, not €1.50). Because the default decimal
+  /// separator in programming languages is the dot (.), using commas requires
+  /// additional logic. Writing this example with American dollars would be
+  /// too easy and less useful.
+  ///
+  /// Many other currencies use the comma as the decimal separator, like the
+  /// Argentine Peso or the Brazilian Real.
   int get pricePerUnitCents;
   @override
   @JsonKey(ignore: true)

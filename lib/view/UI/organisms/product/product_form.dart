@@ -1,4 +1,4 @@
-import 'package:flutter/services.dart';
+import 'package:flutter_reference/view/UI/molecules/monetary_input.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
@@ -44,7 +44,7 @@ class _ProductFormState extends State<ProductForm> {
   final _nameController = TextEditingController(text: "");
   final _stockAmountController = TextEditingController(text: "1");
   final _unitController = TextEditingController(text: "lb");
-  final _priceController = TextEditingController(text: "");
+  final _priceController = MonetaryTextEditingController(text: "");
 
   final _formKey = GlobalKey<FormState>();
 
@@ -184,7 +184,7 @@ class _ProductFormState extends State<ProductForm> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: _validators["unit"],
           ),
-          TextFormField(
+          MonetaryInput(
             decoration: const InputDecoration(
               icon: Icon(Icons.euro),
               hintText: "Price per unit in euros",
@@ -194,7 +194,6 @@ class _ProductFormState extends State<ProductForm> {
             autovalidateMode: AutovalidateMode.onUserInteraction,
             keyboardType: TextInputType.number,
             validator: _validators["price"],
-            inputFormatters: [_EuroInputFormatter()],
           ),
           TextButton(
             // If the validate() call returns false (meaning error), we use null
@@ -243,108 +242,21 @@ class _ProductFormState extends State<ProductForm> {
 
   /// Only used in _buttonCallback().
   void _buttonCallbackWhenEnabled() {
-    // The price is formatted with two decimal places and with a comma as the
-    // decimal separator, such as "50,25".
-    // We first replace the comma by a dot, and then parse it as a double. Then,
-    // we multiply by 10, truncate the decimal part, and cast to int.
-    // There may be an easier way to do this.
-
-    final rawString = _priceController.text;
-    // Adds ,00 if the text doesn't have a comma.
-    final rawStringWithCents =
-        rawString.contains(',') ? rawString : '$rawString,00';
-    // "25,99" -> 25.99
-    final priceAsDouble =
-        double.tryParse(rawStringWithCents.replaceAll(",", ".")) ?? 0.00;
-    // 25.99 -> 2599
-    final priceAsCents = (priceAsDouble * 100).truncate();
-    // We store the value as the integer 2599.
-
     final result = Product(
       id: const Uuid().v4(),
       name: _nameController.text,
       description: _descriptionController.text,
       stockAmount: int.tryParse(_stockAmountController.text) ?? 0,
       unit: _unitController.text,
-      pricePerUnitCents: priceAsCents,
+      // Our price controller is our own class that has extra getters.
+      pricePerUnitCents: _priceController.valueAsCents,
     );
 
     widget.onSubmit(result);
-  }
-}
 
-/// Our custom currency formatter. Not intended to be used with other formatters.
-class _EuroInputFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    // oldValue is what is already in the field. newValue is what would appear
-    // in the field as a result of what the user typed. We return what will
-    // appear in the field.
-
-    // Use 6 as the maximum length.
-    // ex.: "120,99"
-    if (newValue.text.length > 6) {
-      // If the field would become too long, return the old value so that there
-      // will be no change.
-      return oldValue;
-    }
-    // Consequently, the value without a comma cannot exceed 3 digits. Forbid
-    // the user from writing a fourth digit.
-    // If you don't check for this, then the user would be able to insert too
-    // many digits before the separator, and be left without the ability to
-    // write the cents.
-    // (The regex [\.,] means comma or period.)
-    if (!newValue.text.contains(RegExp(r'[\.,]')) && newValue.text.length > 3) {
-      return oldValue;
-    }
-
-    // Allow only new values that match this regex:
-    //
-    // ^\d*[\.,]?\d{0,2}$
-    //
-    // ^                     Start of string
-    //  \d*                  Zero or more digits
-    //     [\.,]             Followed by a dot or a comma (but not both)
-    //          ?            ...or not
-    //           \d{0,2}     Followed by up to two digits
-    //                  $    End of string
-    //
-    // This matches strings that have a comma or a dot at the end, since the
-    // user will be typing. It does not allow strings with more than two digits
-    // after the comma or the dot, and also does not allow strings that have
-    // both a comma and a dot.
-    // This regex also matches the empty string, but that means the user can
-    // insert strings that begin with the decimal separator.
-
-    if (RegExp(r'^\d*[\.,]?\d{0,2}$').hasMatch(newValue.text)) {
-      // Matches!
-
-      // Return the new value with the comma as decimal separator. This way, the
-      // user can also type a dot, but it'll be turned into a comma.
-      final commaSeparated = newValue.text.replaceAll('.', ',');
-      // And also, if the user typed a decimal separator at the start of the
-      // string, add a 0 to the start and move the cursor forward one character.
-      // (Dart can parse a string like ".50", but this is for the user.)
-      if (commaSeparated.startsWith(',')) {
-        return newValue.copyWith(
-          text: "0$commaSeparated", // "," -> "0,"
-          // Move the caret forward by adding one to both ends of the selection.
-          // At this point, we expect the selection to be empty, so both
-          // values should be the same. This doesn't change the overall logic.
-          selection: newValue.selection.copyWith(
-            baseOffset: newValue.selection.baseOffset + 1,
-            extentOffset: newValue.selection.extentOffset + 1,
-          ),
-        );
-      } else {
-        return newValue.copyWith(text: commaSeparated);
-      }
-    } else {
-      // Does not match. Return the old value.
-      return oldValue;
-    }
+    // This project only supports a single locale (English) and a single
+    // currency (euro). If you need support for multiple locales, I recommend
+    // using the intl package. In that case, you'd delegate most of the
+    // work to the code in the package.
   }
 }

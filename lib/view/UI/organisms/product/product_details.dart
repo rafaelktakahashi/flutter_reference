@@ -21,7 +21,7 @@ class ProductDetails extends StatelessWidget {
         _textWithPadding(
             "Amount in stock: ${product.stockAmount} ${product.unit}"),
         _textWithPadding(
-            "Price per ${product.unit}: ${_formatEuros(product.pricePerUnitCents)}"),
+            "Price per ${product.unit}: ${product.formattedPrice}"),
       ],
     );
   }
@@ -31,14 +31,5 @@ class ProductDetails extends StatelessWidget {
       padding: const EdgeInsets.all(7),
       child: Text(text),
     );
-  }
-
-  String _formatEuros(int cents) {
-    // Formatting from the amount in cents.
-    // This rule will depend on the currency and storage format that you use.
-    int centsOnly = cents % 100;
-    int eurosOnly = (cents / 100).truncate();
-
-    return "$eurosOnly,$centsOnly €";
   }
 }

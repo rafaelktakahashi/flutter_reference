@@ -27,12 +27,14 @@ class Product with _$Product implements PlaygroundEntity {
     ///
     /// For example, 2550 means 25 euros and 50 cents.
     /// This is merely an example, and you should store monetary quantities
-    /// according to what is most appropriate to your project.
+    /// according to what is most appropriate to your project. Generally, it is
+    /// not recommended to use double (or any floating-point numbers) for
+    /// monetary values.
     ///
     /// The reason why I'm using Euro is to demonstrate formatting. Euro uses
-    /// a decimal comma (ex.: 1,50 €, NOT €1.50). Because the default decimal
+    /// a decimal comma (ex.: 1,50 €, not €1.50). Because the default decimal
     /// separator in programming languages is the dot (.), using commas requires
-    /// additional logic. Writing this example with American Dollars would be
+    /// additional logic. Writing this example with American dollars would be
     /// too easy and less useful.
     ///
     /// Many other currencies use the comma as the decimal separator, like the
@@ -40,8 +42,31 @@ class Product with _$Product implements PlaygroundEntity {
     required int pricePerUnitCents,
   }) = _Product;
 
+  // A private empty constructor is required because this class has getters.
+  const Product._();
+
   factory Product.fromJson(Map<String, Object?> json) =>
       _$ProductFromJson(json);
+
+  // You can add this kind of utility function in the domain classes to avoid
+  // repeated code, but be careful not to include too much business logic here.
+  // Generally speaking, a domain entity shouldn't have any *rules* or data
+  // processing in it, because that belongs in the blocs.
+  // However, utility functions like formatting is usually fine because it's
+  // part of the domain.
+  // (Note: Freezed classes with custom getters need a private empty
+  // constructor.)
+
+  /// Gets the same value as [pricePerUnitCents], but formatted as a string like
+  /// `"54,99 €"`.
+  String get formattedPrice {
+    // Formatting from the amount in cents.
+    // This rule will depend on the currency and storage format that you use.
+    String centsOnly = (pricePerUnitCents % 100).toString().padLeft(2, '0');
+    int eurosOnly = (pricePerUnitCents / 100).truncate();
+
+    return "$eurosOnly,$centsOnly €";
+  }
 }
 
 /// This class uses freezed. If you don't know how to use it, read the
