@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
@@ -96,6 +98,29 @@ final GoRouter router = GoRouter(
           path: 'settings',
           builder: (BuildContext context, GoRouterState state) {
             return const SettingsPage();
+          },
+        ),
+        GoRoute(
+          path: 'random',
+          builder: (BuildContext context, GoRouterState state) {
+            // This random route demonstrates that a route doesn't have to
+            // correspond to exactly one page. You can use redirects, or add
+            // logic to a builder.
+            //
+            // This means you can add logic to decide where a page should go.
+            // However, if you need more complicated logic, it's recommended to
+            // put it in the page itself.
+            switch (Random().nextInt(4)) {
+              case 0:
+                return const ProductListPage();
+              case 1:
+                return const LifePage();
+              case 2:
+                return const SettingsPage();
+              case 3:
+              default:
+                return const CounterPage();
+            }
           },
         ),
       ],

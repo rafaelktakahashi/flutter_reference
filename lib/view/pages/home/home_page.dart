@@ -25,6 +25,7 @@ class HomePage extends StatelessWidget {
         PageLink(url: '/interop', text: 'Interop bloc'),
         PageLink(url: '/life', text: "Conway's game of life"),
         PageLink(url: '/settings', text: 'Settings'),
+        PageLink(url: '/random', text: "Random page"),
       ],
     );
   }
