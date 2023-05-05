@@ -23,7 +23,7 @@ class BuyerDetailsPage extends StatelessWidget {
         final BuyerDetails? buyer = _selectBuyerDetails(state, buyerId);
 
         return SimpleTemplate(
-          title: _selectBuyerName(state, buyerId),
+          title: _selectBuyerName(state, buyerId) ?? "Buyer's details",
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: BuyerDetailsCard(buyer: buyer),
@@ -35,9 +35,9 @@ class BuyerDetailsPage extends StatelessWidget {
 }
 
 // Gets a buyer's name, even before its details have been loaded. This is done
-// by looking for the buyer is the list. The list doesn't have details, but has
+// by looking for the buyer in the list. The list doesn't have details, but has
 // the buyer's full name.
-String _selectBuyerName(BuyerState state, String buyerId) {
+String? _selectBuyerName(BuyerState state, String buyerId) {
   if (state is BuyerStateSuccess) {
     final buyer = state.buyers
         .firstWhereOrNull((element) => element.identification == buyerId);
@@ -47,7 +47,7 @@ String _selectBuyerName(BuyerState state, String buyerId) {
     }
   }
 
-  return "unknown";
+  return null;
 }
 
 BuyerDetails? _selectBuyerDetails(BuyerState state, String buyerId) {
