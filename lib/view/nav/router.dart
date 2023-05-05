@@ -2,8 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/error/playground_navigation_error.dart';
+import 'package:flutter_reference/view/pages/buyer/buyer_details_page.dart';
+import 'package:flutter_reference/view/pages/buyer/buyer_list_page.dart';
 import 'package:flutter_reference/view/pages/counter/counter_page.dart';
 import 'package:flutter_reference/view/pages/home/home_page.dart';
 import 'package:flutter_reference/view/pages/life/life_page.dart';
@@ -85,6 +88,41 @@ final GoRouter router = GoRouter(
               return ProductDetailsPage(
                 productId: productId,
               );
+            }
+          },
+        ),
+        GoRoute(
+          path: "buyers",
+          builder: (BuildContext context, GoRouterState state) {
+            context.read<BuyerBloc>().add(
+                  const BuyerEventFetchList(
+                    resetDetails: false,
+                    skipIfAlreadyLoaded: true, // avoid redundant requests
+                  ),
+                );
+            return const BuyerListPage();
+          },
+        ),
+        GoRoute(
+          path: "buyers/details/:buyerId",
+          builder: (BuildContext context, GoRouterState state) {
+            final buyerId = state.params['buyerId'];
+            if (buyerId == null) {
+              throw const PlaygroundNavigationError(
+                "NAV-0110",
+                readableErrorMessage:
+                    "Navigating to the buyer details page without specifying an id",
+              );
+            } else {
+              // This details page uses a second request to fetch details. Thus,
+              // we need to emit the event here too.
+              context.read<BuyerBloc>().add(
+                    BuyerEventFetchDetails(
+                      identification: buyerId,
+                      skipIfAlreadyLoaded: true,
+                    ),
+                  );
+              return BuyerDetailsPage(buyerId: buyerId);
             }
           },
         ),

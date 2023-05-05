@@ -21,10 +21,11 @@ class HomePage extends StatelessWidget {
         // the page itself. It simplifies initialization logic and lets
         // the pages be stateless widgets that don't do anything special
         // the first time they appear.
-        PageLink(url: '/products', text: 'Simple list'),
+        PageLink(url: '/products', text: 'Simple list with form'),
+        PageLink(url: '/buyers', text: 'List with details request'),
         PageLink(url: '/interop', text: 'Interop bloc'),
         PageLink(url: '/life', text: "Conway's game of life"),
-        PageLink(url: '/settings', text: 'Settings'),
+        PageLink(url: '/settings', text: 'Settings with local storage'),
         PageLink(url: '/random', text: "Random page"),
       ],
     );

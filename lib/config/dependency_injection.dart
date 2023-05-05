@@ -1,6 +1,7 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
+import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
 import 'package:get_it/get_it.dart';
@@ -17,6 +18,13 @@ void configureDependencies() {
   // use all of GetIt's features, with the only drawback that changing it
   // it in the future would be more work.
 
+  // When a class is expensive to instantiate (if it runs a lot of code), then
+  // it makes more sense to register factories rathen than singletons.
+  // On the other hand, registering singletons makes possible errors happen
+  // sooner (easier to debug), and ensures that everything will already exist
+  // when needed, without the overhead of instantiating classes while the user
+  // is already navigating in the app.
+
   // Register clients
   GetIt.I.registerSingleton<PlaygroundClient>(PlaygroundClient());
 
@@ -25,6 +33,7 @@ void configureDependencies() {
   // don't extend from InteropRepository. That's to enable blocs to obtain
   // references to any repository using GetIt.
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());
+  GetIt.I.registerSingleton<BuyerRepository>(BuyerRepository());
   GetIt.I.registerSingleton<LocalStorageService>(LocalStorageService());
 
   // Register singletons of blocs that inherit from InteropBloc, because

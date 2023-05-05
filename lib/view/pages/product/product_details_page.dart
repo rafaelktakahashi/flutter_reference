@@ -12,7 +12,8 @@ import 'package:go_router/go_router.dart';
 /// This page receives a product id in the form of parameters. Generally, you
 /// should avoid passing parameters to pages because that adds coupling; but
 /// when it makes sense to use parameters, receive them in the constructor.
-/// Route configuration (including parameters) is decided in the router file.
+/// The logic for sending this information in the constructor is in the router's
+/// builders.
 class ProductDetailsPage extends StatelessWidget {
   final String productId;
 
@@ -24,6 +25,8 @@ class ProductDetailsPage extends StatelessWidget {
     // At first glance, you may think it would be simpler if this widget
     // received an entire product. However, always keep in mind that there
     // exists **one** source of truth for each thing, and that's the bloc.
+    // Data exists in the bloc, and this page only receives the id to tell it
+    // which product to render.
 
     return BlocBuilder<ProductListBloc, ProductState>(
         builder: (context, state) {

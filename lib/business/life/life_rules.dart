@@ -61,15 +61,15 @@ LifeBoard stepForward(LifeBoard currentBoard) {
       columnIndex: columnIndex,
     );
     // When a cell is alive, it only survives on to the next step of the game if
-    // it has two or three alive neighbors. Alive cells with fewer than two
-    // neighbors die of loneliness, and alive cells with four neighbors die
+    // it has two or three alive neighbors. Living cells with fewer than two
+    // neighbors die of loneliness, and living cells with four neighbors die
     // of overpopulation.
     if (currentCell.alive) {
       return LifeCell(
           alive: numberOfLiveNeighbors == 2 || numberOfLiveNeighbors == 3);
     } else {
       // When a cell is dead, it becomes alive when there are exactly three
-      // alive neighbors in the current step.
+      // living neighbors in the current step.
       return LifeCell(alive: numberOfLiveNeighbors == 3);
     }
   }

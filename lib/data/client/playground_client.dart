@@ -1,7 +1,9 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_reference/domain/entity/buyer.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:collection/collection.dart';
 
 /// Example of a Client.
 /// Of course, a real client should make requests to a remote server somewhere.
@@ -72,5 +74,64 @@ class PlaygroundClient {
     // data remotely.
     _mockProducts = _mockProducts.followedBy([product]).toList();
     return const Right(unit);
+  }
+
+  final List<BuyerDetails> _mockBuyerDetails = List.from(
+    [
+      BuyerDetails(
+        identification: "12345678",
+        address: "38 Hunters Grove, ROMFORD, RM5 2UH, ENGLAND",
+        fullName: "Mikhail Kotliarov",
+        accountEmail: "mkotl@playgroundmail.com",
+        birthdate: DateTime(1998, 10, 22),
+      ),
+      BuyerDetails(
+        identification: "12345890",
+        address: "35 Glovers Fld, KELVEDON HATCH, BRENTWOOD CM15 0BD, ENGLAND",
+        fullName: "Michael Swiftsmith",
+        accountEmail: "mswift@playgroundmail.com",
+        birthdate: DateTime(1996, 02, 20),
+      ),
+      BuyerDetails(
+        identification: "12345012",
+        address: "24 Woodberry Rd, WICKFORD SS11 8XG, ENGLAND",
+        fullName: "Vanessa Flutman",
+        accountEmail: "vflut@playgroundmail.com",
+        birthdate: DateTime(2002, 12, 1),
+      ),
+    ],
+  );
+
+  /// Fetches a list of buyers with a limited amount of information.
+  Future<Either<PlaygroundError, List<Buyer>>> fetchBuyers() async {
+    await Future.delayed(const Duration(milliseconds: 700));
+
+    return Right(
+      _mockBuyerDetails
+          .map((e) =>
+              Buyer(identification: e.identification, fullName: e.fullName))
+          .toList(),
+    );
+  }
+
+  /// Fetches detailed information for a buyer by its identification.
+  Future<Either<PlaygroundError, BuyerDetails>> fetchBuyerDetails(
+    String identification,
+  ) async {
+    await Future.delayed(const Duration(milliseconds: 1400));
+
+    final buyerDetails = _mockBuyerDetails.firstWhereOrNull(
+      (element) => element.identification == identification,
+    );
+
+    if (buyerDetails != null) {
+      return Right(buyerDetails);
+    } else {
+      return Left(
+        PlaygroundClientError(
+            "MSG-1190", "Could not find buyer of id $identification",
+            responseStatus: "404"),
+      );
+    }
   }
 }

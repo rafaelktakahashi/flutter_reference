@@ -26,8 +26,8 @@ class ProductList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProductListBloc, ProductState>(
         builder: (context, state) {
-      // In a real project, should probably organize this as a container and not
-      // just a column; this example is pretty simple.
+      // In a real project, you should probably organize this as a container and
+      // not just a column; this example is pretty simple.
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [

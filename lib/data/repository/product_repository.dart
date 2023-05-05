@@ -10,7 +10,7 @@ import 'package:get_it/get_it.dart';
 /// Remember always that repositories encapsulate (=hide) where the data is
 /// coming from.
 class ProductRepository extends InteropRepository {
-  /// Reference to the Megastore backend client.
+  /// Reference to the Playground backend client.
   final PlaygroundClient client = GetIt.I.get<PlaygroundClient>();
 
   // When using an interop repository, there must be a corresponding repository

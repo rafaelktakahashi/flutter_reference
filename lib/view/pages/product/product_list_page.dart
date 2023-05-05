@@ -20,8 +20,12 @@ import 'package:go_router/go_router.dart';
 /// This page doesn't automatically load any data. All initialization logic is
 /// in the bloc, and is triggered in the router. Thus, when the user arrives
 /// here, the event for fetching data will already have been sent.
+///
+/// See the buyer list page for a different example where the details need a
+/// second request.
 class ProductListPage extends StatelessWidget {
   const ProductListPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     // In this case, the Product List organism already knows how to connect
@@ -37,7 +41,14 @@ class ProductListPage extends StatelessWidget {
       child: ProductList(
         onOpenDetails: (id) {
           // Generally you should avoid passing parameters to pages (because
-          // doing so adds coupling). "Small" data like an id is typically ok.
+          // doing so adds coupling). "Small" data like an id is typically ok,
+          // but don't send objects or complex data. In that case, you should
+          // prefer to store data in the bloc.
+          //
+          // This id is fine because it defines the way that the next page will
+          // render its content. The next page knows how to render the details
+          // of any project, and this is telling it which of them to render.
+          // Thus, it's view logic.
           context.push('/products/details/$id');
         },
       ),

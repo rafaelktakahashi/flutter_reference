@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/life/life_bloc.dart';
 import 'package:flutter_reference/business/product/product_form_bloc.dart';
@@ -52,6 +53,9 @@ Widget _wrapProviders(Widget child) {
       ),
       BlocProvider<SettingsBloc>(
         create: (BuildContext context) => GetIt.I.get<SettingsBloc>(),
+      ),
+      BlocProvider<BuyerBloc>(
+        create: (BuildContext context) => BuyerBloc(),
       ),
     ],
     child: child,
