@@ -14,6 +14,7 @@ import 'package:flutter_reference/view/pages/product/product_details_page.dart';
 import 'package:flutter_reference/view/pages/product/product_form_page.dart';
 import 'package:flutter_reference/view/pages/product/product_list_page.dart';
 import 'package:flutter_reference/view/pages/product/product_result_page.dart';
+import 'package:flutter_reference/view/pages/redirect/redirect_pages.dart';
 import 'package:flutter_reference/view/pages/settings/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -161,7 +162,64 @@ final GoRouter router = GoRouter(
             }
           },
         ),
+        GoRoute(
+          path: 'redirect_orange',
+          builder: (BuildContext context, GoRouterState state) =>
+              const OrangePage(),
+        ),
+        GoRoute(
+          path: 'redirect_blue',
+          // Do this if you want a transparent route.
+          // Transparent routes are useful for making modals.
+          // The modal itself is a different page with its own route, but
+          // the user can see the previous page behind it because the route
+          // is transparent.
+          pageBuilder: (BuildContext context, GoRouterState state) =>
+              CustomTransitionPage(
+            fullscreenDialog: true,
+            opaque: false,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) =>
+                    FadeTransition(opacity: animation, child: child),
+            child: const Padding(
+              padding: EdgeInsets.all(20),
+              child: BluePage(),
+            ),
+          ),
+        ),
       ],
+      redirect: (BuildContext context, GoRouterState state) {
+        // For demonstration purposes, any page can send the 'redirect' query
+        // parameter.
+        // For example, the url '/life?redirect=orange' will trigger this code.
+        // Of course, that's not very realistic; it's an example of how you can
+        // handle redirection. In a real app, you'd probably check for the rest
+        // of the url too.
+        // Example: You can check if a certain url is being accessed for the
+        // first time (while a certain flag has not been set yet), and if so,
+        // replace the route with a different one.
+        //
+        // Also see the redirect_pages.dart file for more details.
+
+        if (state.queryParams["redirect"] == "orange") {
+          // In this case, we want to go to a different page instead of the
+          // original destination. Simply return its url.
+          if (!_hasRedirectedToOrange) {
+            _hasRedirectedToOrange = true;
+            return "/redirect_orange";
+          }
+        }
+
+        // Return null to not use redirects.
+        return null;
+      },
     ),
   ],
 );
+
+// Normally, you should store this variable in a bloc, and have the bloc
+// store the variable in local storage.
+// Check the settings bloc for an example of writing to local storage.
+// This variable won't make sense without context. Check the redirect_pages.dart
+// for details.
+var _hasRedirectedToOrange = false;

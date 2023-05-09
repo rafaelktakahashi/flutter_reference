@@ -22,6 +22,25 @@ var _informativeTheme = ThemeData(
   ),
 );
 
+var _allWhiteTheme = ThemeData(
+  brightness: Brightness.light,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  primaryColor: MyCompanyPalette.offWhite,
+  colorScheme: const ColorScheme.light(
+    brightness: Brightness.light,
+    background: MyCompanyPalette.white,
+    onBackground: MyCompanyPalette.black,
+    surface: MyCompanyPalette.white,
+    onSurface: MyCompanyPalette.black,
+    primary: MyCompanyPalette.offWhite,
+    onPrimary: MyCompanyPalette.darkBlue,
+    secondary: MyCompanyPalette.blue,
+    onSecondary: MyCompanyPalette.white,
+    error: MyCompanyPalette.red,
+    onError: MyCompanyPalette.black,
+  ),
+);
+
 // Declare other themes here. "Export" them by declaring
 // a variable
 
@@ -41,5 +60,8 @@ ThemeData _customize(ThemeData base) {
 
 /// Informative theme to be used in most places of the app.
 var informativeTheme = _customize(_informativeTheme);
+
+/// Extra bright theme with more white than usual.
+var extraBrightTheme = _customize(_allWhiteTheme);
 
 // If we had other themes, we'd export them too.
