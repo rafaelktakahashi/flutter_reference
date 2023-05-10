@@ -9,6 +9,8 @@ import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/config/dependency_injection.dart';
 import 'package:flutter_reference/data/bridge/channel_bridge.dart' as bridge;
 import 'package:flutter_reference/view/infra/app.dart';
+import 'package:flutter_reference/view/nav/nav_case_extension.dart';
+import 'package:flutter_reference/view/nav/nav_cases/redirection_nav_cases.dart';
 import 'package:get_it/get_it.dart';
 
 void main() {
@@ -58,6 +60,13 @@ Widget _wrapProviders(Widget child) {
         create: (BuildContext context) => BuyerBloc(),
       ),
     ],
-    child: child,
+    // The navigation case provider is our own custom class. See its file for
+    // details.
+    child: NavigationCaseProvider(
+      navigationCases: {
+        "lifeWithGreenPage": greenPageNavigationCase,
+      },
+      child: child,
+    ),
   );
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_reference/data/bridge/channel_bridge.dart' as bridge;
 import 'package:flutter_reference/view/nav/router.dart';
+import 'package:flutter_reference/view/nav/nav_case_extension.dart';
 import 'package:go_router/go_router.dart';
 
 // This navigator isn't very important. You'd implement this depending on
@@ -68,8 +69,10 @@ class InteropNavigator {
   /// Calls from native must specify the following parameters:
   /// - url: The route, according to what's configured in `router.dart`,
   ///   including any route parameters. Not necessary if the method is "pop".
-  /// - method: "push" (default), "replace" or "pop". If "pop", then the route
-  ///   will be ignored an can be anything.
+  /// - method: "push" (default), "replace", "pop" or "navigation-case". If it's
+  ///   "pop", then the route name will be ignored. If it's "navigation-case",
+  ///   then the url should be the name of a navigation case that has been
+  ///   registered in Flutter code using the NavigationCaseProvider.
   ///
   /// If you're in a native page and want to navigate to a new Flutter screen,
   /// then this function will do not what you want. You have to create a new
@@ -97,6 +100,9 @@ class InteropNavigator {
         break;
       case "replace":
         cachedContext.go(url);
+        break;
+      case "navigation-case":
+        cachedContext.runNavigationCase(url);
         break;
       case "push":
       default:

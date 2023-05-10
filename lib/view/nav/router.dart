@@ -187,6 +187,11 @@ final GoRouter router = GoRouter(
             ),
           ),
         ),
+        GoRoute(
+          path: 'redirect_green',
+          builder: (BuildContext context, GoRouterState state) =>
+              const GreenPage(),
+        ),
       ],
       redirect: (BuildContext context, GoRouterState state) {
         // For demonstration purposes, any page can send the 'redirect' query
@@ -210,7 +215,7 @@ final GoRouter router = GoRouter(
           }
         }
 
-        // Return null to not use redirects.
+        // null means "don't redirect".
         return null;
       },
     ),

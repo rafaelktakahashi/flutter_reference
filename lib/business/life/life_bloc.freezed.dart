@@ -18,6 +18,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$LifeState {
   LifeBoard get board => throw _privateConstructorUsedError;
 
+  /// When true, this means the life board is automatically advancing its state.
+  bool get isAutostepping => throw _privateConstructorUsedError;
+
   @JsonKey(ignore: true)
   $LifeStateCopyWith<LifeState> get copyWith =>
       throw _privateConstructorUsedError;
@@ -28,7 +31,7 @@ abstract class $LifeStateCopyWith<$Res> {
   factory $LifeStateCopyWith(LifeState value, $Res Function(LifeState) then) =
       _$LifeStateCopyWithImpl<$Res, LifeState>;
   @useResult
-  $Res call({LifeBoard board});
+  $Res call({LifeBoard board, bool isAutostepping});
 
   $LifeBoardCopyWith<$Res> get board;
 }
@@ -47,12 +50,17 @@ class _$LifeStateCopyWithImpl<$Res, $Val extends LifeState>
   @override
   $Res call({
     Object? board = null,
+    Object? isAutostepping = null,
   }) {
     return _then(_value.copyWith(
       board: null == board
           ? _value.board
           : board // ignore: cast_nullable_to_non_nullable
               as LifeBoard,
+      isAutostepping: null == isAutostepping
+          ? _value.isAutostepping
+          : isAutostepping // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -72,7 +80,7 @@ abstract class _$$_LifeStateCopyWith<$Res> implements $LifeStateCopyWith<$Res> {
       __$$_LifeStateCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({LifeBoard board});
+  $Res call({LifeBoard board, bool isAutostepping});
 
   @override
   $LifeBoardCopyWith<$Res> get board;
@@ -90,12 +98,17 @@ class __$$_LifeStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? board = null,
+    Object? isAutostepping = null,
   }) {
     return _then(_$_LifeState(
       board: null == board
           ? _value.board
           : board // ignore: cast_nullable_to_non_nullable
               as LifeBoard,
+      isAutostepping: null == isAutostepping
+          ? _value.isAutostepping
+          : isAutostepping // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -103,14 +116,18 @@ class __$$_LifeStateCopyWithImpl<$Res>
 /// @nodoc
 
 class _$_LifeState implements _LifeState {
-  const _$_LifeState({required this.board});
+  const _$_LifeState({required this.board, required this.isAutostepping});
 
   @override
   final LifeBoard board;
 
+  /// When true, this means the life board is automatically advancing its state.
+  @override
+  final bool isAutostepping;
+
   @override
   String toString() {
-    return 'LifeState(board: $board)';
+    return 'LifeState(board: $board, isAutostepping: $isAutostepping)';
   }
 
   @override
@@ -118,11 +135,13 @@ class _$_LifeState implements _LifeState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_LifeState &&
-            (identical(other.board, board) || other.board == board));
+            (identical(other.board, board) || other.board == board) &&
+            (identical(other.isAutostepping, isAutostepping) ||
+                other.isAutostepping == isAutostepping));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, board);
+  int get hashCode => Object.hash(runtimeType, board, isAutostepping);
 
   @JsonKey(ignore: true)
   @override
@@ -132,10 +151,16 @@ class _$_LifeState implements _LifeState {
 }
 
 abstract class _LifeState implements LifeState {
-  const factory _LifeState({required final LifeBoard board}) = _$_LifeState;
+  const factory _LifeState(
+      {required final LifeBoard board,
+      required final bool isAutostepping}) = _$_LifeState;
 
   @override
   LifeBoard get board;
+  @override
+
+  /// When true, this means the life board is automatically advancing its state.
+  bool get isAutostepping;
   @override
   @JsonKey(ignore: true)
   _$$_LifeStateCopyWith<_$_LifeState> get copyWith =>

@@ -29,6 +29,9 @@ class LifeEventRandomize extends LifeEvent {}
 class LifeState with _$LifeState {
   const factory LifeState({
     required LifeBoard board,
+
+    /// When true, this means the life board is automatically advancing its state.
+    required bool isAutostepping,
   }) = _LifeState;
 }
 
@@ -53,33 +56,29 @@ const width = 48;
 /// in other files, but ultimately the bloc itself is the only point of contact
 /// with classes outside of the business layer.
 class LifeBloc extends Bloc<LifeEvent, LifeState> {
-  /// If this flag is set, this means the board should automatically advance its
-  /// state on every clock tick.
-  ///
-  /// This flag is not part of the state because the widgets don't need to react
-  /// to it. They only react to changes in the board.
-  /// We may want to add this to the state if any widget needs this information.
-  var autoStep = false;
-
-  LifeBloc() : super(LifeState(board: randomizeBoard(width, height))) {
+  LifeBloc()
+      : super(LifeState(
+          board: randomizeBoard(width, height),
+          isAutostepping: false,
+        )) {
     on<LifeEventStepOnce>((event, emit) {
       // Emit a new state having applied the rules to the board once.
       emit(state.copyWith(board: stepForward(state.board)));
     });
 
     on<LifeEventStartAutostep>((event, emit) {
-      autoStep = true;
+      emit(state.copyWith(isAutostepping: true));
     });
 
     on<LifeEventStopAutostep>((event, emit) {
-      autoStep = false;
+      emit(state.copyWith(isAutostepping: false));
     });
 
     on<LifeEventToggleAutostep>((event, emit) {
       // Don't repeat logic. Emit an event here.
       // In this case, this doesn't save any code, but it avoids implementing
       // the same thing in multiple places.
-      if (autoStep) {
+      if (state.isAutostepping) {
         add(LifeEventStopAutostep());
       } else {
         add(LifeEventStartAutostep());
@@ -87,7 +86,7 @@ class LifeBloc extends Bloc<LifeEvent, LifeState> {
     });
 
     on<LifeEventRandomize>((event, emit) {
-      emit(LifeState(board: randomizeBoard(width, height)));
+      emit(state.copyWith(board: randomizeBoard(width, height)));
     });
 
     // Setup the timer to be always ticking. It'll advance the board state if
@@ -95,7 +94,7 @@ class LifeBloc extends Bloc<LifeEvent, LifeState> {
     // This implementation is a minimal example of the game of life; you could
     // put more information in the state and control it from the widgets.
     Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      if (autoStep) {
+      if (state.isAutostepping) {
         // Don't repeat the logic here, send an event.
         add(LifeEventStepOnce());
       }

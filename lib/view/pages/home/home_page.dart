@@ -29,6 +29,7 @@ class HomePage extends StatelessWidget {
         const PageLink(url: '/random', text: "Random page"),
         PageLink(
           calculateRoutes: (context) {
+            // This is one method of implementing redirects.
             // This callback in our PageLink widget should return a list of urls,
             // and each of them will be called in order, one after the other
             // without delay. This is useful for pushing multiple routes at once.
@@ -43,9 +44,17 @@ class HomePage extends StatelessWidget {
         ),
         const PageLink(
           // This is another example of redirection. See the redirect_pages.dart
-          // files to see why we're doing this.
+          // file to see why we're doing this.
           url: '/life?redirect=orange',
           text: "Life with one-time redirect",
+        ),
+        const PageLink(
+          // This is yet another way of implementing redirects or any other kind
+          // of complicated navigation. It's the most recommended way, but few
+          // pages need this. See the redirect_pages.dart file to see why we're
+          // doing this.
+          navCase: 'lifeWithGreenPage',
+          text: "Life with added route",
         ),
       ],
     );
