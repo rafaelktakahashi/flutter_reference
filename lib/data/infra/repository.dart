@@ -18,7 +18,7 @@ import 'package:flutter_reference/domain/error/playground_error.dart';
 abstract class Repository {}
 
 /// Example of a interface for repositories that you may want to use (if you
-/// decide it makes sense).
+/// decide it makes sense). This reference architecture does not use this class.
 ///
 /// Generally, this is recommended if you know for sure that all your
 /// repositories will have the same methods with the same API. If you want

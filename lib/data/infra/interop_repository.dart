@@ -1,6 +1,14 @@
 import 'package:flutter_reference/data/bridge/channel_bridge.dart';
 import 'package:flutter_reference/data/infra/repository.dart';
 
+/// Superclass for repositories that need to communicate with native code.
+///
+/// The purpose of this class is to avoid repeated code. Only this class needs
+/// to use the bridge.
+///
+/// The reason why this extends Repository is merely for organization; in
+/// certain projects, you may have a Repository interface with certain fixed
+/// methods like fetch<T>(...), but this project does not have that.
 abstract class InteropRepository extends Repository {
   /// A reference to a port in our bridge.
   /// The port has the name specified in this constructor. The name should
@@ -33,8 +41,10 @@ abstract class InteropRepository extends Repository {
   /// the bridge.
   void exposeMethod(String name, dynamic Function(dynamic) handler) {
     // If you want, you can restrict what kind of function is allowed here,
-    // perhaps using a generic parameter
-    // I'm not doing that, though. That's because we
+    // perhaps using a generic parameter.
+    // I'm not doing that, though. That's because we don't restrict the APIs of
+    // repositories in this project.
+    _port.registerHandler(name, handler);
   }
 
   /// Method available for the implementations

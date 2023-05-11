@@ -24,7 +24,8 @@ import 'package:get_it/get_it.dart';
 ///
 /// The main reason for the map being dynamic is that making it type-safe
 /// requires a great deal of repeated code for every additional setting in the
-/// app. We leave the
+/// app. Other blocs can offer type-safe operations if it only supports values
+/// of one type.
 class SettingsState {
   // To add a new setting:
   // 1. Add the key in this class.
@@ -68,6 +69,11 @@ class SettingsState {
     return SettingsState(values: mapCopy);
   }
 
+  // Default settings are used in two situations: (1) when the app opens for the
+  // first time, and (2) when settings fail to load.
+  // The second case should be very rare or never happen. If you determine that
+  // such failures are common in your app, you'll need additional logic to use
+  // a separate set of fallback values.
   factory SettingsState.defaultSettings() {
     return const SettingsState(values: {
       SettingsState.settingOneKey: false,
@@ -107,7 +113,7 @@ class UpdateSettingEvent extends SettingsEvent {
   const UpdateSettingEvent({required this.settingKey, required this.newValue});
 }
 
-/// This is only necessary because dart doesn't safe null-safe casts.
+/// This is only necessary because dart doesn't have null-safe casts.
 /// (For example, other languages have the as? operator.)
 T? _safeCast<T>(dynamic input) {
   if (input is T) {
