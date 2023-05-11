@@ -56,6 +56,10 @@ class HomePage extends StatelessWidget {
           navCase: 'lifeWithGreenPage',
           text: "Life with added route",
         ),
+        const PageLink(
+          url: '/map',
+          text: "Map with stuff over it",
+        ),
       ],
     );
   }

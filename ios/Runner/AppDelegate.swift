@@ -1,5 +1,6 @@
 import UIKit
 import Flutter
+import GoogleMaps
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -14,13 +15,17 @@ import Flutter
       // through the bridge.
       MethodChannelBridge.initialize(withBinaryMessenger: controller.binaryMessenger)
       
-      // If you're using the project as a reference, you should use a read DI library here.
-      // The main limitation is that the bloc adapters need a binary messenger in order to
-      // open the method channel.
+      // If you're using the project as a reference, you should use a real DI library here.
+      // The "Injector" is only an example.
       Injector.shared.registerObject(CounterBlocAdapter(), withName: "counterBlocAdapter")
       Injector.shared.registerObject(ProductRepository(), withName: "productRepository")
       
       Injector.shared.registerObject(InteropNavigator.buildNavigator(withFlutterController: controller), withName: "navigator")
+      
+      // Initialization for Google Maps. This needs to happen here in the AppDelegate.
+      // This project only uses Google Maps in one page, to showcase controller logic.
+      // You should use your own key here.
+      GMSServices.provideAPIKey("AIzaSyB59WWNAkbuPVjPlX2aYUERAlrvazQo1uM")
       
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
