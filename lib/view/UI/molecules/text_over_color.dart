@@ -85,7 +85,8 @@ class TextOverColor extends StatelessWidget {
   /// luminance.
   Color _calculateFgColor(Color bgColor) {
     // A color's luminance is closer to 0 when it's dark, and closer to 1 when
-    // it's bright. Certain colors
+    // it's bright. Some colors contribute more than others to the subjective
+    // perception of brightness.
     // Source for the formula: https://stackoverflow.com/a/3943023
     // This calculates whether the bgColor has more constrast against white, or
     // more constrast agains black, then returns whichever has higher contrast.
