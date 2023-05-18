@@ -78,7 +78,7 @@ class PlaygroundMap extends StatelessWidget {
       mapType: _translateMapType(mapType),
       // Typically, the Google logo renders very near to the map's edge, but
       // since our map covers the whole screen, it could render behind the
-      // navigation bar. This ensures that the Logo renders where it's visible.
+      // navigation bar. This ensures that the logo renders where it's visible.
       padding: MediaQuery.of(context).padding,
     );
   }
@@ -112,11 +112,14 @@ class _MapControllerGoogleMapsWrapper implements MapController {
 
   @override
   Future<bool> goToCurrentLocation() async {
-    // TODO: implement goToCurrentLocation
-    // This requires getting the user's current location, which isn't so simple.
-    // We'll have to create a service and then access it directly from a widget,
-    // which is allowed in rare cases. Another option is putting that data in
-    // a bloc that remembers the user's location and the request's state.
+    // I have not implemented gps in this example project because the geolocator
+    // package requires some changes to the project, and you can also use the
+    // built-in current location button that comes with Google Maps, which is
+    // easier if you don't mind the fixed style.
+    // You can also add many other methods here that make sense to your project.
+    // If you need a method like this, I suggest remembering the user's location
+    // in a bloc, and placing the interaction with the OS in a service in the
+    // data layer. Ultimately it's up to you.
     throw UnimplementedError();
   }
 

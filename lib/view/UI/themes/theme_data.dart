@@ -41,6 +41,59 @@ var _allWhiteTheme = ThemeData(
   ),
 );
 
+var _lightMapTheme = ThemeData(
+  brightness: Brightness.light,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  primaryColor: Colors.lightBlue,
+  colorScheme: ColorScheme.light(
+    brightness: Brightness.light,
+    background: MyCompanyPalette.white.withAlpha(0x80),
+    onBackground: MyCompanyPalette.darkBlue,
+    surface: MyCompanyPalette.offWhite,
+    onSurface: MyCompanyPalette.darkBlue,
+    primary: Colors.lightBlue,
+    secondary: MyCompanyPalette.darkBlue,
+    error: MyCompanyPalette.darkRed,
+    onError: MyCompanyPalette.white,
+  ),
+  toggleButtonsTheme: ToggleButtonsThemeData(
+    borderRadius: const BorderRadius.all(Radius.circular(7)),
+    fillColor: Colors.lightBlue[500], // background when selected
+    selectedBorderColor: Colors.lightBlue[800], // border when selected
+    selectedColor: Colors.white, // text when selected
+    borderColor: Colors.lightBlue[800], // border when unselected
+    color: Colors.black54, // text when unselected
+    textStyle:
+        TextStyle(foreground: Paint()..color = MyCompanyPalette.darkBlue),
+  ),
+);
+
+var _darkMapTheme = ThemeData(
+  brightness: Brightness.dark,
+  visualDensity: VisualDensity.adaptivePlatformDensity,
+  primaryColor: Colors.lightBlue,
+  colorScheme: ColorScheme.light(
+    brightness: Brightness.dark,
+    background: MyCompanyPalette.black.withAlpha(0x80),
+    onBackground: MyCompanyPalette.lightBlue,
+    surface: MyCompanyPalette.black,
+    onSurface: MyCompanyPalette.lightBlue,
+    primary: MyCompanyPalette.lightBlue,
+    secondary: MyCompanyPalette.purple,
+    error: MyCompanyPalette.red,
+    onError: MyCompanyPalette.white,
+  ),
+  toggleButtonsTheme: ToggleButtonsThemeData(
+    borderRadius: const BorderRadius.all(Radius.circular(7)),
+    fillColor: MyCompanyPalette.lightBlue,
+    selectedBorderColor: Colors.white,
+    selectedColor: Colors.white,
+    borderColor: MyCompanyPalette.lightBlue,
+    color: Colors.black,
+    textStyle: TextStyle(foreground: Paint()..color = Colors.white),
+  ),
+);
+
 // Declare other themes here. "Export" them by declaring
 // a variable
 
@@ -64,4 +117,5 @@ var informativeTheme = _customize(_informativeTheme);
 /// Extra bright theme with more white than usual.
 var extraBrightTheme = _customize(_allWhiteTheme);
 
-// If we had other themes, we'd export them too.
+var lightMapTheme = _customize(_lightMapTheme);
+var darkMapTheme = _customize(_darkMapTheme);

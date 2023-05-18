@@ -25,7 +25,7 @@ import GoogleMaps
       // Initialization for Google Maps. This needs to happen here in the AppDelegate.
       // This project only uses Google Maps in one page, to showcase controller logic.
       // You should use your own key here.
-      GMSServices.provideAPIKey("AIzaSyB59WWNAkbuPVjPlX2aYUERAlrvazQo1uM")
+      GMSServices.provideAPIKey("--PLACE_YOUR_KEY_HERE--")
       
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)

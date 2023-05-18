@@ -15,7 +15,7 @@
 
             <!-- Replace this with your key. -->
             <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyB59WWNAkbuPVjPlX2aYUERAlrvazQo1uM"/>
+                android:value="--PLACE_YOUR_KEY_HERE--"/>
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

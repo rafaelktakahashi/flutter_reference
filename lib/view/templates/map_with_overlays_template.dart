@@ -17,15 +17,18 @@ class MapWithOverlaysTemplate extends StatelessWidget {
   final Widget? topRight;
   final Widget? bottomLeft;
   final Widget? bottomRight;
-  const MapWithOverlaysTemplate({
-    super.key,
-    required this.title,
-    required this.background,
-    this.topLeft,
-    this.topRight,
-    this.bottomLeft,
-    this.bottomRight,
-  });
+
+  /// Theme specifically for the controls that render above the map.
+  final ThemeData? overlayTheme;
+  const MapWithOverlaysTemplate(
+      {super.key,
+      required this.title,
+      required this.background,
+      this.topLeft,
+      this.topRight,
+      this.bottomLeft,
+      this.bottomRight,
+      this.overlayTheme});
 
   @override
   Widget build(BuildContext context) {
@@ -42,24 +45,27 @@ class MapWithOverlaysTemplate extends StatelessWidget {
 
   /// Build the components that render on top of the background.
   Widget _buildOverlays(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        // Padding for the overlays only. The map renders without padding.
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Child that renders at the top of the screen: a row of widgets.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [topLeft ?? _spacer(), topRight ?? _spacer()],
-            ),
-            // Child that renders at the bottom of the screen: another row.
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [bottomLeft ?? _spacer(), bottomRight ?? _spacer()],
-            ),
-          ],
+    return Theme(
+      data: overlayTheme ?? Theme.of(context),
+      child: SafeArea(
+        child: Padding(
+          // Padding for the overlays only. The map renders without padding.
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Child that renders at the top of the screen: a row of widgets.
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [topLeft ?? _spacer(), topRight ?? _spacer()],
+              ),
+              // Child that renders at the bottom of the screen: another row.
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [bottomLeft ?? _spacer(), bottomRight ?? _spacer()],
+              ),
+            ],
+          ),
         ),
       ),
     );

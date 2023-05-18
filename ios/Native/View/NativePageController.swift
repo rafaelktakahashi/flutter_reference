@@ -103,7 +103,7 @@ class NativePageController: UIViewController {
 
     @IBAction func mainMenuButtonPressed(_ sender: Any) {
         // First, we navigate to the main menu page _inside_ the Flutter view.
-        InteropNavigator._instance?.navigateInFlutter(toPageWithUrl: "/", withMethod: "replace")
+        InteropNavigator.getNavigator()?.navigateInFlutter(toPageWithUrl: "/", withMethod: "replace")
         // Next, we go to the Flutter view, where we expect the main manu to already
         // be loaded.
         // In this particular case, we only need to dismiss the current view, because we
