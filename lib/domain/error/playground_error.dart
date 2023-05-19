@@ -1,5 +1,17 @@
 /// Superclass for all errors that can be returned from operations (especially
 /// in the data layer) in this project.
+///
+/// You should change this class according to what you need in your project.
+/// You're free to create as many subclasses as are useful to you; for example,
+/// a class for network errors that always produces a fixed generic error
+/// message, or a bloc error that's instantiated with a bloc and prints its
+/// details.
+///
+/// Having all your errors share a superclass makes it easier to pass on errors
+/// without knowing what exactly they are, but be careful not to "bleed"
+/// sensitive information on the screen. You should always be mindful of what
+/// information is aimed at developers (to be printed in the console or sent to
+/// analytics) and what information is aimed at users (to be shown on screen).
 abstract class PlaygroundError {
   const PlaygroundError();
 

@@ -13,6 +13,10 @@ import 'package:flutter_reference/view/nav/nav_case_extension.dart';
 import 'package:flutter_reference/view/nav/nav_cases/redirection_nav_cases.dart';
 import 'package:get_it/get_it.dart';
 
+/// Entry point of the application.
+///
+/// If you're using Flutter code as a module, you must ensure that this code
+/// properly runs at the start of the application.
 void main() {
   // Register dependencies. This needs to be after the call to
   // ensureInitialized because some classes open the method channel.

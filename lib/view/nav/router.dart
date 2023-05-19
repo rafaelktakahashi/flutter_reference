@@ -45,7 +45,7 @@ final GoRouter router = GoRouter(
           path: 'products',
           builder: (BuildContext context, GoRouterState state) {
             // You can run initialization logic in the pages before navigation
-            // before calling push() or go()), or here. Doing it here ensures
+            // (before calling push() or go()), or here. Doing it here ensures
             // you won't forget the call, no matter where the page is being
             // called from.
             // Both cases are better than leaving initialization logic in the
@@ -53,6 +53,8 @@ final GoRouter router = GoRouter(
             // don't do anything special on the first render.
             // Note that all the complicated logic should be in the blocs, so
             // this initialization logic is no more than emitting an event.
+            // This also ensures that the bloc will already have receives the
+            // necessary event by the time the user gets to the new page.
             context
                 .read<ProductListBloc>()
                 .add(const FetchProductsEvent(skipIfAlreadyLoaded: true));

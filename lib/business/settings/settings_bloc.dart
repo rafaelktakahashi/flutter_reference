@@ -32,6 +32,15 @@ class SettingsState {
   // 2. Add its default value in SettingsState.defaultSettings().
   // 3. In the bloc, add logic to read it from storage and to write it to
   // storage, considering its expected type.
+  //
+  // If you need different variable names in Android and iOS (for example, if
+  // you need to support legacy variables that already existed), you can use
+  // the Flutter API to check for the platform here. You'd continue to use these
+  // variables as if they were constants:
+  // static final dependsOnPlatform = Platform.isAndroid ? "value-a" : "value-b";
+  //
+  // Also, these constants don't need to be in the state. You can place them
+  // elsewhere if you prefer, and even use enums or classes instead.
 
   /// Expected type: boolean.
   static const settingOneKey = "setting_1";
@@ -52,6 +61,11 @@ class SettingsState {
 
   const SettingsState({required this.values});
 
+  /// Create a new instance of this state where you can specify new values for
+  /// the map.
+  ///
+  /// Typically you'd use Freezed to auto-generate the copyWith method, but in
+  /// this case I needed a specific behavior with the [ignoreNull] parameter.
   SettingsState copyWith(Map<String, dynamic> newValues,
       {bool ignoreNull = true}) {
     // This is to avoid modifying the previous map.
@@ -92,12 +106,16 @@ abstract class SettingsEvent {
 /// Read all settings from memory.
 ///
 /// Settings will be unavailable in the settings bloc until initialization takes
-/// place.
+/// place. You can reference the settings, but all you'll find are default
+/// values, so it's not recommended to use them too early during the app's
+/// initialization.
+///
 /// Initialization is expected to be very fast, but it's an asynchronous
 /// operation nonetheless.
 ///
 /// One instance of this event must be emitted at initialization. The bloc does
-/// not automatically initialize itself.
+/// not automatically initialize itself. Check the `dependency_injection.dart`
+/// file to see where this event is emitted.
 class InitializeSettingsEvent extends SettingsEvent {
   const InitializeSettingsEvent();
 }

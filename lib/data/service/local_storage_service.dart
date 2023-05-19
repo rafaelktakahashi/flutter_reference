@@ -25,6 +25,12 @@ class LocalStorageService {
   // If you do that, you'd have a corresponding LocalStorageService in Android
   // code, and another in iOS code. The read<T>(...) and write<T>(...) methods
   // here would use the bridge to call the corresponding native methods.
+  //
+  // Another concern is that you may need different key names in Android and in
+  // iOS, for example if you need to support legacy variables that already
+  // existed before. However, that is not the concern of this service, since
+  // here we only receive the variable names to interact with them. See the
+  // settings bloc for a comment on that.
 
   /// This instance interacts with the system API.
   final storage = const FlutterSecureStorage();

@@ -41,9 +41,13 @@ void configureDependencies() {
   // For this reason, we can't use factories here, only singletons.
   GetIt.I.registerSingleton<CounterBloc>(CounterBloc());
 
-  // This bloc is a special case. It gets initialized using data from local
-  // storage, so it's better if we initialize it here, rather than only when
-  // a page renders. This avoids visual bugs.
+  // Generally speaking, if a bloc needs to be initialized only once, you can
+  // do it here or in the bloc provider.
+  // This settingsBloc is initialized here and not in the bloc provider, because
+  // initializing in the provider means that the initialization event would be
+  // emitted when the settings page loads for the first time, and that leads to
+  // visual bugs. Thus, this code here ensures that the settingsBloc
+  // is initialized at the start of the application.
   final settingsBloc = SettingsBloc();
   settingsBloc.add(const InitializeSettingsEvent());
   GetIt.I.registerSingleton<SettingsBloc>(settingsBloc);

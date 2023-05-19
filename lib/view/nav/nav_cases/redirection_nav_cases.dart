@@ -16,9 +16,6 @@
 // isn't a way to do that while conforming to a typedef.
 // NavigationCase is a typedef of a function.
 
-// After you have written the contents of this file once, you no longer need to
-// worry about it.
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/life/life_bloc.dart';
 import 'package:flutter_reference/view/nav/nav_case_extension.dart';
