@@ -71,9 +71,12 @@ class TextOverColor extends StatelessWidget {
       child: Center(
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: textList,
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: textList,
+            ),
           ),
         ),
       ),
