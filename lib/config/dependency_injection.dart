@@ -4,6 +4,7 @@ import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
+import 'package:flutter_reference/view/nav/interop_navigator.dart';
 import 'package:get_it/get_it.dart';
 
 /// Initialize dependency injection. This function creates all instances
@@ -51,4 +52,11 @@ void configureDependencies() {
   final settingsBloc = SettingsBloc();
   settingsBloc.add(const InitializeSettingsEvent());
   GetIt.I.registerSingleton<SettingsBloc>(settingsBloc);
+
+  // It's very important to create this instance here. The interop navigator is
+  // a singleton, so it doesn't _need_ to be instantiated; however, its
+  // constructor contains logic for registering its handler in the bridge.
+  // If you don't instantiate this class during the app's initialization, it's
+  // possible that the call registration gets skipped.
+  GetIt.I.registerSingleton<InteropNavigator>(InteropNavigator());
 }

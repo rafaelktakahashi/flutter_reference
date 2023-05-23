@@ -4,43 +4,83 @@ import 'package:flutter_reference/view/nav/router.dart';
 import 'package:flutter_reference/view/nav/nav_case_extension.dart';
 import 'package:go_router/go_router.dart';
 
-// This navigator isn't very important. You'd implement this depending on
-// what you have in your own project. This project uses GoRouter in the Flutter
-// side, and very basic navigation in native code.
-// This particular navigator (to be used as an example) simply has a `navigate`
-// method that needs to be implemented natively.
-
-/// Example of a native navigator. This class can be used to navigate to a
-/// native page, and can also receive calls from native code to navigate to a
-/// Flutter page (but in that case, pages outside of the Flutter view/activity
-/// will not be affected.)
+/// Example of a navigator that can be used from the other side of the bridge.
+/// You must instantiate this class at least once in order to receive calls from
+/// native code. We do this in `dependency_injection.dart`.
+///
+/// If you need to navigate in Flutter, you should simply use the navigation
+/// framework of your choice directly (there is no need to use it through this
+/// class). When you need to navigate in native code, it is recommended to make
+/// calls _before_ you show the Flutter activity/view.
+///
+/// You can feel free to adapt this code to your needs, but be careful with
+/// static code. There are mainly two limitations in this class:
+/// 1. The handler that's registered in the bridge must reference this class'
+/// `handleNavigate(...)`. I'm doing that by keeping only one cached instance
+/// (a singleton), but you could also solve the same problem by making
+/// everything static or using top-level variables for everything. Just be
+/// careful of what code runs and what doesn't; typically, variables are only
+/// initialized when they're used.
+/// 2. The `registerHandler(...)` method must be called at least once (and
+/// ideally only once) before native code tries to use this class. I'm doing
+/// that by registering the handler in the private constructor, and calling the
+/// public constructor in `dependency_injection.dart.`. You could also expose
+/// a method just for registering the handler. I don't recommend making the
+/// bridge reference this class (or any other classes).
+///
+/// Referencing this class should only be necessary if you need to send some
+/// navigation command to native code. See the counter page for an example.
 class InteropNavigator {
-  InteropNavigator._();
+  /// This constructor always returns the same instance. It **must** be called
+  /// at least once, otherwise this class may not be able to receive calls
+  /// from native code.
+  factory InteropNavigator() {
+    _instance ??= InteropNavigator._();
 
-  // Our connection to the bridge. This port communicates with the corresponding
-  // port in native code.
-  static final _bridgePort = () {
-    // The code here executes once during initialization, and then we store the
-    // port in a static variable..
+    return _instance!;
+  }
 
-    final port = bridge.openBridgePort("InteropNavigator");
-
-    // This is an example of you you can receive calls from native code to
-    // trigger flutter navigation from native code, but be careful! Flutter code
-    // can't affect the native page stack. This means you can't make Flutter
-    // pages appear above native pages, and you can't pop native pages using
-    // the Flutter navigator.
-    port.registerHandler("navigate", (params) {
+  /// This private constructor registers a handler in the bridge. This enables
+  /// this class to receive native calls.
+  InteropNavigator._() {
+    _bridgePort.registerHandler("navigate", (params) {
       final url = params["url"] as String;
-      final method = (params["method"] ?? "push") as String; // default "push"
-      instance()._handleNavigate(url, method);
+      final method = (params["method"] ?? "push") as String; // Default "push"
+      // We can't refer to the _handleNavigate method right now because that's
+      // the instance that we're building now in this constructor. We expect
+      // this instance to always exist when the handler is called.
+      _instance?._handleNavigate(url, method);
     });
+  }
 
-    return port;
-  }();
+  /// Our connection to the bridge. This allows for communication with the other
+  /// side of the bridge.
+  ///
+  /// Warning: At first, it may look like calling `..registerHandler(...)` on
+  /// this static property would be a nice shortcut. However, that wouldn't
+  /// necessarily work, because in Flutter, static properties like these are
+  /// only computed when they're used. The handler won't be registered until
+  /// someone _uses_ the `_bridgePort` variable.
+  ///
+  /// In this sample project the port is only *used* when Flutter code calls the
+  /// Flutter `navigate` method to navigate to a native page. While that doesn't
+  /// happen, the handler will not be available to be called from native code.
+  ///
+  /// For this reason, the `registerHandler(...)` call needs to be in a place
+  /// where it is guaranteed to run early.
+  /// I originally wrote this class as a singleton, but it's difficult to
+  /// guarantee that static code runs when it's not used. Now it's a regular
+  /// class that needs to be initialized in `dependency_injection.dart`.
+  /// I recommend avoiding singletons if possible.
+  static final _bridgePort = bridge.openBridgePort("InteropNavigator");
 
+  // The following code looks like it works, but it's not guaranteed to run!
+  // static final _bridgePort = bridge.openBridgePort("InteropNavigator")
+  //   ..registerHandler("navigate", (params) {/** code */});
+
+  /// Cached instance. I limit the number of instances to only once, because the
+  /// bridge handlers makes reference to only one instance of this navigator.
   static InteropNavigator? _instance;
-  static InteropNavigator instance() => _instance ??= InteropNavigator._();
 
   /// Function for navigating to a native page.
   ///
@@ -102,6 +142,10 @@ class InteropNavigator {
         cachedContext.go(url);
         break;
       case "navigation-case":
+        // See the `nav_case_extension.dart` file for an explanation of what
+        // navigation cases are, and `redirect_pages.dart` to see an example.
+        // If you haven't set that up (maybe you don't need it, and that's fine)
+        // then simply remove this case.
         cachedContext.runNavigationCase(url);
         break;
       case "push":

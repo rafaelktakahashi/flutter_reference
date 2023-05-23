@@ -89,6 +89,7 @@ extension NavigationCaseBuildContext on BuildContext {
 // add the dependency in this example project.
 // You can feel free to use the provider package in your own implementation, and
 // that should simplify things.
+// See: https://pub.dev/packages/provider
 
 class NavigationCaseProvider extends InheritedWidget {
   /// Navigation cases, keyed by name.
