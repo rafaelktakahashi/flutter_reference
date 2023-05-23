@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/settings/settings_bloc.dart';
+import 'package:flutter_reference/business/settings/settings_keys.dart';
 import 'package:flutter_reference/view/UI/molecules/settings_header.dart';
 import 'package:flutter_reference/view/UI/molecules/settings_item.dart';
 
@@ -42,11 +43,15 @@ class SettingsControls extends StatelessWidget {
             SettingsItem(
               mainLabel: "Setting One",
               control: Switch(
-                value: state.values[SettingsState.settingOneKey],
+                // The keys come from the business layer. Don't declare keys in
+                // multiple places. The "real" name that is used as key is the
+                // name property in the enum, but only the business layer needs
+                // to worry about that.
+                value: state.values[SettingsKey.settingOneKey],
                 onChanged: (value) {
                   context.read<SettingsBloc>().add(
                         UpdateSettingEvent(
-                          settingKey: SettingsState.settingOneKey,
+                          settingKey: SettingsKey.settingOneKey,
                           newValue: value,
                         ),
                       );
@@ -57,11 +62,11 @@ class SettingsControls extends StatelessWidget {
               mainLabel: "Setting Two",
               subLabel: "Explanation of setting two",
               control: Switch(
-                value: state.values[SettingsState.settingTwoKey],
+                value: state.values[SettingsKey.settingTwoKey],
                 onChanged: (value) {
                   context.read<SettingsBloc>().add(
                         UpdateSettingEvent(
-                          settingKey: SettingsState.settingTwoKey,
+                          settingKey: SettingsKey.settingTwoKey,
                           newValue: value,
                         ),
                       );
@@ -71,11 +76,11 @@ class SettingsControls extends StatelessWidget {
             SettingsItem(
               mainLabel: "Setting Three",
               control: Switch(
-                value: state.values[SettingsState.settingThreeKey],
+                value: state.values[SettingsKey.settingThreeKey],
                 onChanged: (value) {
                   context.read<SettingsBloc>().add(
                         UpdateSettingEvent(
-                          settingKey: SettingsState.settingThreeKey,
+                          settingKey: SettingsKey.settingThreeKey,
                           newValue: value,
                         ),
                       );
@@ -88,13 +93,13 @@ class SettingsControls extends StatelessWidget {
               control: ToggleButtons(
                 // 'isSelected' expects a list like [false, true, false]
                 isSelected: settingsAbcOptions
-                    .map((e) => e == state.values[SettingsState.settingAbcKey])
+                    .map((e) => e == state.values[SettingsKey.settingAbcKey])
                     .toList(),
                 children: settingsAbcOptions.map((e) => Text(e)).toList(),
                 onPressed: (index) {
                   context.read<SettingsBloc>().add(
                         UpdateSettingEvent(
-                          settingKey: SettingsState.settingAbcKey,
+                          settingKey: SettingsKey.settingAbcKey,
                           newValue: settingsAbcOptions[index],
                         ),
                       );
@@ -106,14 +111,14 @@ class SettingsControls extends StatelessWidget {
               control: ToggleButtons(
                 isSelected: settingsNumberOptions
                     .map(
-                      (e) => e == state.values[SettingsState.settingNumberKey],
+                      (e) => e == state.values[SettingsKey.settingNumberKey],
                     )
                     .toList(),
                 children: settingsNumberOptions.map((e) => Text("$e")).toList(),
                 onPressed: (index) {
                   context.read<SettingsBloc>().add(
                         UpdateSettingEvent(
-                          settingKey: SettingsState.settingNumberKey,
+                          settingKey: SettingsKey.settingNumberKey,
                           newValue: settingsNumberOptions[index],
                         ),
                       );

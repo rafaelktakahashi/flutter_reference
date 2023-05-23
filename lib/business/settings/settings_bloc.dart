@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/settings/settings_keys.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:get_it/get_it.dart';
@@ -28,36 +29,12 @@ import 'package:get_it/get_it.dart';
 /// of one type.
 class SettingsState {
   // To add a new setting:
-  // 1. Add the key in this class.
+  // 1. Add the key to the settings key enum, and its name in the extension.
   // 2. Add its default value in SettingsState.defaultSettings().
   // 3. In the bloc, add logic to read it from storage and to write it to
   // storage, considering its expected type.
-  //
-  // If you need different variable names in Android and iOS (for example, if
-  // you need to support legacy variables that already existed), you can use
-  // the Flutter API to check for the platform here. You'd continue to use these
-  // variables as if they were constants:
-  // static final dependsOnPlatform = Platform.isAndroid ? "value-a" : "value-b";
-  //
-  // Also, these constants don't need to be in the state. You can place them
-  // elsewhere if you prefer, and even use enums or classes instead.
 
-  /// Expected type: boolean.
-  static const settingOneKey = "setting_1";
-
-  /// Expected type: boolean.
-  static const settingTwoKey = "setting_2";
-
-  /// Expected type: boolean.
-  static const settingThreeKey = "setting_3";
-
-  /// Expected type: string.
-  static const settingAbcKey = "setting_abc";
-
-  /// Expected type: int.
-  static const settingNumberKey = "setting_number";
-
-  final Map<String, dynamic> values;
+  final Map<SettingsKey, dynamic> values;
 
   const SettingsState({required this.values});
 
@@ -66,13 +43,13 @@ class SettingsState {
   ///
   /// Typically you'd use Freezed to auto-generate the copyWith method, but in
   /// this case I needed a specific behavior with the [ignoreNull] parameter.
-  SettingsState copyWith(Map<String, dynamic> newValues,
+  SettingsState copyWith(Map<SettingsKey, dynamic> newValues,
       {bool ignoreNull = true}) {
-    // This is to avoid modifying the previous map.
-    final Map<String, dynamic> mapCopy = Map.from(values);
+    // This variable is to avoid modifying the previous map.
+    final Map<SettingsKey, dynamic> mapCopy = Map.from(values);
 
-    // This is to avoid modifying the parameter.
-    final Map<String, dynamic> newValuesCopy = Map.from(newValues);
+    // This variable is to avoid modifying the parameter.
+    final Map<SettingsKey, dynamic> newValuesCopy = Map.from(newValues);
 
     if (ignoreNull) {
       newValuesCopy.removeWhere((key, value) => value == null);
@@ -90,11 +67,11 @@ class SettingsState {
   // a separate set of fallback values.
   factory SettingsState.defaultSettings() {
     return const SettingsState(values: {
-      SettingsState.settingOneKey: false,
-      SettingsState.settingTwoKey: true,
-      SettingsState.settingThreeKey: false,
-      SettingsState.settingAbcKey: 'A',
-      SettingsState.settingNumberKey: 40,
+      SettingsKey.settingOneKey: false,
+      SettingsKey.settingTwoKey: true,
+      SettingsKey.settingThreeKey: false,
+      SettingsKey.settingAbcKey: 'A',
+      SettingsKey.settingNumberKey: 40,
     });
   }
 }
@@ -126,7 +103,7 @@ class InitializeSettingsEvent extends SettingsEvent {
 /// background. Each key has an expected type. If the [newValue] is of the wrong
 /// type, then nothing will happen (fails silently).
 class UpdateSettingEvent extends SettingsEvent {
-  final String settingKey;
+  final SettingsKey settingKey;
   final dynamic newValue;
   const UpdateSettingEvent({required this.settingKey, required this.newValue});
 }
@@ -150,11 +127,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         // Here we make multiple parallel calls, but the local storage ought
         // to be able to handle all that without any problems.
         List<Either<PlaygroundError, dynamic>> eithers = await Future.wait([
-          localStorageService.read<bool>(SettingsState.settingOneKey),
-          localStorageService.read<bool>(SettingsState.settingTwoKey),
-          localStorageService.read<bool>(SettingsState.settingThreeKey),
-          localStorageService.read<String>(SettingsState.settingAbcKey),
-          localStorageService.read<int>(SettingsState.settingNumberKey),
+          localStorageService.read<bool>(SettingsKey.settingOneKey.name),
+          localStorageService.read<bool>(SettingsKey.settingTwoKey.name),
+          localStorageService.read<bool>(SettingsKey.settingThreeKey.name),
+          localStorageService.read<String>(SettingsKey.settingAbcKey.name),
+          localStorageService.read<int>(SettingsKey.settingNumberKey.name),
         ]);
         // Now we have a list of eithers. For each either that's a right,
         // unwrap its value; for each either that's a left (not expected), use
@@ -171,11 +148,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         emit(
           state.copyWith(
             {
-              SettingsState.settingOneKey: _safeCast<bool>(values[0]),
-              SettingsState.settingTwoKey: _safeCast<bool>(values[1]),
-              SettingsState.settingThreeKey: _safeCast<bool>(values[2]),
-              SettingsState.settingAbcKey: _safeCast<String>(values[3]),
-              SettingsState.settingNumberKey: _safeCast<int>(values[4]),
+              SettingsKey.settingOneKey: _safeCast<bool>(values[0]),
+              SettingsKey.settingTwoKey: _safeCast<bool>(values[1]),
+              SettingsKey.settingThreeKey: _safeCast<bool>(values[2]),
+              SettingsKey.settingAbcKey: _safeCast<String>(values[3]),
+              SettingsKey.settingNumberKey: _safeCast<int>(values[4]),
             },
             ignoreNull: true,
           ),
@@ -191,9 +168,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // avoid repeated code.
       // However, variables of type Type cannot be used as generic parameters:
       //
-      // Type settingType = bool;
-      // String settingKey = "some_key";
-      // localStorageService.read<settingType>(settingKey); // Doesn't work
+      // Type settingType = bool; // works; settingType constains the value bool
+      // String settingKey = "some_key"; // of course, this works too
+      // localStorageService.read<settingType>(settingKey); // Doesn't work!
       //
       // We could rewrite the `read()` method to receive a Type parameter, as in
       // `read(String key, Type type)`, but then we lose the generic parameter
@@ -211,31 +188,35 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       // Each setting may have different types. Verifying that the type is
       // correct is a responsibility of this bloc, not the widgets.
-
+      // If you bloc only supports one type (for example, only booleans), then
+      // you don't need this switch-case.
       switch (event.settingKey) {
         // Booleans
-        case SettingsState.settingOneKey:
-        case SettingsState.settingTwoKey:
-        case SettingsState.settingThreeKey:
+        case SettingsKey.settingOneKey:
+        case SettingsKey.settingTwoKey:
+        case SettingsKey.settingThreeKey:
           if (event.newValue is bool) {
             emitState();
             // There's no need to await this.
-            localStorageService.write<bool>(event.settingKey, event.newValue);
+            localStorageService.write<bool>(
+                event.settingKey.name, event.newValue);
           }
           // You can handle errors if you want. This code fails silently.
           break;
         // Strings
-        case SettingsState.settingAbcKey:
+        case SettingsKey.settingAbcKey:
           if (event.newValue is String) {
             emitState();
-            localStorageService.write<String>(event.settingKey, event.newValue);
+            localStorageService.write<String>(
+                event.settingKey.name, event.newValue);
           }
           break;
         // Integers
-        case SettingsState.settingNumberKey:
+        case SettingsKey.settingNumberKey:
           if (event.newValue is int) {
             emitState();
-            localStorageService.write<int>(event.settingKey, event.newValue);
+            localStorageService.write<int>(
+                event.settingKey.name, event.newValue);
           }
       }
     });
