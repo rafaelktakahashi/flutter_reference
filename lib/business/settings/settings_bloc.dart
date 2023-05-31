@@ -6,7 +6,7 @@ import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:get_it/get_it.dart';
 
 // Normally, settings are saved in local storage, and the operations of reading
-// and writing there are asynchronous.
+// and writing them are asynchronous.
 //
 // This bloc exposes that information synchronously, assuming that these
 // operations can happen in the background and can be relied to work practically
@@ -14,7 +14,9 @@ import 'package:get_it/get_it.dart';
 //
 // The risk of failing to write or read local storage is very small, and if it
 // happens it's much more likely to be a bug than a real runtime error such as
-// insufficient storage.
+// insufficient storage. If your application has a high chance of encountering
+// errors during IO operations, you may want to support errors in the state;
+// generally speaking, however, the user can't do anything about IO errors.
 //
 //
 // You may have multiple blocs that access local storage to do different things;
@@ -34,6 +36,9 @@ class SettingsState {
   // 3. In the bloc, add logic to read it from storage and to write it to
   // storage, considering its expected type.
 
+  /// Keys and values that correspond to what's written in local storage.
+  /// The values can be of any type; any widget can reference this map, and is
+  /// expected to know the type of each value.
   final Map<SettingsKey, dynamic> values;
 
   const SettingsState({required this.values});
@@ -104,6 +109,17 @@ class InitializeSettingsEvent extends SettingsEvent {
 /// type, then nothing will happen (fails silently).
 class UpdateSettingEvent extends SettingsEvent {
   final SettingsKey settingKey;
+
+  /// This value is dynamic because this bloc supports values of multiple types.
+  /// It would be ideal to have static typing depending on what key was
+  /// specified; we can do that in Typescript but not in Dart.
+  ///
+  /// Do keep in mind that the actual type of this [newValue] will be validated
+  /// in the bloc. The code that emits this event is expected to know what type
+  /// should be sent.
+  ///
+  /// If your bloc only supports one type (ex.: only booleans), then you can
+  /// specify the type here.
   final dynamic newValue;
   const UpdateSettingEvent({required this.settingKey, required this.newValue});
 }
@@ -138,13 +154,19 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         // null. Any lefts here should be considered a bug to be fixed in code.
         List<dynamic> values = eithers
             .map((e) => e.fold(
-                  (l) => null,
+                  (l) {
+                    // Lefts are not supposed to happen, so you can print errors
+                    // here or send error reports.
+                    return null;
+                  },
                   (r) => r,
                 ))
             .toList();
         // Next, make a new instance of settings where we only overwrite what
         // is non-null and the correct type. Any value that is null will be
-        // ignored (but that should be considered a bug).
+        // ignored.
+        // Null values can happen if nothing has been written to that key yet,
+        // and in that case the default value will remain in the state.
         emit(
           state.copyWith(
             {
@@ -159,7 +181,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         );
       } catch (_) {
         // This bloc doesn't expose errors. If this happens, that means there's
-        // a bug and you must debug this line to investigate.
+        // a bug and you must debug this line to investigate. Feel free to print
+        // errors or send error reports here.
         return;
       }
 
@@ -168,8 +191,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       // avoid repeated code.
       // However, variables of type Type cannot be used as generic parameters:
       //
-      // Type settingType = bool; // works; settingType constains the value bool
-      // String settingKey = "some_key"; // of course, this works too
+      // Type settingType = bool; // Works; settingType contains the value bool.
+      // String settingKey = "some_key"; // Of course, this works too.
       // localStorageService.read<settingType>(settingKey); // Doesn't work!
       //
       // We could rewrite the `read()` method to receive a Type parameter, as in
@@ -188,7 +211,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       // Each setting may have different types. Verifying that the type is
       // correct is a responsibility of this bloc, not the widgets.
-      // If you bloc only supports one type (for example, only booleans), then
+      // If your bloc only supports one type (for example, only booleans), then
       // you don't need this switch-case.
       switch (event.settingKey) {
         // Booleans

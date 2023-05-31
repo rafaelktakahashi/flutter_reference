@@ -14,7 +14,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// fast and unlikely to fail. Any errors are likely to be logic errors (for
 /// example, trying to read the wrong type of data).
 ///
-/// Do not use this to store large amounts of data.
+/// Do not use this to store large amounts of data. If you need to store large
+/// amounts of information (for example, a json that can be many kilobytes in
+/// size), then consider storing that information as files using a dedicated
+/// service for writing and reading local files.
 class LocalStorageService {
   // A NOTE ABOUT FLUTTER_SECURE_STORAGE:
   // The library is not trivial to use, and it makes some changes to the native
@@ -30,7 +33,7 @@ class LocalStorageService {
   // iOS, for example if you need to support legacy variables that already
   // existed before. However, that is not the concern of this service, since
   // here we only receive the variable names to interact with them. See the
-  // settings bloc for a comment on that.
+  // settings bloc for an example implementation.
 
   /// This instance interacts with the system API.
   final storage = const FlutterSecureStorage();
@@ -62,10 +65,9 @@ class LocalStorageService {
     // -- A note on functional programming:
     // There's an argument to be made that it's not "correct" to do if-elses
     // with types, because anything that's generic is supposed to work the same
-    // regardless of type, using the same logic. However, pattern-matching on
-    // values and on types is common in functional programming. Effectly, that
-    // one describes a function that's defined in different ways depending on
-    // the input.
+    // regardless of type, reusing the same logic. However, pattern-matching on
+    // values and on types is common in functional programming, and that is
+    // effectively the same as if-elses.
     switch (T) {
       case String:
         // Simplest case, return the value as it is.
@@ -101,7 +103,7 @@ class LocalStorageService {
       case bool:
         switch (stringValue.toLowerCase()) {
           // The linter suggests returning const Right(true as T), but that
-          // causes a compilation error because T is Never for constants
+          // causes a compilation error because T is Never in constants
           // (I think).
           case 'true':
             // ignore: prefer_const_constructors

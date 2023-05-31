@@ -115,14 +115,13 @@ class InteropNavigator {
   ///   registered in Flutter code using the NavigationCaseProvider.
   ///
   /// If you're in a native page and want to navigate to a new Flutter screen,
-  /// then this function will do not what you want. You have to create a new
+  /// then this function will not do what you want. You have to create a new
   /// Flutter activity or a new Flutter view, and then call the InteropNavigator
   /// after the context exists here.
   Future<void> _handleNavigate(String url, String method) async {
-    // If we have a cached context, use that one. I believe this will fail if
-    // you're trying to navigate to a "first" Flutter page, without having
-    // another one already loaded. You'll have to instantiate a new Flutter
-    // activity or a new platform view for that.
+    // If we have a cached context, use that one. I believe this may fail if you
+    // call this method without pre-warming the Flutter engine when the Flutter
+    // code is a module.
     final cachedContext = router.routerDelegate.navigatorKey.currentContext;
 
     if (cachedContext == null) {

@@ -22,6 +22,14 @@ This reference architecture uses `Either`s for the return types, and that's advi
 It is not required to enforce specific method signatures. One may imagine that a generic repository interface could enforce add(), update(), delete() methods and so on with their own predefined inputs and outputs, but that ceases to be useful once we need any other kind of operation.  
 It is for that reason that we don't enforce interfaces for repositories. A repository may require any parameters and return any entity, as long as its methods make sense on their own (a repository should be a sensible piece of code on its own).
 
+## Utils
+
+**Utils do not exist**. Whenever you would create utility methods or helper classes or anything of that sort, consider two questions instead: (1) Is that logic related to presentation, business, or is it an integration with other systems? and (2) is that logic reusable or specific to a component?
+
+Answering question 1 lets you know if your code should be in the view layer, in the business layer or in the data layer. Depending on the answer, you will need a widget, a bloc or a service, respectively.
+
+Answering question 2 lets you know if your code is a standalone component of its own, or part of a component. Code for a widget that is specific to a widget can be a function or a class in the same file, otherwise it should be a widget of its own in order to be reusable. Code for a bloc that is only used there can be in a use case file that's only used by the bloc, or it may make more sense to make a bloc just for that and allow any pages to use it. Code for a data layer component that is only used in a specific scenario can be a top-level function in the file where it's used, or it can be a separate service if it needs to be used from multiple places.
+
 ## Folder structure
 
 - **(src)**

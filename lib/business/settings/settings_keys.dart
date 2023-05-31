@@ -32,10 +32,13 @@ enum SettingsKey {
 /// The getter in this extension lets you decide the name that corresponds to
 /// each value in runtime, without losing the ability to use the enum itself as
 /// a const.
-///
-/// Also note that `MyEnum.myValue.name` only works out-of-the-box in Dart 2.15
-/// or later.
 extension SettingsKeyNames on SettingsKey {
+  /// Get the actual string that's used as the key for this setting in local
+  /// storage. The local storage service does not know about this or other
+  /// enums; it only receives keys as strings.
+  ///
+  /// Note that the `name` property is always available in an enum since Dart
+  /// 2.15, and we're defining our own logic to get the name.
   String get name {
     switch (this) {
       case SettingsKey.settingOneKey:
@@ -54,8 +57,11 @@ extension SettingsKeyNames on SettingsKey {
     // I wrote this example because you may need backward compatibility with
     // variables that already exist in native code, or you may need to follow
     // naming conventions that already exist in your project.
+    //
     // Generally speaking, these limitations should not exist in a brand new
-    // Flutter project.
+    // Flutter project, and in that case you don't need this extension. Your
+    // code remains future-proof because you can add this extension at any time,
+    // since the "name" property already exists in enums.
     //
     // Additionally, you may also need an extension like this if you're reading
     // values from a configuration file but still want to use these keys in

@@ -77,7 +77,7 @@ import 'package:go_router/go_router.dart';
 // because anything more complicated than a simple push() is not obvious for
 // future developers reading the code.
 
-/// Simple page with text that appears over another page.
+/// Simple page with text that appears as a modal over another page.
 ///
 /// This page gets pushed above the destination, so the user can go back to
 /// where they intended to go initially.

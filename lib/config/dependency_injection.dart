@@ -12,6 +12,12 @@ import 'package:get_it/get_it.dart';
 ///
 /// It is not necessary to call `ensureInitialize()` before this, because all
 /// of our classes use method channels through the bridge.
+///
+/// A note on dependency injection: Writing a Java backend service or something
+/// similar that allows the implementation of classes to be chosen through some
+/// configuration encourages extensive use of dependency injection. Mobile
+/// development is very different; you don't have the option to hot-swap
+/// anything, since all the classes get packaged into a binary
 void configureDependencies() {
   // Theoretically, we should decouple GetIt (or any other specific library)
   // by wrapping it with our own classes.

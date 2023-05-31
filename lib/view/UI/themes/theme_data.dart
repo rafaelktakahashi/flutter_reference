@@ -117,5 +117,8 @@ var informativeTheme = _customize(_informativeTheme);
 /// Extra bright theme with more white than usual.
 var extraBrightTheme = _customize(_allWhiteTheme);
 
+/// Theme for components that render over the map in roadmap mode.
 var lightMapTheme = _customize(_lightMapTheme);
+
+/// Theme for components that render over the map in satellite mode.
 var darkMapTheme = _customize(_darkMapTheme);
