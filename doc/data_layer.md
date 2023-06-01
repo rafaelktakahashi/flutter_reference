@@ -11,6 +11,7 @@ The main structure of this reference architecture's data layer is the separation
    Blocs don't use client directly; they only do so through the repositories. Each repository decides how to carry out an operation, and that may be through a client.  
    Each client should be as self-contained as possible, not requiring extensive knowledge to use it. Any initialization logic for each client should also be as self-contained as possible.
    ![Data layer](img/arq-app-flutter-hybrid-architecture-Data%20Layer.drawio.png)
+3. **Services**, which often but not always expose hardware functionality through the System API, or some other self-contained logic used by blocs.
 
 An example is provided in this reference architecture for a repository that needs to reference another that exists in native code. By using the bridge, repositories in native code and in Flutter can obtain data from one another, and while it's generally unadvisable to add coupling between repositories, in this case we allow a repository's implementation to be backed by another on the other side of the bridge.
 ![Repository call stack](img/arq-app-flutter-hybrid-architecture-Repository%20Call%20Stack.drawio.png)
@@ -24,7 +25,7 @@ It is for that reason that we don't enforce interfaces for repositories. A repos
 
 ## Utils
 
-**Utils do not exist**. Whenever you would create utility methods or helper classes or anything of that sort, consider two questions instead: (1) Is that logic related to presentation, business, or is it an integration with other systems? and (2) is that logic reusable or specific to a component?
+**Utils do not exist**. Whenever you would create utility methods or helper classes or anything of that sort, consider two questions instead: (1) Is that logic related to presentation, business, or is it an integration with hardware and other systems? and (2) is that logic reusable or specific to a component?
 
 Answering question 1 lets you know if your code should be in the view layer, in the business layer or in the data layer. Depending on the answer, you will need a widget, a bloc or a service, respectively.
 
@@ -36,4 +37,4 @@ Answering question 2 lets you know if your code is a standalone component of its
   - **data**:
     - **data/repository**: Repositories, which can be referenced by any bloc. Classes in this folder can reference anything else in the data layer, but should not access APIs directly, be them remote or OS APIs.
     - **data/client**: Clients that reach remote services; blocs should not reference these classes directly (use repositories instead), and these classes can only reference ones in the service folder.
-    - **data/service**: Classes that provide either (1) OS funcionality or (2) utility functions such as calculations that are not part of the business.
+    - **data/service**: Classes that provide either (1) OS funcionality or (2) utility functions such as calculations that are not part of the business but are used frequently by business logic.

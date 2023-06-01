@@ -27,6 +27,28 @@ From this though experiment, we can deduce a few key principles:
   > **Example**: When a page is displaying a list, and pressing on an item leads the user to another page showing details, it's permissible to send the id of the item that was pressed. This is because the item that's being shown is presentation logic (remember our throught experiment, where the list and the details could very well have been implemented in one page without changing the way the bloc works). However, it would not be acceptable to send information to the details page that is not present in the bloc.
 - Events represent things that happen in the app in an abstract way; they don't say that a certain button was pressed, but rather that a certain use case has begun. In the same way, the state never contains information for specific widgets (like a "message for a modal"), but rather abstract data that the UI decides how to display to the user (e.g. an "error message" that the UI decides to display in a modal).
 
+## Nested States
+
+A relatively common use case for blocs is storing the state of multiple objects, such as a list of objects that are individually fetched and can individually change state. If this sounds too abstract, check the `buyer_bloc.dart` file: it contains a simple request that fetches a list, but then also contains a map of details for each individual item, fetched with a different request.
+
+The typical implementation of a bloc state involves an abstract superclass and multiple concrete classes, each with their own properties. Each concrete class itself represents some meaningful information. The idea of nested states is realizing that this structure is not limited to just the state object; parts of the state can also use it to represent states of individual pieces of data.
+
+The requests associated with the nested states are done the same way as with the main state, by using events. You simply need an additional event that tells the bloc to fetch a specific nested state.
+
+![Nested bloc state](./img/nested_bloc_state.drawio.png)
+
+Using a map for nested states allows the bloc to remember all the individual pieces of data to avoid redundant requests.
+
+## Use cases and services
+
+Complex logic can easily overpopulate a bloc with too much code. Though one might be tempted to move excessive code to a separate utility class or to a repository, when the code consists of business rules, it really does belong in the bloc.
+
+When organizing code, complicated logic may be extracted from a bloc into mainly two places: use cases and services.
+
+- Use cases are separate files in the same directory as the bloc, used only by that bloc (and not others); this reference architecture does not enforce a specific format, and the implementation is very free to change. Functionally, the bloc behaves as if all the code in the use cases existed in the bloc's class.
+  > For example, a "login" use case may be a function that receives strings for username and password, and make a sequence of requests to multiple servers, ultimately returning an object describing whether the login succeeded, and if so, whether certain actions are necessary (like redirects). Putting all that logic in the bloc's class would make it unwieldy to read and maintain, so it's a better idea to place it in a separate file.
+- Services in the data layer are for reusable logic that is not directly related to a bloc. For example, formatting strings or dates according to some known standard can be put in a service. Typically, these services will not contain rules that are directly related to the app's business; if you need reusable business logic for multiple blocs, consider merging blocs.
+
 ## Folder structure
 
 - **(src)**

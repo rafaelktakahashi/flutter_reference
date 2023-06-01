@@ -10,15 +10,16 @@ When creating or editing a file that has a corresponding source file generated b
 
 ![Architecture overview](doc/img/arq-app-flutter-hybrid-architecture-World%20Map.drawio.png)
 
-This reference architecture uses a layered model, with a domain layer that's accessible from anywhere. It also features a method channel bridge and classes for accessing Flutter blocs from native code.
+This reference architecture uses a layered model, with a domain layer that's accessible from anywhere. It features a method channel bridge and classes for accessing Flutter blocs from native code.
 
-Most of the code in this app is merely provided as an example, but the structure itself follows what is presented in this documentation.
+Most of the code in this app is merely provided as an example, and the architectural decisions are thoroughly explained in the code to enable you to make appropriate choices for your project.
 
 The main idea of this structure is the same as in any layered application:
 
 - Widgets (view layer) can only use blocs (business layer) but not repositories or services directly;
 - Blocs (business layer) expose their functionality to widgets and use services from the data layer to run business logic;
 - The data layer is only ever used by blocs, but not by widgets directly.
+- Any component can interact with corresponding implementation in native code. This structure does not depend on any kind of structure in the native side.
 
 Check the following pages for details on each part of the architecture:
 

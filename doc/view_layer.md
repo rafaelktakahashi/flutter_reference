@@ -31,6 +31,11 @@ Under this methodology, every widget must be categorized under **one** of the fo
 
 ![View layer](img/arq-app-flutter-hybrid-architecture-View%20Layer.drawio.png)
 
+A few additional things to keep in mind:
+
+- Atomic design purposefully leaves many implementation details open; as such, the principles and rules I've outlined in this section are my own interpretation, which you can adjust as you see fit. I hope that this can serve as a better starting point than just reading about the basics online.
+- The router and the themes are additions of my own, but keeping the layout (in the templates) separate from styling (in the themes) is a practice that aligns well with Flutter's principles and that I recommend adopting even if you decide to follow a different methodology.
+
 ## Navigation
 
 This example project uses go_router for navigation. Among other things, go_router lets us navigate using urls, which is convenient for interoperability, since native pages only need to send a url to the Flutter code (see the interop navigator). However, keep in mind that many of the principles laid down here are valid regardless of which navigation framework a project uses.
