@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/error/playground_navigation_error.dart';
+import 'package:flutter_reference/view/pages/app_lifecycle/app_lifecycle_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_details_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_list_page.dart';
 import 'package:flutter_reference/view/pages/counter/counter_page.dart';
@@ -143,6 +144,12 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
+          path: 'lifecycle',
+          builder: (BuildContext context, GoRouterState state) {
+            return const AppLifecyclePage();
+          },
+        ),
+        GoRoute(
           path: 'random',
           builder: (BuildContext context, GoRouterState state) {
             // This random route demonstrates that a route doesn't have to
@@ -236,5 +243,3 @@ final GoRouter router = GoRouter(
 // This variable won't make sense without context. Check the redirect_pages.dart
 // for details.
 var _hasRedirectedToOrange = false;
-
-

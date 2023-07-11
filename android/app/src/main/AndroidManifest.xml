@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="br.com.rtakahashi.playground.flutter_reference">
 
-    <application android:name="${applicationName}" android:icon="@mipmap/ic_launcher" android:label="flutter_reference">
+    <application android:name="${applicationName}" android:icon="@mipmap/ic_launcher" android:label="Flutter Reference">
         <activity android:name=".core.view.CounterActivity" android:exported="false" android:label="@string/title_activity_counter" android:theme="@style/NoActionBar" />
         <activity android:name=".MainActivity" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:exported="true" android:hardwareAccelerated="true" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:windowSoftInputMode="adjustResize">
 
