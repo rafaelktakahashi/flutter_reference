@@ -17,8 +17,13 @@ class Product with _$Product implements PlaygroundEntity {
     /// A detailed description of the product.
     required String description,
 
+    // The following property uses a different name as the json field to show
+    // that the names you use in the entity don't have to be the same as in
+    // the native code, and don't even have to be the same as in the json that
+    // the native code sends through the bridge.
+
     /// The product's amount in stock.
-    required int stockAmount,
+    @JsonKey(name: "stockAmount") required int amountInStock,
 
     /// The product's unit of measure.
     required String unit,

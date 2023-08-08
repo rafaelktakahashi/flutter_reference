@@ -246,7 +246,7 @@ class _ProductFormState extends State<ProductForm> {
       id: const Uuid().v4(),
       name: _nameController.text,
       description: _descriptionController.text,
-      stockAmount: int.tryParse(_stockAmountController.text) ?? 0,
+      amountInStock: int.tryParse(_stockAmountController.text) ?? 0,
       unit: _unitController.text,
       // Our price controller is our own class that has extra getters.
       pricePerUnitCents: _priceController.valueAsCents,

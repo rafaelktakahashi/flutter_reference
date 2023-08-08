@@ -19,7 +19,7 @@ class PlaygroundClient {
       id: "110",
       name: "Powder computer",
       description: "Finely ground computer.",
-      stockAmount: 3,
+      amountInStock: 3,
       unit: "g",
       pricePerUnitCents: 799, // 7,99 €
     ),
@@ -28,7 +28,7 @@ class PlaygroundClient {
       name: "Paperback",
       description:
           "The backside of a sheet of paper (front side purchased separately).",
-      stockAmount: 5,
+      amountInStock: 5,
       unit: "unit",
       pricePerUnitCents: 299,
     ),
@@ -37,7 +37,7 @@ class PlaygroundClient {
       name: "Green ideas",
       description:
           "Thought, concept or mental impression of the green variety.",
-      stockAmount: 8,
+      amountInStock: 8,
       unit: "unit",
       pricePerUnitCents: 2599,
     ),

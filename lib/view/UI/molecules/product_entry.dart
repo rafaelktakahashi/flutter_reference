@@ -20,7 +20,7 @@ class ProductEntry extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         child: Center(
           child:
-              Text("${product.name}, ${product.stockAmount} ${product.unit}"),
+              Text("${product.name}, ${product.amountInStock} ${product.unit}"),
         ),
       ),
     );

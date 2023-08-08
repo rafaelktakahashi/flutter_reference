@@ -19,7 +19,7 @@ class ProductDetails extends StatelessWidget {
         _textWithPadding("Product name: ${product.name}"),
         _textWithPadding("Product description: ${product.description}"),
         _textWithPadding(
-            "Amount in stock: ${product.stockAmount} ${product.unit}"),
+            "Amount in stock: ${product.amountInStock} ${product.unit}"),
         _textWithPadding(
             "Price per ${product.unit}: ${product.formattedPrice}"),
       ],

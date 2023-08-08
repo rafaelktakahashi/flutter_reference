@@ -1,6 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/view/UI/organisms/settings/settings_controls.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
+
+int counter = 0;
 
 /// Example of a settings page.
 ///
@@ -19,9 +23,14 @@ class SettingsPage extends StatelessWidget {
     // Even in situations when the main content of the page is a list, it makes
     // more sense to use the simple template because the "list" is one organism.
     // The home page is an example of a page that uses the scrollable template.
-    return const SimpleTemplate(
+    return SimpleTemplate(
       title: "Settings",
-      child: SettingsControls(),
+      child: BlocBuilder<SettingsBloc, SettingsState>(
+        builder: (a, b) {
+          print("BUILDER $counter");
+          return SettingsControls();
+        },
+      ),
     );
   }
 }

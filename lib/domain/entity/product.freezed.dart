@@ -30,7 +30,8 @@ mixin _$Product {
   String get description => throw _privateConstructorUsedError;
 
   /// The product's amount in stock.
-  int get stockAmount => throw _privateConstructorUsedError;
+  @JsonKey(name: "stockAmount")
+  int get amountInStock => throw _privateConstructorUsedError;
 
   /// The product's unit of measure.
   String get unit => throw _privateConstructorUsedError;
@@ -67,7 +68,7 @@ abstract class $ProductCopyWith<$Res> {
       {String id,
       String name,
       String description,
-      int stockAmount,
+      @JsonKey(name: "stockAmount") int amountInStock,
       String unit,
       int pricePerUnitCents});
 }
@@ -88,7 +89,7 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
     Object? id = null,
     Object? name = null,
     Object? description = null,
-    Object? stockAmount = null,
+    Object? amountInStock = null,
     Object? unit = null,
     Object? pricePerUnitCents = null,
   }) {
@@ -105,9 +106,9 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      stockAmount: null == stockAmount
-          ? _value.stockAmount
-          : stockAmount // ignore: cast_nullable_to_non_nullable
+      amountInStock: null == amountInStock
+          ? _value.amountInStock
+          : amountInStock // ignore: cast_nullable_to_non_nullable
               as int,
       unit: null == unit
           ? _value.unit
@@ -132,7 +133,7 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
       {String id,
       String name,
       String description,
-      int stockAmount,
+      @JsonKey(name: "stockAmount") int amountInStock,
       String unit,
       int pricePerUnitCents});
 }
@@ -150,7 +151,7 @@ class __$$_ProductCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? description = null,
-    Object? stockAmount = null,
+    Object? amountInStock = null,
     Object? unit = null,
     Object? pricePerUnitCents = null,
   }) {
@@ -167,9 +168,9 @@ class __$$_ProductCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      stockAmount: null == stockAmount
-          ? _value.stockAmount
-          : stockAmount // ignore: cast_nullable_to_non_nullable
+      amountInStock: null == amountInStock
+          ? _value.amountInStock
+          : amountInStock // ignore: cast_nullable_to_non_nullable
               as int,
       unit: null == unit
           ? _value.unit
@@ -190,7 +191,7 @@ class _$_Product extends _Product {
       {required this.id,
       required this.name,
       required this.description,
-      required this.stockAmount,
+      @JsonKey(name: "stockAmount") required this.amountInStock,
       required this.unit,
       required this.pricePerUnitCents})
       : super._();
@@ -212,7 +213,8 @@ class _$_Product extends _Product {
 
   /// The product's amount in stock.
   @override
-  final int stockAmount;
+  @JsonKey(name: "stockAmount")
+  final int amountInStock;
 
   /// The product's unit of measure.
   @override
@@ -239,7 +241,7 @@ class _$_Product extends _Product {
 
   @override
   String toString() {
-    return 'Product(id: $id, name: $name, description: $description, stockAmount: $stockAmount, unit: $unit, pricePerUnitCents: $pricePerUnitCents)';
+    return 'Product(id: $id, name: $name, description: $description, amountInStock: $amountInStock, unit: $unit, pricePerUnitCents: $pricePerUnitCents)';
   }
 
   @override
@@ -251,8 +253,8 @@ class _$_Product extends _Product {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.stockAmount, stockAmount) ||
-                other.stockAmount == stockAmount) &&
+            (identical(other.amountInStock, amountInStock) ||
+                other.amountInStock == amountInStock) &&
             (identical(other.unit, unit) || other.unit == unit) &&
             (identical(other.pricePerUnitCents, pricePerUnitCents) ||
                 other.pricePerUnitCents == pricePerUnitCents));
@@ -260,8 +262,8 @@ class _$_Product extends _Product {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, description, stockAmount, unit, pricePerUnitCents);
+  int get hashCode => Object.hash(runtimeType, id, name, description,
+      amountInStock, unit, pricePerUnitCents);
 
   @JsonKey(ignore: true)
   @override
@@ -282,7 +284,7 @@ abstract class _Product extends Product {
       {required final String id,
       required final String name,
       required final String description,
-      required final int stockAmount,
+      @JsonKey(name: "stockAmount") required final int amountInStock,
       required final String unit,
       required final int pricePerUnitCents}) = _$_Product;
   const _Product._() : super._();
@@ -304,7 +306,8 @@ abstract class _Product extends Product {
   @override
 
   /// The product's amount in stock.
-  int get stockAmount;
+  @JsonKey(name: "stockAmount")
+  int get amountInStock;
   @override
 
   /// The product's unit of measure.
