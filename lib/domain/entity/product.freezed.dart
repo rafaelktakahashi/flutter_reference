@@ -27,8 +27,11 @@ mixin _$Product {
   String get name => throw _privateConstructorUsedError;
 
   /// A detailed description of the product.
-  String get description => throw _privateConstructorUsedError;
-
+  String get description =>
+      throw _privateConstructorUsedError; // The following property uses a different name as the json field to show
+// that the names you use in the entity don't have to be the same as in
+// the native code, and don't even have to be the same as in the json that
+// the native code sends through the bridge.
   /// The product's amount in stock.
   @JsonKey(name: "stockAmount")
   int get amountInStock => throw _privateConstructorUsedError;
@@ -210,7 +213,10 @@ class _$_Product extends _Product {
   /// A detailed description of the product.
   @override
   final String description;
-
+// The following property uses a different name as the json field to show
+// that the names you use in the entity don't have to be the same as in
+// the native code, and don't even have to be the same as in the json that
+// the native code sends through the bridge.
   /// The product's amount in stock.
   @override
   @JsonKey(name: "stockAmount")
@@ -303,8 +309,10 @@ abstract class _Product extends Product {
 
   /// A detailed description of the product.
   String get description;
-  @override
-
+  @override // The following property uses a different name as the json field to show
+// that the names you use in the entity don't have to be the same as in
+// the native code, and don't even have to be the same as in the json that
+// the native code sends through the bridge.
   /// The product's amount in stock.
   @JsonKey(name: "stockAmount")
   int get amountInStock;

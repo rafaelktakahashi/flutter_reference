@@ -1,6 +1,7 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
+import 'package:flutter_reference/data/repository/address_repository.dart';
 import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
@@ -42,6 +43,7 @@ void configureDependencies() {
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());
   GetIt.I.registerSingleton<BuyerRepository>(BuyerRepository());
   GetIt.I.registerSingleton<LocalStorageService>(LocalStorageService());
+  GetIt.I.registerSingleton<AddressRepository>(AddressRepository());
 
   // Register singletons of blocs that inherit from InteropBloc, because
   // they need to always be available in case native code needs to use them.
