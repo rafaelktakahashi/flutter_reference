@@ -20,24 +20,27 @@ Address _$AddressFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Address {
-  /// Zipcode; format and name varies by country.
-  /// The amount of information contained in the zipcode varies by country,
-  /// and even varies by region in each country. Generally speaking, zipcodes
-  /// should not be considered sufficient to deduce an entire address.
+  /// Postal code; format and name varies by country. Sometimes called
+  /// "zip code", but generally speaking that's not correct because zip codes
+  /// are a system used only by the United States Postal Service (USPS).
+  ///
+  /// The amount of information contained in the postal code varies by country
+  /// and even varies by region in each country. Generally speaking, postal
+  /// codes should not be considered sufficient to deduce an entire address.
   ///
   /// Examples:
   /// "48227" (Detroit, Michigan, USA)
   /// "13010-180" (Praça dos Ferroviários, Campinas, SP, Brazil)
-  /// "849-0500" (Kohoku-machi, Kishima-Gun, Saga, Japan)
+  /// "849-0500" (Kohoku-machi, Kishima-gun, Saga-ken, Japan)
   ///
   /// This class is merely an example, and in your case you may only need to
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
-  /// then street name, then city, state, zip code and country. Other
+  /// then street name, then city, state, postal code and country. Other
   /// countries follow their own schemes:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
-  /// also don't typically include the zip code (CEP) inside the written
+  /// also don't typically include the postal code (CEP) inside the written
   /// address.
   /// - Japanese addresses are written in order of largest unit to smallest,
   /// starting with the prefecture (todofuken), then a municipality (shi/ku/
@@ -46,7 +49,7 @@ mixin _$Address {
   /// include the street name, and there are very many exceptions and special
   /// cases where a region may have its own address structure that deviates
   /// from the standard.
-  String get zipcode => throw _privateConstructorUsedError;
+  String get postalCode => throw _privateConstructorUsedError;
 
   /// Most specific part of an address. Varies by country, but here it always
   /// covers everything that's more specific than the city.
@@ -81,7 +84,7 @@ abstract class $AddressCopyWith<$Res> {
       _$AddressCopyWithImpl<$Res, Address>;
   @useResult
   $Res call(
-      {String zipcode,
+      {String postalCode,
       String streetAddress,
       String? number,
       String city,
@@ -102,7 +105,7 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? zipcode = null,
+    Object? postalCode = null,
     Object? streetAddress = null,
     Object? number = freezed,
     Object? city = null,
@@ -110,9 +113,9 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
     Object? country = null,
   }) {
     return _then(_value.copyWith(
-      zipcode: null == zipcode
-          ? _value.zipcode
-          : zipcode // ignore: cast_nullable_to_non_nullable
+      postalCode: null == postalCode
+          ? _value.postalCode
+          : postalCode // ignore: cast_nullable_to_non_nullable
               as String,
       streetAddress: null == streetAddress
           ? _value.streetAddress
@@ -146,7 +149,7 @@ abstract class _$$_AddressCopyWith<$Res> implements $AddressCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String zipcode,
+      {String postalCode,
       String streetAddress,
       String? number,
       String city,
@@ -164,7 +167,7 @@ class __$$_AddressCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? zipcode = null,
+    Object? postalCode = null,
     Object? streetAddress = null,
     Object? number = freezed,
     Object? city = null,
@@ -172,9 +175,9 @@ class __$$_AddressCopyWithImpl<$Res>
     Object? country = null,
   }) {
     return _then(_$_Address(
-      zipcode: null == zipcode
-          ? _value.zipcode
-          : zipcode // ignore: cast_nullable_to_non_nullable
+      postalCode: null == postalCode
+          ? _value.postalCode
+          : postalCode // ignore: cast_nullable_to_non_nullable
               as String,
       streetAddress: null == streetAddress
           ? _value.streetAddress
@@ -202,36 +205,40 @@ class __$$_AddressCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Address implements _Address {
+class _$_Address extends _Address {
   const _$_Address(
-      {required this.zipcode,
+      {required this.postalCode,
       required this.streetAddress,
       this.number,
       required this.city,
       required this.state,
-      required this.country});
+      required this.country})
+      : super._();
 
   factory _$_Address.fromJson(Map<String, dynamic> json) =>
       _$$_AddressFromJson(json);
 
-  /// Zipcode; format and name varies by country.
-  /// The amount of information contained in the zipcode varies by country,
-  /// and even varies by region in each country. Generally speaking, zipcodes
-  /// should not be considered sufficient to deduce an entire address.
+  /// Postal code; format and name varies by country. Sometimes called
+  /// "zip code", but generally speaking that's not correct because zip codes
+  /// are a system used only by the United States Postal Service (USPS).
+  ///
+  /// The amount of information contained in the postal code varies by country
+  /// and even varies by region in each country. Generally speaking, postal
+  /// codes should not be considered sufficient to deduce an entire address.
   ///
   /// Examples:
   /// "48227" (Detroit, Michigan, USA)
   /// "13010-180" (Praça dos Ferroviários, Campinas, SP, Brazil)
-  /// "849-0500" (Kohoku-machi, Kishima-Gun, Saga, Japan)
+  /// "849-0500" (Kohoku-machi, Kishima-gun, Saga-ken, Japan)
   ///
   /// This class is merely an example, and in your case you may only need to
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
-  /// then street name, then city, state, zip code and country. Other
+  /// then street name, then city, state, postal code and country. Other
   /// countries follow their own schemes:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
-  /// also don't typically include the zip code (CEP) inside the written
+  /// also don't typically include the postal code (CEP) inside the written
   /// address.
   /// - Japanese addresses are written in order of largest unit to smallest,
   /// starting with the prefecture (todofuken), then a municipality (shi/ku/
@@ -241,7 +248,7 @@ class _$_Address implements _Address {
   /// cases where a region may have its own address structure that deviates
   /// from the standard.
   @override
-  final String zipcode;
+  final String postalCode;
 
   /// Most specific part of an address. Varies by country, but here it always
   /// covers everything that's more specific than the city.
@@ -275,7 +282,8 @@ class _$_Address implements _Address {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_Address &&
-            (identical(other.zipcode, zipcode) || other.zipcode == zipcode) &&
+            (identical(other.postalCode, postalCode) ||
+                other.postalCode == postalCode) &&
             (identical(other.streetAddress, streetAddress) ||
                 other.streetAddress == streetAddress) &&
             (identical(other.number, number) || other.number == number) &&
@@ -287,7 +295,7 @@ class _$_Address implements _Address {
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
-      runtimeType, zipcode, streetAddress, number, city, state, country);
+      runtimeType, postalCode, streetAddress, number, city, state, country);
 
   @JsonKey(ignore: true)
   @override
@@ -303,37 +311,41 @@ class _$_Address implements _Address {
   }
 }
 
-abstract class _Address implements Address {
+abstract class _Address extends Address {
   const factory _Address(
-      {required final String zipcode,
+      {required final String postalCode,
       required final String streetAddress,
       final String? number,
       required final String city,
       required final String state,
       required final String country}) = _$_Address;
+  const _Address._() : super._();
 
   factory _Address.fromJson(Map<String, dynamic> json) = _$_Address.fromJson;
 
   @override
 
-  /// Zipcode; format and name varies by country.
-  /// The amount of information contained in the zipcode varies by country,
-  /// and even varies by region in each country. Generally speaking, zipcodes
-  /// should not be considered sufficient to deduce an entire address.
+  /// Postal code; format and name varies by country. Sometimes called
+  /// "zip code", but generally speaking that's not correct because zip codes
+  /// are a system used only by the United States Postal Service (USPS).
+  ///
+  /// The amount of information contained in the postal code varies by country
+  /// and even varies by region in each country. Generally speaking, postal
+  /// codes should not be considered sufficient to deduce an entire address.
   ///
   /// Examples:
   /// "48227" (Detroit, Michigan, USA)
   /// "13010-180" (Praça dos Ferroviários, Campinas, SP, Brazil)
-  /// "849-0500" (Kohoku-machi, Kishima-Gun, Saga, Japan)
+  /// "849-0500" (Kohoku-machi, Kishima-gun, Saga-ken, Japan)
   ///
   /// This class is merely an example, and in your case you may only need to
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
-  /// then street name, then city, state, zip code and country. Other
+  /// then street name, then city, state, postal code and country. Other
   /// countries follow their own schemes:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
-  /// also don't typically include the zip code (CEP) inside the written
+  /// also don't typically include the postal code (CEP) inside the written
   /// address.
   /// - Japanese addresses are written in order of largest unit to smallest,
   /// starting with the prefecture (todofuken), then a municipality (shi/ku/
@@ -342,7 +354,7 @@ abstract class _Address implements Address {
   /// include the street name, and there are very many exceptions and special
   /// cases where a region may have its own address structure that deviates
   /// from the standard.
-  String get zipcode;
+  String get postalCode;
   @override
 
   /// Most specific part of an address. Varies by country, but here it always

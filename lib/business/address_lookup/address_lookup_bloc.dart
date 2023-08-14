@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/data/repository/address_repository.dart';
 import 'package:flutter_reference/domain/entity/address.dart';
+import 'package:flutter_reference/domain/error/playground_business_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:get_it/get_it.dart';
 
@@ -55,10 +56,39 @@ class AddressLookupBloc extends Bloc<AddressLookupEvent, AddressLookupState> {
       final result = await addressRepository.lookupCep(event.cep);
       emit(
         result.fold(
-          (l) => AddressLookupStateError(l),
+          (l) => AddressLookupStateError(_handleRepositoryError(l)),
           (r) => AddressLookupStateSuccess(r),
         ),
       );
     });
+  }
+}
+
+// Handle the error codes that need a special error message.
+// When a client error is displayed to the end user, it shows a generic message.
+// Here we can identify specific errors by code to wrap them and choose more
+// helpful messages.
+PlaygroundError _handleRepositoryError(PlaygroundError clientError) {
+  switch (clientError.errorCode()) {
+    case "viacep-002":
+      return PlaygroundBusinessError(
+        "address-lookup-server-down",
+        "The lookup server is down. Please, try again later.",
+        blocName: "address_lookup_bloc",
+        nestedException: clientError.cause(),
+      );
+    case "viacep-003":
+      return PlaygroundBusinessError(
+        "address-lookup-postal-code-not-found",
+        "The requested postal code was not found in the server.",
+        blocName: "address_lookup_bloc",
+        nestedException: clientError.cause(),
+      );
+    default:
+      // Don't handle other errors (like viacep-004 parse error) because the
+      // user can't do anything about it anyway. Doing this makes the client
+      // error appear in the bloc state, and the client error always returns
+      // a generic error message.
+      return clientError;
   }
 }

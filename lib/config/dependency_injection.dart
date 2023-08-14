@@ -1,6 +1,7 @@
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/settings/settings_bloc.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
+import 'package:flutter_reference/data/client/viacep/viacep_client.dart';
 import 'package:flutter_reference/data/repository/address_repository.dart';
 import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
@@ -35,6 +36,7 @@ void configureDependencies() {
 
   // Register clients
   GetIt.I.registerSingleton<PlaygroundClient>(PlaygroundClient());
+  GetIt.I.registerSingleton<ViacepClient>(ViacepClient());
 
   // Register repositories and services.
   // All repositories and services should be registered here, even the ones that

@@ -38,7 +38,7 @@ class EnderecoViaCepDTO with _$EnderecoViaCepDTO {
 
   Address toEntity() {
     return Address(
-      zipcode: cep,
+      postalCode: cep,
       streetAddress: logradouro.isNotEmpty ? "$logradouro, $bairro" : "",
       city: localidade,
       state: uf,

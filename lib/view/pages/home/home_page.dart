@@ -24,6 +24,7 @@ class HomePage extends StatelessWidget {
         const PageLink(url: '/products', text: 'Simple list with form'),
         const PageLink(url: '/buyers', text: 'List with details request'),
         const PageLink(url: '/interop', text: 'Interop bloc'),
+        const PageLink(url: '/address-lookup', text: 'Search by postal code'),
         const PageLink(url: '/life', text: "Conway's game of life"),
         const PageLink(url: '/lifecycle', text: "App Lifecycle Listener"),
         const PageLink(url: '/settings', text: 'Settings with local storage'),

@@ -1,5 +1,8 @@
 import 'package:flutter_reference/domain/error/playground_error.dart';
 
+/// Error class for problems that occur in blocs.
+/// This class has a field for a readable error message, which can be used to
+/// display a message to the end user.
 class PlaygroundBusinessError implements PlaygroundError {
   final String code;
   final String readableErrorMessage;

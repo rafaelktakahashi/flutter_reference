@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/domain/error/playground_navigation_error.dart';
+import 'package:flutter_reference/view/pages/address_lookup/address_lookup_page.dart';
 import 'package:flutter_reference/view/pages/app_lifecycle/app_lifecycle_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_details_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_list_page.dart';
@@ -129,6 +130,12 @@ final GoRouter router = GoRouter(
                   );
               return BuyerDetailsPage(buyerId: buyerId);
             }
+          },
+        ),
+        GoRoute(
+          path: 'address-lookup',
+          builder: (BuildContext context, GoRouterState state) {
+            return const AddressLookupPage();
           },
         ),
         GoRoute(

@@ -11,16 +11,19 @@ class AddressLookup extends StatelessWidget {
       builder: (context, state) {
         final addressLookupBloc = context.read<AddressLookupBloc>();
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AddressLookupForm(
-              onSubmit: (cep) {
-                addressLookupBloc.add(AddressLookupEventCep(cep));
-              },
-            ),
-            Text(addressLookupLabel(state)),
-          ],
+        return Padding(
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AddressLookupForm(
+                onSubmit: (cep) {
+                  addressLookupBloc.add(AddressLookupEventCep(cep));
+                },
+              ),
+              Text(addressLookupLabel(state)),
+            ],
+          ),
         );
       },
     );
@@ -77,6 +80,10 @@ class _AddressLookupFormState extends State<AddressLookupForm> {
             controller: _cepController,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             validator: _validators["cep"],
+            onFieldSubmitted: (str) {
+              // When submitted, call the same handler as the button.
+              _submitCallback?.call();
+            },
           ),
           TextButton(
             onPressed: _submitCallback,
