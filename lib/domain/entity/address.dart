@@ -4,6 +4,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part "address.freezed.dart";
 part "address.g.dart";
 
+/// Represents an address in a more-or-less global way. This is imperfect
+/// because address formats vary greatly by region. You should encode the
+/// information that's important for your application.
 @freezed
 class Address with _$Address implements PlaygroundEntity {
   const factory Address({
@@ -24,7 +27,7 @@ class Address with _$Address implements PlaygroundEntity {
     /// handle addresses in one or a few countries. This class assembles the
     /// address as is done in the US and the UK, with building number first,
     /// then street name, then city, state, postal code and country. Other
-    /// countries follow their own schemes:
+    /// countries follow their own schemes, for example:
     /// - Brazilian addresses place the building number after the street name,
     /// and also include a neighborhood name (bairro) after the number. They
     /// also don't typically include the postal code (CEP) inside the written

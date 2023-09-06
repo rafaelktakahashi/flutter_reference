@@ -9,6 +9,7 @@ import 'package:flutter_reference/view/pages/address_lookup/address_lookup_page.
 import 'package:flutter_reference/view/pages/app_lifecycle/app_lifecycle_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_details_page.dart';
 import 'package:flutter_reference/view/pages/buyer/buyer_list_page.dart';
+import 'package:flutter_reference/view/pages/cards_demo/cards_demo_page.dart';
 import 'package:flutter_reference/view/pages/counter/counter_page.dart';
 import 'package:flutter_reference/view/pages/home/home_page.dart';
 import 'package:flutter_reference/view/pages/life/life_page.dart';
@@ -40,6 +41,12 @@ final GoRouter router = GoRouter(
           path: 'interop',
           builder: (BuildContext context, GoRouterState state) {
             return const CounterPage();
+          },
+        ),
+        GoRoute(
+          path: 'card-demo',
+          builder: (BuildContext context, GoRouterState state) {
+            return const CardsDemoPage();
           },
         ),
         // To go here, use "/products".

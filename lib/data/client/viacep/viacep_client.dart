@@ -13,16 +13,14 @@ var client = HttpClient();
 class ViacepClient {
   /// Looks up a CEP postal code and returns an address.
   ///
-
-  ///
-  /// In your application, you'll probably be using your own version of the
-  /// Address class, depending on what your application needs. Thus, adapt the
-  /// code accordingly.
+  /// The return type is based on the Viacep service, but the dto contains
+  /// conversion logic.
   Future<Either<PlaygroundError, EnderecoViaCepDTO>> lookupCep(
       String cep) async {
     // Important: This example uses a very simple request with Dart's basic
     // http client. In a larger application, you should consider picking an
-    // http library to help you save work and get more features.
+    // http library to help you save work and get more features. I avoided
+    // http libraries to keep this a minimal example.
 
     // Viacep accepts CEP with a "-", but we're removing all non-digits here
     // to avoid any possible errors anyway.
@@ -47,6 +45,8 @@ class ViacepClient {
           responseStatus: response.statusCode.toString(),
         ),
       );
+      // If the bloc wants a special error message, it has to interpret the
+      // error codes and wrap the errors.
     }
 
     if ((response.statusCode % 100).floor() == 5) {
@@ -55,7 +55,7 @@ class ViacepClient {
       // client.
       PlaygroundClientError(
         "viacep-002",
-        "ViaCep is down.",
+        "ViaCep is down.", // <- dev message
         responseStatus: response.statusCode.toString(),
       );
     }

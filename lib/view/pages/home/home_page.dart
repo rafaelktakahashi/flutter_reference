@@ -28,6 +28,7 @@ class HomePage extends StatelessWidget {
         const PageLink(url: '/life', text: "Conway's game of life"),
         const PageLink(url: '/lifecycle', text: "App Lifecycle Listener"),
         const PageLink(url: '/settings', text: 'Settings with local storage'),
+        const PageLink(url: '/card-demo', text: "Card text layout demo"),
         const PageLink(url: '/random', text: "Random page"),
         PageLink(
           calculateRoutes: (context) {
