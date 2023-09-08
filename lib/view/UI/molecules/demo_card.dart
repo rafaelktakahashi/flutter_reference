@@ -62,7 +62,7 @@ class DemoCard extends StatelessWidget {
       children: [
         // Fixed amount of children, only two:
         // First (top) is the header, second (bottom) is a row.
-        // Second child will get all remaining space is some is left.
+        // Second child will get all remaining space.
         Text(
           title,
           style: const TextStyle(
