@@ -1,17 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/data/infra/interop_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
-import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
-import 'package:get_it/get_it.dart';
 
 /// Repository for products.
 /// Remember always that repositories encapsulate (=hide) where the data is
 /// coming from.
 class ProductRepository extends InteropRepository {
-  /// Reference to the Playground backend client.
-  final PlaygroundClient client = GetIt.I.get<PlaygroundClient>();
+  /// This specific repository could, but does not use the PlaygroundClient
+  /// class. Instead, we get data from native code.
 
   // When using an interop repository, there must be a corresponding repository
   // in native code that also uses the same name.

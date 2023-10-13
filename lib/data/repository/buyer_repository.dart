@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
+import 'package:flutter_reference/data/client/playground_client_mock.dart';
 import 'package:flutter_reference/domain/entity/buyer.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:get_it/get_it.dart';
@@ -7,7 +8,12 @@ import 'package:get_it/get_it.dart';
 /// Repository for buyers.
 class BuyerRepository {
   /// Reference to the Playground backend client.
-  final PlaygroundClient client = GetIt.I.get<PlaygroundClient>();
+  ///
+  /// PlaygroundClientMock extends PlaygroundClient, so you can get an instance
+  /// of the mocked client and use it as if it were the real client.
+  /// Switching between the real client and the mock is just a matter of changing
+  /// which class you get with GetIt here.
+  final PlaygroundClient client = GetIt.I.get<PlaygroundClientMock>();
 
   // A repository does not necessarily need to work with only one type of
   // entity. A repository groups together operations that are logically related.
