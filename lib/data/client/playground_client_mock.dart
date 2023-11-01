@@ -49,7 +49,7 @@ class PlaygroundClientMock extends PlaygroundClient {
   ]);
 
   /// Fetch the list of products.
-  /// This accept a boolean parameter [fail] as an example only. In pratice,
+  /// This accepts a boolean parameter [fail] as an example only. In pratice,
   /// your real parameters (like page number of a filter) would appear here.
   /// Use [fail]=true to cause an error to be returned, for demonstration
   /// purposes.

@@ -1,5 +1,3 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 /// Superclass for all entities in this project.
 /// Every entity in the project should be serializable, but there's not much
 /// we can do to require a specific factory. We do, however, require an

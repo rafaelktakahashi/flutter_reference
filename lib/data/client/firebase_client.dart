@@ -38,7 +38,7 @@ class FirebaseClientError implements PlaygroundError {
 
   @override
   String? developerMessage() {
-    return "Error in our Firebase Client";
+    return "Error in our Firebase Client: $_devMessage";
   }
 
   @override
