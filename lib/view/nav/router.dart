@@ -13,6 +13,7 @@ import 'package:flutter_reference/view/pages/cards_demo/cards_demo_page.dart';
 import 'package:flutter_reference/view/pages/counter/counter_page.dart';
 import 'package:flutter_reference/view/pages/home/home_page.dart';
 import 'package:flutter_reference/view/pages/life/life_page.dart';
+import 'package:flutter_reference/view/pages/login/login_demo_page.dart';
 import 'package:flutter_reference/view/pages/map/map_page.dart';
 import 'package:flutter_reference/view/pages/product/product_details_page.dart';
 import 'package:flutter_reference/view/pages/product/product_form_page.dart';
@@ -220,6 +221,11 @@ final GoRouter router = GoRouter(
           path: 'map',
           builder: (BuildContext context, GoRouterState state) =>
               const MapPage(),
+        ),
+        GoRoute(
+          path: 'login_demo',
+          builder: (BuildContext context, GoRouterState state) =>
+              const LoginDemoPage(),
         ),
       ],
       redirect: (BuildContext context, GoRouterState state) {

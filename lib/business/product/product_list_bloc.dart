@@ -26,6 +26,7 @@ abstract class ProductEvent {
 }
 
 /// Causes a remote request to fetch the list of products.
+/// (this demo app doesn't use a real remote request for this, only a mock)
 ///
 /// Normally, this always causes a fetch, regardless of whether there's data
 /// loaded or not. However, the fetch will **always** be skipped if there's

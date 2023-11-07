@@ -37,7 +37,7 @@ mixin _$Address {
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
   /// then street name, then city, state, postal code and country. Other
-  /// countries follow their own schemes:
+  /// countries follow their own schemes, for example:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
   /// also don't typically include the postal code (CEP) inside the written
@@ -235,7 +235,7 @@ class _$_Address extends _Address {
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
   /// then street name, then city, state, postal code and country. Other
-  /// countries follow their own schemes:
+  /// countries follow their own schemes, for example:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
   /// also don't typically include the postal code (CEP) inside the written
@@ -342,7 +342,7 @@ abstract class _Address extends Address {
   /// handle addresses in one or a few countries. This class assembles the
   /// address as is done in the US and the UK, with building number first,
   /// then street name, then city, state, postal code and country. Other
-  /// countries follow their own schemes:
+  /// countries follow their own schemes, for example:
   /// - Brazilian addresses place the building number after the street name,
   /// and also include a neighborhood name (bairro) after the number. They
   /// also don't typically include the postal code (CEP) inside the written

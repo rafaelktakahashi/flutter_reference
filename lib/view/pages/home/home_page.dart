@@ -63,6 +63,8 @@ class HomePage extends StatelessWidget {
           url: '/map',
           text: "Map with stuff over it",
         ),
+        const PageLink(
+            url: '/login_demo', text: "Login and inter-bloc communication"),
       ],
     );
   }
