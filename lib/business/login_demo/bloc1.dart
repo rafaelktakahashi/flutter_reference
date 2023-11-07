@@ -5,6 +5,7 @@
 // user logs out.
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_reference/business/infra/global_event.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:get_it/get_it.dart';
@@ -18,6 +19,10 @@ abstract class Bloc1Event {
 
 class FetchProducts1Event extends Bloc1Event {
   const FetchProducts1Event();
+}
+
+class Clear1Event extends Bloc1Event {
+  const Clear1Event();
 }
 
 // STATE
@@ -45,9 +50,13 @@ class Bloc1StateError extends Bloc1State {
 
 // BLOC
 
-class Bloc1 extends Bloc<Bloc1Event, Bloc1State> {
+class Bloc1 extends Bloc<Bloc1Event, Bloc1State> with GlobalEventAware {
   Bloc1() : super(const Bloc1StateEmpty()) {
     // Register event handlers
+    on<FetchProducts1Event>(_handleFetch);
+    on<Clear1Event>(_handleClear);
+    // Register global event handlers
+    onGlobal<GlobalEventLogout>((_) => add(const Clear1Event()));
   }
 
   final ProductRepository _productRepository = GetIt.I.get<ProductRepository>();
@@ -76,5 +85,12 @@ class Bloc1 extends Bloc<Bloc1Event, Bloc1State> {
         }
       },
     );
+  }
+
+  // Clear the list in this bloc.
+  void _handleClear(Clear1Event event, Emitter<Bloc1State> emit) async {
+    // Your "clear" logic may be different depending on what your bloc does,
+    // but here we simply reset the bloc's state.
+    emit(const Bloc1StateEmpty());
   }
 }
