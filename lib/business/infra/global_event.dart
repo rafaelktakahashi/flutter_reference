@@ -29,7 +29,7 @@ abstract class GlobalEvent {
 /// has logged out and all information related to that user should be removed.
 /// Effectively, this is an app-wide message that lets any bloc react to the
 /// user's logout.
-abstract class GlobalEventLogout extends GlobalEvent {
+class GlobalEventLogout extends GlobalEvent {
   const GlobalEventLogout();
 }
 

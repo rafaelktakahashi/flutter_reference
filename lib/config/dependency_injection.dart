@@ -6,6 +6,7 @@ import 'package:flutter_reference/data/client/viacep/viacep_client.dart';
 import 'package:flutter_reference/data/repository/address_repository.dart';
 import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
+import 'package:flutter_reference/data/service/app_data_service.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
 import 'package:flutter_reference/view/nav/interop_navigator.dart';
 import 'package:get_it/get_it.dart';
@@ -44,6 +45,7 @@ void configureDependencies() {
   // All repositories and services should be registered here, even the ones that
   // don't extend from InteropRepository. That's to enable blocs to obtain
   // references to any repository using GetIt.
+  GetIt.I.registerFactory<AppDataService>(() => AppDataService());
   GetIt.I.registerSingleton<ProductRepository>(ProductRepository());
   GetIt.I.registerSingleton<BuyerRepository>(BuyerRepository());
   GetIt.I.registerSingleton<LocalStorageService>(LocalStorageService());

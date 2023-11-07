@@ -7,7 +7,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/infra/global_event.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
+import 'package:flutter_reference/data/service/app_data_service.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
+import 'package:flutter_reference/domain/entity/user.dart';
+import 'package:flutter_reference/domain/error/playground_business_error.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../domain/error/playground_error.dart';
@@ -59,6 +62,7 @@ class Bloc1 extends Bloc<Bloc1Event, Bloc1State> with GlobalEventAware {
     onGlobal<GlobalEventLogout>((_) => add(const Clear1Event()));
   }
 
+  final AppDataService _appDataService = GetIt.I.get<AppDataService>();
   final ProductRepository _productRepository = GetIt.I.get<ProductRepository>();
 
   // Handler for fetching products.
@@ -75,13 +79,21 @@ class Bloc1 extends Bloc<Bloc1Event, Bloc1State> with GlobalEventAware {
     (await _productRepository.fetchProduct()).fold(
       (l) => emit(Bloc1StateError(l)),
       (r) {
-        // TODO: Condition.
-        // Ignore this code! I'm cutting the list unless the user is an admin,
+        // Simulated code! I'm cutting the list unless the user is an admin,
         // to simulate a different list for different users.
-        if (int.parse("1") == 1) {
+        final user = _appDataService.readCurrentUser();
+        if (user?.userRole != UserRole.admin) {
           emit(Bloc1StateList(r.sublist(0, 1)));
-        } else {
+        } else if (user != null) {
           emit(Bloc1StateList(r));
+        } else {
+          emit(
+            const Bloc1StateError(
+              PlaygroundBusinessError(
+                  "Bloc1-001", "Request failed: unauthenticated",
+                  blocName: "Bloc1"),
+            ),
+          );
         }
       },
     );
