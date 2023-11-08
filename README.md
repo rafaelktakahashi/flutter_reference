@@ -214,3 +214,5 @@ These two cases are different kinds of dependency and are solved in different wa
 - `AppDataService` is a service that works like a global variable, and because of that, it's very dangerous and should be used with utmost care! This service contains a minimal amount of information that is relevant to business rules in many different blocs. In this code, `Bloc1` and `Bloc2` access information about the user who is currently logged in, and that information is written and updated by the `LoginBloc`.
 
 Be very careful with communication between blocs, and avoid it whenever it's not absolutely necessary. Always check if there are other ways of solving your problem, such as with listeners in the Widget tree, or using local storage. Using (and abusing) global events makes it harder to write unit tests.
+
+The `interblocs_communication_test.dart` file has an example of mocking global events for unit tests.
