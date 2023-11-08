@@ -4,6 +4,9 @@ import 'package:flutter_reference/business/address_lookup/address_lookup_bloc.da
 import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/counter/counter_bloc.dart';
 import 'package:flutter_reference/business/life/life_bloc.dart';
+import 'package:flutter_reference/business/login_demo/bloc1.dart';
+import 'package:flutter_reference/business/login_demo/bloc2.dart';
+import 'package:flutter_reference/business/login_demo/login_bloc.dart';
 import 'package:flutter_reference/business/product/product_form_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/business/settings/settings_bloc.dart';
@@ -70,6 +73,15 @@ Widget _wrapBlocs(Widget child) {
       BlocProvider<AddressLookupBloc>(
         create: (BuildContext context) => AddressLookupBloc(),
       ),
+      BlocProvider<LoginBloc>(
+        create: (BuildContext context) => LoginBloc(),
+      ),
+      BlocProvider<Bloc1>(
+        create: (BuildContext context) => Bloc1(),
+      ),
+      BlocProvider<Bloc2>(
+        create: (BuildContext context) => Bloc2(),
+      ),
     ],
     child: child,
   );
@@ -100,8 +112,8 @@ Widget _wrapNavigationCases(Widget child) => NavigationCaseProvider(
 /// f(g(x)) all in one.
 ///
 /// The body is very simple. "Reducing" a list lets us combine all the elements
-/// based on some rule. (e) => f2(f1(e)) is a new function that applies f2 and
-/// then f1 on some element. The new function then becomes the f1 that is
+/// based on some rule. (e) => f2(f1(e)) is a new function that applies f1 and
+/// then f2 on some element. The new function then becomes the f1 that is
 /// combined with the next function in the list.
 T _applyWrappers<T>(List<T Function(T)> wrappers, T obj) =>
     wrappers.reduce((f1, f2) => ((e) => f2(f1(e))))(obj);

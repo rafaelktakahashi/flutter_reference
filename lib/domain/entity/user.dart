@@ -24,7 +24,7 @@ class User with _$User implements PlaygroundEntity {
 
   @override
   String toString() {
-    return "$username ($userRole)";
+    return "$username, ${name.fullRomanizedName()} (${userRole.name})";
   }
 }
 

@@ -78,7 +78,7 @@ class Bloc2 extends Bloc<Bloc2Event, Bloc2State> with GlobalEventAware {
         // Simulated code! I'm cutting the list unless the user is an admin,
         // to simulate a different list for different users.
         final user = _appDataService.readCurrentUser();
-        if (user?.userRole != UserRole.admin) {
+        if (user != null && user.userRole != UserRole.admin) {
           emit(Bloc2StateList(r.sublist(0, 1)));
         } else if (user != null) {
           emit(Bloc2StateList(r));
@@ -86,8 +86,10 @@ class Bloc2 extends Bloc<Bloc2Event, Bloc2State> with GlobalEventAware {
           emit(
             const Bloc2StateError(
               PlaygroundBusinessError(
-                  "Bloc1-001", "Request failed: unauthenticated",
-                  blocName: "Bloc1"),
+                "Bloc2-001",
+                "Request failed: unauthenticated",
+                blocName: "Bloc2",
+              ),
             ),
           );
         }

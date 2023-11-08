@@ -27,8 +27,7 @@ class SettingsPage extends StatelessWidget {
       title: "Settings",
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (a, b) {
-          print("BUILDER $counter");
-          return SettingsControls();
+          return const SettingsControls();
         },
       ),
     );

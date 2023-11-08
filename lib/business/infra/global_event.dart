@@ -89,7 +89,7 @@ mixin GlobalEventAware<E, S> on Bloc<E, S> {
 /// This stream should not be used directly.
 class _GlobalEventStream {
   static final _instance = _GlobalEventStream._();
-  final _controller = StreamController<GlobalEvent>();
+  final _controller = StreamController<GlobalEvent>.broadcast();
 
   factory _GlobalEventStream.I() {
     return _instance;

@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_reference/view/UI/organisms/login_demo/login_demo_card.dart';
+import 'package:flutter_reference/view/UI/organisms/login_demo/product_bloc_demo_card.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
 
 /// Typically I don't add "Demo" in the name of this app's pages because the
@@ -21,7 +23,25 @@ class LoginDemoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SimpleTemplate(
       title: "Login/logout demo",
-      child: Text("TODO"),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(15),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LoginDemoCard(),
+              Text(
+                "Bloc1 and Bloc2 will show more items when the user is an admin.",
+              ),
+              Text(
+                "Logging out will cause a global event that clears all lists.",
+              ),
+              Bloc1DemoCard(),
+              Bloc2DemoCard(),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

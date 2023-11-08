@@ -70,6 +70,10 @@ class AppData {
 /// because you need it somewhere else; this is intended for cases where a
 /// bloc or service's logic depends on information that is stored somewhere
 /// else, and that information is relevant to the entire app.
+///
+/// Note: This service must necessarily be declared as a singleton! This could
+/// be done by ensuring that only one instance of this class exists, but by
+/// writing this class as a singleton, we guarantee that it cannot be misused.
 class AppDataService {
   // The data object is mutable.
   final AppData _data = AppData();
@@ -83,4 +87,18 @@ class AppDataService {
   }
 
   User? readCurrentUser() => _data.currentUser;
+
+  static AppDataService? _instance;
+
+  factory AppDataService() {
+    if (_instance == null) {
+      var newInstance = AppDataService._();
+      _instance = newInstance;
+      return newInstance;
+    } else {
+      return _instance!;
+    }
+  }
+
+  AppDataService._();
 }

@@ -79,7 +79,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> with GlobalEventAware {
     // We save users in the app data service to make them available to other
     // services. This bloc is the owner of that data, so it has the responsibility
     // to keep it always in sync.
-    await Future.delayed(const Duration(milliseconds: 500));
+    emit(const LoginStateLoading());
+    await Future.delayed(const Duration(milliseconds: 800));
     switch (event.username) {
       case "bad@mail.com":
         emit(const LoginStateFailure(PlaygroundBusinessError(
@@ -144,13 +145,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> with GlobalEventAware {
     // Mock. Always emit success when the current state is the correct one.
     var s = state;
     if (s is LoginStateFirstAccess) {
-      await Future.delayed(const Duration(milliseconds: 500));
+      emit(const LoginStateLoading());
+      await Future.delayed(const Duration(milliseconds: 800));
       emit(LoginStateLoggedIn(s.user));
     }
   }
 
   void _handleLogout(LogoutEvent event, Emitter<LoginState> emit) async {
+    // Here, three things must happen:
+    // 1. Emit a logged out state for this bloc.
+    // 2. Update the app data. If you forget this, the app data service will
+    // be out-of-sync and will cause bugs in other blocs.
+    // 3. Emit a global event that will be received by other blocs that also
+    // have the global event mixin. This lets other blocs respond to this event.
     emit(const LoginStateLoggedOut());
+    _appDataService.clearCurrentUser();
     addGlobal(const GlobalEventLogout());
   }
 }

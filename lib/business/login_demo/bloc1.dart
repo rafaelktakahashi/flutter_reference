@@ -1,9 +1,3 @@
-// This bloc is only used in the inter-bloc communications demo.
-// The logic here is a simplified version of the product list bloc.
-// This bloc produces a different list depending on whether the user is an
-// admin or a regular user, and also automatically clears its contents when the
-// user logs out.
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/infra/global_event.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
@@ -12,8 +6,13 @@ import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/entity/user.dart';
 import 'package:flutter_reference/domain/error/playground_business_error.dart';
 import 'package:get_it/get_it.dart';
-
 import '../../domain/error/playground_error.dart';
+
+// This bloc is only used in the inter-bloc communications demo.
+// The logic here is a simplified version of the product list bloc.
+// This bloc produces a different list depending on whether the user is an
+// admin or a regular user, and also automatically clears its contents when the
+// user logs out.
 
 // EVENTS
 abstract class Bloc1Event {
@@ -82,7 +81,7 @@ class Bloc1 extends Bloc<Bloc1Event, Bloc1State> with GlobalEventAware {
         // Simulated code! I'm cutting the list unless the user is an admin,
         // to simulate a different list for different users.
         final user = _appDataService.readCurrentUser();
-        if (user?.userRole != UserRole.admin) {
+        if (user != null && user.userRole != UserRole.admin) {
           emit(Bloc1StateList(r.sublist(0, 1)));
         } else if (user != null) {
           emit(Bloc1StateList(r));
@@ -90,8 +89,10 @@ class Bloc1 extends Bloc<Bloc1Event, Bloc1State> with GlobalEventAware {
           emit(
             const Bloc1StateError(
               PlaygroundBusinessError(
-                  "Bloc1-001", "Request failed: unauthenticated",
-                  blocName: "Bloc1"),
+                "Bloc1-001",
+                "Request failed: unauthenticated",
+                blocName: "Bloc1",
+              ),
             ),
           );
         }
