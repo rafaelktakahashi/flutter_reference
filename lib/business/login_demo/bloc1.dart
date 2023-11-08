@@ -14,6 +14,13 @@ import '../../domain/error/playground_error.dart';
 // admin or a regular user, and also automatically clears its contents when the
 // user logs out.
 
+// Admittedly, showing more items when the user is an admin is a bad example
+// because in a real app, this logic should be in the backend. Please, consider
+// this as a generic example of how the bloc is aware of who the current user
+// is, and we could've used for example a request with a parameter for the
+// user's address. I simply reused a products request that I already had in this
+// code.
+
 // EVENTS
 abstract class Bloc1Event {
   const Bloc1Event();
