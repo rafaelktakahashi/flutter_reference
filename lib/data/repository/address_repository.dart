@@ -24,7 +24,6 @@ class AddressRepository {
     // This is a simple case where the dto corresponds to an entity 1-to-1.
     // Sometimes, mapping is more complicated and requires additional logic
     // here in the repository.
-    return (await client.lookupCep(cep))
-        .flatMap((dto) => Right(dto.toEntity()));
+    return (await client.lookupCep(cep)).map((dto) => dto.toEntity());
   }
 }
