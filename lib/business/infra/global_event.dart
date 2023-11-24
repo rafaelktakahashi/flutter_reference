@@ -41,7 +41,7 @@ class GlobalEventLogout extends GlobalEvent {
 /// in any handlers it has registered. Blocs do not have to handle every type
 /// of global event, or any at all.
 mixin GlobalEventAware<E, S> on Bloc<E, S> {
-  /// Handle a global event. When an event of type `GE` is emitted anywhere, the
+  /// Handle a global event. When an event of type `E` is emitted anywhere, the
   /// handler will be executed.
   ///
   /// Note that global events can only be emitted by any bloc with the
