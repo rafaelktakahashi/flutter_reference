@@ -82,7 +82,7 @@ mixin GlobalEventAware<E, S> on Bloc<E, S> {
 
 /// (private class, do not use outside of the `GlobalEventAware` mixin)
 ///
-/// Singleton that contains a
+/// Singleton that contains a stream for sending global events.
 ///
 /// This entire singleton is an implementation detail of the `GlobalEventAware`
 /// mixin, and could be implemented in other ways, such as with global variables.
