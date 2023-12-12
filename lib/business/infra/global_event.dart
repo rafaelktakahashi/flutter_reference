@@ -41,18 +41,18 @@ class GlobalEventLogout extends GlobalEvent {
 /// in any handlers it has registered. Blocs do not have to handle every type
 /// of global event, or any at all.
 mixin GlobalEventAware<E, S> on Bloc<E, S> {
-  /// Handle a global event. When an event of type `E` is emitted anywhere, the
-  /// handler will be executed.
+  /// Handle a global event. When an event of type `E` is emitted anywhere, all
+  /// handlers will execute and receive that event.
   ///
   /// Note that global events can only be emitted by any bloc with the
   /// `GlobalEventAware` mixin. It is not possible to identify the source of an
   /// event.
   ///
-  /// Just that because this handler doesn't handle the bloc's events (but
-  /// rather global events which are a class external to the blocs), this
-  /// method doesn't let you update the bloc's state. For that, you must emit
-  /// your own events inside the handler, and then those events can trigger
-  /// state updates.
+  /// This handler doesn't handle the bloc's events (but rather, it handles
+  /// global events which are a class external to the blocs), so this method
+  /// doesn't let you update the bloc's state. For that, you must emit your
+  /// own bloc events inside the global handler, and then those events can
+  /// trigger state updates.
   onGlobal<GE extends GlobalEvent>(void Function(GE event) handler) {
     // This is our global version of a Bloc's on() method.
     // This method lets a bloc define a function that will run when a method
