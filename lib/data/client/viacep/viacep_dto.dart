@@ -11,7 +11,7 @@ part 'viacep_dto.g.dart';
 /// Using DTOs decouples your domain classes from any APIs.
 ///
 /// Viacep always returns all fields when the query is successful, even if some
-/// of them would be empty. For exempla, in Guararema (08900-000), all fields
+/// of them would be empty. For exemple, in Guararema (08900-000), all fields
 /// smaller than "localidade" are returned as an empty string.
 ///
 /// For CEP codes that don't exist, Viacep returns { "erro": true }. For queries
