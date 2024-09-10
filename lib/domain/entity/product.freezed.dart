@@ -12,7 +12,7 @@ part of 'product.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Product _$ProductFromJson(Map<String, dynamic> json) {
   return _Product.fromJson(json);
@@ -57,8 +57,12 @@ mixin _$Product {
   /// Argentine Peso or the Brazilian Real.
   int get pricePerUnitCents => throw _privateConstructorUsedError;
 
+  /// Serializes this Product to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Product
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ProductCopyWith<Product> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -86,6 +90,8 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Product
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -126,10 +132,10 @@ class _$ProductCopyWithImpl<$Res, $Val extends Product>
 }
 
 /// @nodoc
-abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
-  factory _$$_ProductCopyWith(
-          _$_Product value, $Res Function(_$_Product) then) =
-      __$$_ProductCopyWithImpl<$Res>;
+abstract class _$$ProductImplCopyWith<$Res> implements $ProductCopyWith<$Res> {
+  factory _$$ProductImplCopyWith(
+          _$ProductImpl value, $Res Function(_$ProductImpl) then) =
+      __$$ProductImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -142,12 +148,15 @@ abstract class _$$_ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_ProductCopyWithImpl<$Res>
-    extends _$ProductCopyWithImpl<$Res, _$_Product>
-    implements _$$_ProductCopyWith<$Res> {
-  __$$_ProductCopyWithImpl(_$_Product _value, $Res Function(_$_Product) _then)
+class __$$ProductImplCopyWithImpl<$Res>
+    extends _$ProductCopyWithImpl<$Res, _$ProductImpl>
+    implements _$$ProductImplCopyWith<$Res> {
+  __$$ProductImplCopyWithImpl(
+      _$ProductImpl _value, $Res Function(_$ProductImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Product
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -158,7 +167,7 @@ class __$$_ProductCopyWithImpl<$Res>
     Object? unit = null,
     Object? pricePerUnitCents = null,
   }) {
-    return _then(_$_Product(
+    return _then(_$ProductImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -189,8 +198,8 @@ class __$$_ProductCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Product extends _Product {
-  const _$_Product(
+class _$ProductImpl extends _Product {
+  const _$ProductImpl(
       {required this.id,
       required this.name,
       required this.description,
@@ -199,8 +208,8 @@ class _$_Product extends _Product {
       required this.pricePerUnitCents})
       : super._();
 
-  factory _$_Product.fromJson(Map<String, dynamic> json) =>
-      _$$_ProductFromJson(json);
+  factory _$ProductImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ProductImplFromJson(json);
 
   /// The product's unique identifier.
   @override
@@ -251,10 +260,10 @@ class _$_Product extends _Product {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Product &&
+            other is _$ProductImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
@@ -266,20 +275,22 @@ class _$_Product extends _Product {
                 other.pricePerUnitCents == pricePerUnitCents));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, description,
       amountInStock, unit, pricePerUnitCents);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Product
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ProductCopyWith<_$_Product> get copyWith =>
-      __$$_ProductCopyWithImpl<_$_Product>(this, _$identity);
+  _$$ProductImplCopyWith<_$ProductImpl> get copyWith =>
+      __$$ProductImplCopyWithImpl<_$ProductImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_ProductToJson(
+    return _$$ProductImplToJson(
       this,
     );
   }
@@ -292,35 +303,34 @@ abstract class _Product extends Product {
       required final String description,
       @JsonKey(name: "stockAmount") required final int amountInStock,
       required final String unit,
-      required final int pricePerUnitCents}) = _$_Product;
+      required final int pricePerUnitCents}) = _$ProductImpl;
   const _Product._() : super._();
 
-  factory _Product.fromJson(Map<String, dynamic> json) = _$_Product.fromJson;
-
-  @override
+  factory _Product.fromJson(Map<String, dynamic> json) = _$ProductImpl.fromJson;
 
   /// The product's unique identifier.
-  String get id;
   @override
+  String get id;
 
   /// The product's readable name.
-  String get name;
   @override
+  String get name;
 
   /// A detailed description of the product.
-  String get description;
-  @override // The following property uses a different name as the json field to show
+  @override
+  String
+      get description; // The following property uses a different name as the json field to show
 // that the names you use in the entity don't have to be the same as in
 // the native code, and don't even have to be the same as in the json that
 // the native code sends through the bridge.
   /// The product's amount in stock.
+  @override
   @JsonKey(name: "stockAmount")
   int get amountInStock;
-  @override
 
   /// The product's unit of measure.
-  String get unit;
   @override
+  String get unit;
 
   /// The product's price per unit, in cents of Euro.
   ///
@@ -338,9 +348,13 @@ abstract class _Product extends Product {
   ///
   /// Many other currencies use the comma as the decimal separator, like the
   /// Argentine Peso or the Brazilian Real.
-  int get pricePerUnitCents;
   @override
-  @JsonKey(ignore: true)
-  _$$_ProductCopyWith<_$_Product> get copyWith =>
+  int get pricePerUnitCents;
+
+  /// Create a copy of Product
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ProductImplCopyWith<_$ProductImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

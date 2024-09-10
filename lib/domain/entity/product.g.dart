@@ -6,16 +6,17 @@ part of 'product.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_Product _$$_ProductFromJson(Map<String, dynamic> json) => _$_Product(
+_$ProductImpl _$$ProductImplFromJson(Map<String, dynamic> json) =>
+    _$ProductImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String,
-      amountInStock: json['stockAmount'] as int,
+      amountInStock: (json['stockAmount'] as num).toInt(),
       unit: json['unit'] as String,
-      pricePerUnitCents: json['pricePerUnitCents'] as int,
+      pricePerUnitCents: (json['pricePerUnitCents'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$_ProductToJson(_$_Product instance) =>
+Map<String, dynamic> _$$ProductImplToJson(_$ProductImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,

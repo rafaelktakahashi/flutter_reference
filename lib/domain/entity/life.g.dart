@@ -6,28 +6,30 @@ part of 'life.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_LifeBoard _$$_LifeBoardFromJson(Map<String, dynamic> json) => _$_LifeBoard(
+_$LifeBoardImpl _$$LifeBoardImplFromJson(Map<String, dynamic> json) =>
+    _$LifeBoardImpl(
       cells: (json['cells'] as List<dynamic>)
           .map((e) => (e as List<dynamic>)
               .map((e) => LifeCell.fromJson(e as Map<String, dynamic>))
               .toList())
           .toList(),
-      height: json['height'] as int,
-      width: json['width'] as int,
+      height: (json['height'] as num).toInt(),
+      width: (json['width'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$_LifeBoardToJson(_$_LifeBoard instance) =>
+Map<String, dynamic> _$$LifeBoardImplToJson(_$LifeBoardImpl instance) =>
     <String, dynamic>{
       'cells': instance.cells,
       'height': instance.height,
       'width': instance.width,
     };
 
-_$_LifeCell _$$_LifeCellFromJson(Map<String, dynamic> json) => _$_LifeCell(
+_$LifeCellImpl _$$LifeCellImplFromJson(Map<String, dynamic> json) =>
+    _$LifeCellImpl(
       alive: json['alive'] as bool,
     );
 
-Map<String, dynamic> _$$_LifeCellToJson(_$_LifeCell instance) =>
+Map<String, dynamic> _$$LifeCellImplToJson(_$LifeCellImpl instance) =>
     <String, dynamic>{
       'alive': instance.alive,
     };

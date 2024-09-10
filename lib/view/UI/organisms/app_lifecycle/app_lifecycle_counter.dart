@@ -20,6 +20,7 @@ class _AppLifecycleCounterState extends State<AppLifecycleCounter> {
   int inactiveCounter = 0;
   int pausedCounter = 0;
   int detachedCounter = 0;
+  int hiddenCounter = 0;
 
   // Strings that will render on screen, at most 10 at a time. Initialize with
   // 10 empty lines.
@@ -58,6 +59,10 @@ class _AppLifecycleCounterState extends State<AppLifecycleCounter> {
               detachedCounter++;
               log = "$log - App was detached";
               break;
+            case AppLifecycleState.hidden:
+              hiddenCounter++;
+              log = "$log - App was hidden";
+              break;
           }
           // Add a new line to the log, but only keep the last ten.
           logLines =
@@ -72,6 +77,7 @@ class _AppLifecycleCounterState extends State<AppLifecycleCounter> {
             Text("Inactive: $inactiveCounter"),
             Text("Paused: $pausedCounter"),
             Text("Detached: $detachedCounter"),
+            Text("Hidden: $hiddenCounter"),
             Padding(
               padding: const EdgeInsets.all(10),
               child: Text(logLines.join("\n")),

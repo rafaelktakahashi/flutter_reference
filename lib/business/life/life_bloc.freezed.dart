@@ -12,7 +12,7 @@ part of 'life_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$LifeState {
@@ -21,7 +21,9 @@ mixin _$LifeState {
   /// When true, this means the life board is automatically advancing its state.
   bool get isAutostepping => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LifeStateCopyWith<LifeState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -46,6 +48,8 @@ class _$LifeStateCopyWithImpl<$Res, $Val extends LifeState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -64,6 +68,8 @@ class _$LifeStateCopyWithImpl<$Res, $Val extends LifeState>
     ) as $Val);
   }
 
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $LifeBoardCopyWith<$Res> get board {
@@ -74,10 +80,11 @@ class _$LifeStateCopyWithImpl<$Res, $Val extends LifeState>
 }
 
 /// @nodoc
-abstract class _$$_LifeStateCopyWith<$Res> implements $LifeStateCopyWith<$Res> {
-  factory _$$_LifeStateCopyWith(
-          _$_LifeState value, $Res Function(_$_LifeState) then) =
-      __$$_LifeStateCopyWithImpl<$Res>;
+abstract class _$$LifeStateImplCopyWith<$Res>
+    implements $LifeStateCopyWith<$Res> {
+  factory _$$LifeStateImplCopyWith(
+          _$LifeStateImpl value, $Res Function(_$LifeStateImpl) then) =
+      __$$LifeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({LifeBoard board, bool isAutostepping});
@@ -87,20 +94,22 @@ abstract class _$$_LifeStateCopyWith<$Res> implements $LifeStateCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_LifeStateCopyWithImpl<$Res>
-    extends _$LifeStateCopyWithImpl<$Res, _$_LifeState>
-    implements _$$_LifeStateCopyWith<$Res> {
-  __$$_LifeStateCopyWithImpl(
-      _$_LifeState _value, $Res Function(_$_LifeState) _then)
+class __$$LifeStateImplCopyWithImpl<$Res>
+    extends _$LifeStateCopyWithImpl<$Res, _$LifeStateImpl>
+    implements _$$LifeStateImplCopyWith<$Res> {
+  __$$LifeStateImplCopyWithImpl(
+      _$LifeStateImpl _value, $Res Function(_$LifeStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? board = null,
     Object? isAutostepping = null,
   }) {
-    return _then(_$_LifeState(
+    return _then(_$LifeStateImpl(
       board: null == board
           ? _value.board
           : board // ignore: cast_nullable_to_non_nullable
@@ -115,8 +124,8 @@ class __$$_LifeStateCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_LifeState implements _LifeState {
-  const _$_LifeState({required this.board, required this.isAutostepping});
+class _$LifeStateImpl implements _LifeState {
+  const _$LifeStateImpl({required this.board, required this.isAutostepping});
 
   @override
   final LifeBoard board;
@@ -131,10 +140,10 @@ class _$_LifeState implements _LifeState {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_LifeState &&
+            other is _$LifeStateImpl &&
             (identical(other.board, board) || other.board == board) &&
             (identical(other.isAutostepping, isAutostepping) ||
                 other.isAutostepping == isAutostepping));
@@ -143,26 +152,31 @@ class _$_LifeState implements _LifeState {
   @override
   int get hashCode => Object.hash(runtimeType, board, isAutostepping);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_LifeStateCopyWith<_$_LifeState> get copyWith =>
-      __$$_LifeStateCopyWithImpl<_$_LifeState>(this, _$identity);
+  _$$LifeStateImplCopyWith<_$LifeStateImpl> get copyWith =>
+      __$$LifeStateImplCopyWithImpl<_$LifeStateImpl>(this, _$identity);
 }
 
 abstract class _LifeState implements LifeState {
   const factory _LifeState(
       {required final LifeBoard board,
-      required final bool isAutostepping}) = _$_LifeState;
+      required final bool isAutostepping}) = _$LifeStateImpl;
 
   @override
   LifeBoard get board;
-  @override
 
   /// When true, this means the life board is automatically advancing its state.
-  bool get isAutostepping;
   @override
-  @JsonKey(ignore: true)
-  _$$_LifeStateCopyWith<_$_LifeState> get copyWith =>
+  bool get isAutostepping;
+
+  /// Create a copy of LifeState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$LifeStateImplCopyWith<_$LifeStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

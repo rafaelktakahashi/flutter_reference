@@ -12,7 +12,7 @@ part of 'buyer_state.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$BuyerStateSuccess {
@@ -24,7 +24,9 @@ mixin _$BuyerStateSuccess {
   Map<String, BuyerDetailsState> get details =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BuyerStateSuccess
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BuyerStateSuccessCopyWith<BuyerStateSuccess> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +50,8 @@ class _$BuyerStateSuccessCopyWithImpl<$Res, $Val extends BuyerStateSuccess>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BuyerStateSuccess
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -68,31 +72,33 @@ class _$BuyerStateSuccessCopyWithImpl<$Res, $Val extends BuyerStateSuccess>
 }
 
 /// @nodoc
-abstract class _$$_BuyerStateSuccessCopyWith<$Res>
+abstract class _$$BuyerStateSuccessImplCopyWith<$Res>
     implements $BuyerStateSuccessCopyWith<$Res> {
-  factory _$$_BuyerStateSuccessCopyWith(_$_BuyerStateSuccess value,
-          $Res Function(_$_BuyerStateSuccess) then) =
-      __$$_BuyerStateSuccessCopyWithImpl<$Res>;
+  factory _$$BuyerStateSuccessImplCopyWith(_$BuyerStateSuccessImpl value,
+          $Res Function(_$BuyerStateSuccessImpl) then) =
+      __$$BuyerStateSuccessImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({List<Buyer> buyers, Map<String, BuyerDetailsState> details});
 }
 
 /// @nodoc
-class __$$_BuyerStateSuccessCopyWithImpl<$Res>
-    extends _$BuyerStateSuccessCopyWithImpl<$Res, _$_BuyerStateSuccess>
-    implements _$$_BuyerStateSuccessCopyWith<$Res> {
-  __$$_BuyerStateSuccessCopyWithImpl(
-      _$_BuyerStateSuccess _value, $Res Function(_$_BuyerStateSuccess) _then)
+class __$$BuyerStateSuccessImplCopyWithImpl<$Res>
+    extends _$BuyerStateSuccessCopyWithImpl<$Res, _$BuyerStateSuccessImpl>
+    implements _$$BuyerStateSuccessImplCopyWith<$Res> {
+  __$$BuyerStateSuccessImplCopyWithImpl(_$BuyerStateSuccessImpl _value,
+      $Res Function(_$BuyerStateSuccessImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BuyerStateSuccess
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? buyers = null,
     Object? details = null,
   }) {
-    return _then(_$_BuyerStateSuccess(
+    return _then(_$BuyerStateSuccessImpl(
       buyers: null == buyers
           ? _value._buyers
           : buyers // ignore: cast_nullable_to_non_nullable
@@ -107,8 +113,8 @@ class __$$_BuyerStateSuccessCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_BuyerStateSuccess implements _BuyerStateSuccess {
-  const _$_BuyerStateSuccess(
+class _$BuyerStateSuccessImpl implements _BuyerStateSuccess {
+  const _$BuyerStateSuccessImpl(
       {required final List<Buyer> buyers,
       required final Map<String, BuyerDetailsState> details})
       : _buyers = buyers,
@@ -143,10 +149,10 @@ class _$_BuyerStateSuccess implements _BuyerStateSuccess {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BuyerStateSuccess &&
+            other is _$BuyerStateSuccessImpl &&
             const DeepCollectionEquality().equals(other._buyers, _buyers) &&
             const DeepCollectionEquality().equals(other._details, _details));
   }
@@ -157,11 +163,13 @@ class _$_BuyerStateSuccess implements _BuyerStateSuccess {
       const DeepCollectionEquality().hash(_buyers),
       const DeepCollectionEquality().hash(_details));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BuyerStateSuccess
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BuyerStateSuccessCopyWith<_$_BuyerStateSuccess> get copyWith =>
-      __$$_BuyerStateSuccessCopyWithImpl<_$_BuyerStateSuccess>(
+  _$$BuyerStateSuccessImplCopyWith<_$BuyerStateSuccessImpl> get copyWith =>
+      __$$BuyerStateSuccessImplCopyWithImpl<_$BuyerStateSuccessImpl>(
           this, _$identity);
 }
 
@@ -169,18 +177,21 @@ abstract class _BuyerStateSuccess implements BuyerStateSuccess {
   const factory _BuyerStateSuccess(
           {required final List<Buyer> buyers,
           required final Map<String, BuyerDetailsState> details}) =
-      _$_BuyerStateSuccess;
+      _$BuyerStateSuccessImpl;
 
   @override
   List<Buyer> get buyers;
-  @override
 
   /// Map from the buyer identification to the details' state. The state may be
   /// loading, error or success. If it's null, it means that the event for
   /// fetching that buyer's details has not been emitted yet.
-  Map<String, BuyerDetailsState> get details;
   @override
-  @JsonKey(ignore: true)
-  _$$_BuyerStateSuccessCopyWith<_$_BuyerStateSuccess> get copyWith =>
+  Map<String, BuyerDetailsState> get details;
+
+  /// Create a copy of BuyerStateSuccess
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$BuyerStateSuccessImplCopyWith<_$BuyerStateSuccessImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

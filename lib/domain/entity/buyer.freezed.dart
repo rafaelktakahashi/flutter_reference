@@ -12,7 +12,7 @@ part of 'buyer.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Buyer _$BuyerFromJson(Map<String, dynamic> json) {
   return _Buyer.fromJson(json);
@@ -26,8 +26,12 @@ mixin _$Buyer {
   /// The person or company's full name.
   String get fullName => throw _privateConstructorUsedError;
 
+  /// Serializes this Buyer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Buyer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BuyerCopyWith<Buyer> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -49,6 +53,8 @@ class _$BuyerCopyWithImpl<$Res, $Val extends Buyer>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Buyer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -69,27 +75,32 @@ class _$BuyerCopyWithImpl<$Res, $Val extends Buyer>
 }
 
 /// @nodoc
-abstract class _$$_BuyerCopyWith<$Res> implements $BuyerCopyWith<$Res> {
-  factory _$$_BuyerCopyWith(_$_Buyer value, $Res Function(_$_Buyer) then) =
-      __$$_BuyerCopyWithImpl<$Res>;
+abstract class _$$BuyerImplCopyWith<$Res> implements $BuyerCopyWith<$Res> {
+  factory _$$BuyerImplCopyWith(
+          _$BuyerImpl value, $Res Function(_$BuyerImpl) then) =
+      __$$BuyerImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String identification, String fullName});
 }
 
 /// @nodoc
-class __$$_BuyerCopyWithImpl<$Res> extends _$BuyerCopyWithImpl<$Res, _$_Buyer>
-    implements _$$_BuyerCopyWith<$Res> {
-  __$$_BuyerCopyWithImpl(_$_Buyer _value, $Res Function(_$_Buyer) _then)
+class __$$BuyerImplCopyWithImpl<$Res>
+    extends _$BuyerCopyWithImpl<$Res, _$BuyerImpl>
+    implements _$$BuyerImplCopyWith<$Res> {
+  __$$BuyerImplCopyWithImpl(
+      _$BuyerImpl _value, $Res Function(_$BuyerImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Buyer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? identification = null,
     Object? fullName = null,
   }) {
-    return _then(_$_Buyer(
+    return _then(_$BuyerImpl(
       identification: null == identification
           ? _value.identification
           : identification // ignore: cast_nullable_to_non_nullable
@@ -104,11 +115,11 @@ class __$$_BuyerCopyWithImpl<$Res> extends _$BuyerCopyWithImpl<$Res, _$_Buyer>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Buyer implements _Buyer {
-  const _$_Buyer({required this.identification, required this.fullName});
+class _$BuyerImpl implements _Buyer {
+  const _$BuyerImpl({required this.identification, required this.fullName});
 
-  factory _$_Buyer.fromJson(Map<String, dynamic> json) =>
-      _$$_BuyerFromJson(json);
+  factory _$BuyerImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BuyerImplFromJson(json);
 
   /// The person or company's document.
   @override
@@ -124,29 +135,31 @@ class _$_Buyer implements _Buyer {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Buyer &&
+            other is _$BuyerImpl &&
             (identical(other.identification, identification) ||
                 other.identification == identification) &&
             (identical(other.fullName, fullName) ||
                 other.fullName == fullName));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, identification, fullName);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Buyer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BuyerCopyWith<_$_Buyer> get copyWith =>
-      __$$_BuyerCopyWithImpl<_$_Buyer>(this, _$identity);
+  _$$BuyerImplCopyWith<_$BuyerImpl> get copyWith =>
+      __$$BuyerImplCopyWithImpl<_$BuyerImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BuyerToJson(
+    return _$$BuyerImplToJson(
       this,
     );
   }
@@ -155,21 +168,23 @@ class _$_Buyer implements _Buyer {
 abstract class _Buyer implements Buyer {
   const factory _Buyer(
       {required final String identification,
-      required final String fullName}) = _$_Buyer;
+      required final String fullName}) = _$BuyerImpl;
 
-  factory _Buyer.fromJson(Map<String, dynamic> json) = _$_Buyer.fromJson;
-
-  @override
+  factory _Buyer.fromJson(Map<String, dynamic> json) = _$BuyerImpl.fromJson;
 
   /// The person or company's document.
-  String get identification;
   @override
+  String get identification;
 
   /// The person or company's full name.
-  String get fullName;
   @override
-  @JsonKey(ignore: true)
-  _$$_BuyerCopyWith<_$_Buyer> get copyWith =>
+  String get fullName;
+
+  /// Create a copy of Buyer
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$BuyerImplCopyWith<_$BuyerImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -195,8 +210,12 @@ mixin _$BuyerDetails {
   /// Has a date component only, without time.
   DateTime get birthdate => throw _privateConstructorUsedError;
 
+  /// Serializes this BuyerDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of BuyerDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BuyerDetailsCopyWith<BuyerDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -225,6 +244,8 @@ class _$BuyerDetailsCopyWithImpl<$Res, $Val extends BuyerDetails>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BuyerDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -260,11 +281,11 @@ class _$BuyerDetailsCopyWithImpl<$Res, $Val extends BuyerDetails>
 }
 
 /// @nodoc
-abstract class _$$_BuyerDetailsCopyWith<$Res>
+abstract class _$$BuyerDetailsImplCopyWith<$Res>
     implements $BuyerDetailsCopyWith<$Res> {
-  factory _$$_BuyerDetailsCopyWith(
-          _$_BuyerDetails value, $Res Function(_$_BuyerDetails) then) =
-      __$$_BuyerDetailsCopyWithImpl<$Res>;
+  factory _$$BuyerDetailsImplCopyWith(
+          _$BuyerDetailsImpl value, $Res Function(_$BuyerDetailsImpl) then) =
+      __$$BuyerDetailsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -276,13 +297,15 @@ abstract class _$$_BuyerDetailsCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_BuyerDetailsCopyWithImpl<$Res>
-    extends _$BuyerDetailsCopyWithImpl<$Res, _$_BuyerDetails>
-    implements _$$_BuyerDetailsCopyWith<$Res> {
-  __$$_BuyerDetailsCopyWithImpl(
-      _$_BuyerDetails _value, $Res Function(_$_BuyerDetails) _then)
+class __$$BuyerDetailsImplCopyWithImpl<$Res>
+    extends _$BuyerDetailsCopyWithImpl<$Res, _$BuyerDetailsImpl>
+    implements _$$BuyerDetailsImplCopyWith<$Res> {
+  __$$BuyerDetailsImplCopyWithImpl(
+      _$BuyerDetailsImpl _value, $Res Function(_$BuyerDetailsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BuyerDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -292,7 +315,7 @@ class __$$_BuyerDetailsCopyWithImpl<$Res>
     Object? accountEmail = null,
     Object? birthdate = null,
   }) {
-    return _then(_$_BuyerDetails(
+    return _then(_$BuyerDetailsImpl(
       identification: null == identification
           ? _value.identification
           : identification // ignore: cast_nullable_to_non_nullable
@@ -319,16 +342,16 @@ class __$$_BuyerDetailsCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_BuyerDetails implements _BuyerDetails {
-  const _$_BuyerDetails(
+class _$BuyerDetailsImpl implements _BuyerDetails {
+  const _$BuyerDetailsImpl(
       {required this.identification,
       required this.address,
       required this.fullName,
       required this.accountEmail,
       required this.birthdate});
 
-  factory _$_BuyerDetails.fromJson(Map<String, dynamic> json) =>
-      _$$_BuyerDetailsFromJson(json);
+  factory _$BuyerDetailsImpl.fromJson(Map<String, dynamic> json) =>
+      _$$BuyerDetailsImplFromJson(json);
 
   /// The person or company's document.
   @override
@@ -357,10 +380,10 @@ class _$_BuyerDetails implements _BuyerDetails {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_BuyerDetails &&
+            other is _$BuyerDetailsImpl &&
             (identical(other.identification, identification) ||
                 other.identification == identification) &&
             (identical(other.address, address) || other.address == address) &&
@@ -372,20 +395,22 @@ class _$_BuyerDetails implements _BuyerDetails {
                 other.birthdate == birthdate));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, identification, address, fullName, accountEmail, birthdate);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BuyerDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_BuyerDetailsCopyWith<_$_BuyerDetails> get copyWith =>
-      __$$_BuyerDetailsCopyWithImpl<_$_BuyerDetails>(this, _$identity);
+  _$$BuyerDetailsImplCopyWith<_$BuyerDetailsImpl> get copyWith =>
+      __$$BuyerDetailsImplCopyWithImpl<_$BuyerDetailsImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_BuyerDetailsToJson(
+    return _$$BuyerDetailsImplToJson(
       this,
     );
   }
@@ -397,34 +422,36 @@ abstract class _BuyerDetails implements BuyerDetails {
       required final String address,
       required final String fullName,
       required final String accountEmail,
-      required final DateTime birthdate}) = _$_BuyerDetails;
+      required final DateTime birthdate}) = _$BuyerDetailsImpl;
 
   factory _BuyerDetails.fromJson(Map<String, dynamic> json) =
-      _$_BuyerDetails.fromJson;
-
-  @override
+      _$BuyerDetailsImpl.fromJson;
 
   /// The person or company's document.
-  String get identification;
   @override
+  String get identification;
 
   /// The person or company's current address.
-  String get address;
   @override
+  String get address;
 
   /// The person or company's full name.
-  String get fullName;
   @override
+  String get fullName;
 
   /// E-mail address that this person or company uses.
-  String get accountEmail;
   @override
+  String get accountEmail;
 
   /// The person's birthdate, or the company's date of foundation.
   /// Has a date component only, without time.
-  DateTime get birthdate;
   @override
-  @JsonKey(ignore: true)
-  _$$_BuyerDetailsCopyWith<_$_BuyerDetails> get copyWith =>
+  DateTime get birthdate;
+
+  /// Create a copy of BuyerDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$BuyerDetailsImplCopyWith<_$BuyerDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

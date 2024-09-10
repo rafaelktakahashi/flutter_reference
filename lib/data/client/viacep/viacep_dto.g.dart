@@ -6,8 +6,9 @@ part of 'viacep_dto.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_EnderecoViaCepDTO _$$_EnderecoViaCepDTOFromJson(Map<String, dynamic> json) =>
-    _$_EnderecoViaCepDTO(
+_$EnderecoViaCepDTOImpl _$$EnderecoViaCepDTOImplFromJson(
+        Map<String, dynamic> json) =>
+    _$EnderecoViaCepDTOImpl(
       cep: json['cep'] as String,
       uf: json['uf'] as String,
       localidade: json['localidade'] as String,
@@ -20,8 +21,8 @@ _$_EnderecoViaCepDTO _$$_EnderecoViaCepDTOFromJson(Map<String, dynamic> json) =>
       siafi: json['siafi'] as String,
     );
 
-Map<String, dynamic> _$$_EnderecoViaCepDTOToJson(
-        _$_EnderecoViaCepDTO instance) =>
+Map<String, dynamic> _$$EnderecoViaCepDTOImplToJson(
+        _$EnderecoViaCepDTOImpl instance) =>
     <String, dynamic>{
       'cep': instance.cep,
       'uf': instance.uf,

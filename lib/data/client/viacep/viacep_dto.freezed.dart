@@ -12,7 +12,7 @@ part of 'viacep_dto.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 EnderecoViaCepDTO _$EnderecoViaCepDTOFromJson(Map<String, dynamic> json) {
   return _EnderecoViaCepDTO.fromJson(json);
@@ -32,8 +32,12 @@ mixin _$EnderecoViaCepDTO {
   String get ddd => throw _privateConstructorUsedError;
   String get siafi => throw _privateConstructorUsedError;
 
+  /// Serializes this EnderecoViaCepDTO to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of EnderecoViaCepDTO
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $EnderecoViaCepDTOCopyWith<EnderecoViaCepDTO> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -67,6 +71,8 @@ class _$EnderecoViaCepDTOCopyWithImpl<$Res, $Val extends EnderecoViaCepDTO>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of EnderecoViaCepDTO
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -127,11 +133,11 @@ class _$EnderecoViaCepDTOCopyWithImpl<$Res, $Val extends EnderecoViaCepDTO>
 }
 
 /// @nodoc
-abstract class _$$_EnderecoViaCepDTOCopyWith<$Res>
+abstract class _$$EnderecoViaCepDTOImplCopyWith<$Res>
     implements $EnderecoViaCepDTOCopyWith<$Res> {
-  factory _$$_EnderecoViaCepDTOCopyWith(_$_EnderecoViaCepDTO value,
-          $Res Function(_$_EnderecoViaCepDTO) then) =
-      __$$_EnderecoViaCepDTOCopyWithImpl<$Res>;
+  factory _$$EnderecoViaCepDTOImplCopyWith(_$EnderecoViaCepDTOImpl value,
+          $Res Function(_$EnderecoViaCepDTOImpl) then) =
+      __$$EnderecoViaCepDTOImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -148,13 +154,15 @@ abstract class _$$_EnderecoViaCepDTOCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_EnderecoViaCepDTOCopyWithImpl<$Res>
-    extends _$EnderecoViaCepDTOCopyWithImpl<$Res, _$_EnderecoViaCepDTO>
-    implements _$$_EnderecoViaCepDTOCopyWith<$Res> {
-  __$$_EnderecoViaCepDTOCopyWithImpl(
-      _$_EnderecoViaCepDTO _value, $Res Function(_$_EnderecoViaCepDTO) _then)
+class __$$EnderecoViaCepDTOImplCopyWithImpl<$Res>
+    extends _$EnderecoViaCepDTOCopyWithImpl<$Res, _$EnderecoViaCepDTOImpl>
+    implements _$$EnderecoViaCepDTOImplCopyWith<$Res> {
+  __$$EnderecoViaCepDTOImplCopyWithImpl(_$EnderecoViaCepDTOImpl _value,
+      $Res Function(_$EnderecoViaCepDTOImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of EnderecoViaCepDTO
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -169,7 +177,7 @@ class __$$_EnderecoViaCepDTOCopyWithImpl<$Res>
     Object? ddd = null,
     Object? siafi = null,
   }) {
-    return _then(_$_EnderecoViaCepDTO(
+    return _then(_$EnderecoViaCepDTOImpl(
       cep: null == cep
           ? _value.cep
           : cep // ignore: cast_nullable_to_non_nullable
@@ -216,8 +224,8 @@ class __$$_EnderecoViaCepDTOCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_EnderecoViaCepDTO extends _EnderecoViaCepDTO {
-  const _$_EnderecoViaCepDTO(
+class _$EnderecoViaCepDTOImpl extends _EnderecoViaCepDTO {
+  const _$EnderecoViaCepDTOImpl(
       {required this.cep,
       required this.uf,
       required this.localidade,
@@ -230,8 +238,8 @@ class _$_EnderecoViaCepDTO extends _EnderecoViaCepDTO {
       required this.siafi})
       : super._();
 
-  factory _$_EnderecoViaCepDTO.fromJson(Map<String, dynamic> json) =>
-      _$$_EnderecoViaCepDTOFromJson(json);
+  factory _$EnderecoViaCepDTOImpl.fromJson(Map<String, dynamic> json) =>
+      _$$EnderecoViaCepDTOImplFromJson(json);
 
   @override
   final String cep;
@@ -261,10 +269,10 @@ class _$_EnderecoViaCepDTO extends _EnderecoViaCepDTO {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EnderecoViaCepDTO &&
+            other is _$EnderecoViaCepDTOImpl &&
             (identical(other.cep, cep) || other.cep == cep) &&
             (identical(other.uf, uf) || other.uf == uf) &&
             (identical(other.localidade, localidade) ||
@@ -280,21 +288,23 @@ class _$_EnderecoViaCepDTO extends _EnderecoViaCepDTO {
             (identical(other.siafi, siafi) || other.siafi == siafi));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, cep, uf, localidade, bairro,
       logradouro, complemento, ibge, gia, ddd, siafi);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of EnderecoViaCepDTO
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EnderecoViaCepDTOCopyWith<_$_EnderecoViaCepDTO> get copyWith =>
-      __$$_EnderecoViaCepDTOCopyWithImpl<_$_EnderecoViaCepDTO>(
+  _$$EnderecoViaCepDTOImplCopyWith<_$EnderecoViaCepDTOImpl> get copyWith =>
+      __$$EnderecoViaCepDTOImplCopyWithImpl<_$EnderecoViaCepDTOImpl>(
           this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_EnderecoViaCepDTOToJson(
+    return _$$EnderecoViaCepDTOImplToJson(
       this,
     );
   }
@@ -311,19 +321,19 @@ abstract class _EnderecoViaCepDTO extends EnderecoViaCepDTO {
       required final String ibge,
       required final String gia,
       required final String ddd,
-      required final String siafi}) = _$_EnderecoViaCepDTO;
+      required final String siafi}) = _$EnderecoViaCepDTOImpl;
   const _EnderecoViaCepDTO._() : super._();
 
   factory _EnderecoViaCepDTO.fromJson(Map<String, dynamic> json) =
-      _$_EnderecoViaCepDTO.fromJson;
+      _$EnderecoViaCepDTOImpl.fromJson;
 
   @override
   String get cep;
   @override
   String get uf;
   @override
-  String get localidade;
-  @override // município/cidade
+  String get localidade; // município/cidade
+  @override
   String get bairro;
   @override
   String get logradouro;
@@ -337,8 +347,11 @@ abstract class _EnderecoViaCepDTO extends EnderecoViaCepDTO {
   String get ddd;
   @override
   String get siafi;
+
+  /// Create a copy of EnderecoViaCepDTO
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
-  _$$_EnderecoViaCepDTOCopyWith<_$_EnderecoViaCepDTO> get copyWith =>
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$EnderecoViaCepDTOImplCopyWith<_$EnderecoViaCepDTOImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

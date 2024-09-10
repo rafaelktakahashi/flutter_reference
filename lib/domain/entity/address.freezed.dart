@@ -12,7 +12,7 @@ part of 'address.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 Address _$AddressFromJson(Map<String, dynamic> json) {
   return _Address.fromJson(json);
@@ -73,8 +73,12 @@ mixin _$Address {
   /// address. Ex.: "USA", "Brasil", "Ελλάδα"
   String get country => throw _privateConstructorUsedError;
 
+  /// Serializes this Address to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AddressCopyWith<Address> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -102,6 +106,8 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -142,10 +148,10 @@ class _$AddressCopyWithImpl<$Res, $Val extends Address>
 }
 
 /// @nodoc
-abstract class _$$_AddressCopyWith<$Res> implements $AddressCopyWith<$Res> {
-  factory _$$_AddressCopyWith(
-          _$_Address value, $Res Function(_$_Address) then) =
-      __$$_AddressCopyWithImpl<$Res>;
+abstract class _$$AddressImplCopyWith<$Res> implements $AddressCopyWith<$Res> {
+  factory _$$AddressImplCopyWith(
+          _$AddressImpl value, $Res Function(_$AddressImpl) then) =
+      __$$AddressImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -158,12 +164,15 @@ abstract class _$$_AddressCopyWith<$Res> implements $AddressCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_AddressCopyWithImpl<$Res>
-    extends _$AddressCopyWithImpl<$Res, _$_Address>
-    implements _$$_AddressCopyWith<$Res> {
-  __$$_AddressCopyWithImpl(_$_Address _value, $Res Function(_$_Address) _then)
+class __$$AddressImplCopyWithImpl<$Res>
+    extends _$AddressCopyWithImpl<$Res, _$AddressImpl>
+    implements _$$AddressImplCopyWith<$Res> {
+  __$$AddressImplCopyWithImpl(
+      _$AddressImpl _value, $Res Function(_$AddressImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -174,7 +183,7 @@ class __$$_AddressCopyWithImpl<$Res>
     Object? state = null,
     Object? country = null,
   }) {
-    return _then(_$_Address(
+    return _then(_$AddressImpl(
       postalCode: null == postalCode
           ? _value.postalCode
           : postalCode // ignore: cast_nullable_to_non_nullable
@@ -205,8 +214,8 @@ class __$$_AddressCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Address extends _Address {
-  const _$_Address(
+class _$AddressImpl extends _Address {
+  const _$AddressImpl(
       {required this.postalCode,
       required this.streetAddress,
       this.number,
@@ -215,8 +224,8 @@ class _$_Address extends _Address {
       required this.country})
       : super._();
 
-  factory _$_Address.fromJson(Map<String, dynamic> json) =>
-      _$$_AddressFromJson(json);
+  factory _$AddressImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AddressImplFromJson(json);
 
   /// Postal code; format and name varies by country. Sometimes called
   /// "zip code", but generally speaking that's not correct because zip codes
@@ -278,10 +287,10 @@ class _$_Address extends _Address {
   final String country;
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_Address &&
+            other is _$AddressImpl &&
             (identical(other.postalCode, postalCode) ||
                 other.postalCode == postalCode) &&
             (identical(other.streetAddress, streetAddress) ||
@@ -292,20 +301,22 @@ class _$_Address extends _Address {
             (identical(other.country, country) || other.country == country));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, postalCode, streetAddress, number, city, state, country);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$_AddressCopyWith<_$_Address> get copyWith =>
-      __$$_AddressCopyWithImpl<_$_Address>(this, _$identity);
+  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
+      __$$AddressImplCopyWithImpl<_$AddressImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_AddressToJson(
+    return _$$AddressImplToJson(
       this,
     );
   }
@@ -318,12 +329,10 @@ abstract class _Address extends Address {
       final String? number,
       required final String city,
       required final String state,
-      required final String country}) = _$_Address;
+      required final String country}) = _$AddressImpl;
   const _Address._() : super._();
 
-  factory _Address.fromJson(Map<String, dynamic> json) = _$_Address.fromJson;
-
-  @override
+  factory _Address.fromJson(Map<String, dynamic> json) = _$AddressImpl.fromJson;
 
   /// Postal code; format and name varies by country. Sometimes called
   /// "zip code", but generally speaking that's not correct because zip codes
@@ -354,36 +363,40 @@ abstract class _Address extends Address {
   /// include the street name, and there are very many exceptions and special
   /// cases where a region may have its own address structure that deviates
   /// from the standard.
-  String get postalCode;
   @override
+  String get postalCode;
 
   /// Most specific part of an address. Varies by country, but here it always
   /// covers everything that's more specific than the city.
-  String get streetAddress;
   @override
+  String get streetAddress;
 
   /// Number, which may contain non-numeric digits as well (ex.: "10b").
   /// If the address does not have a number, use null.
-  String? get number;
   @override
+  String? get number;
 
   /// Full name of the city.
-  String get city;
   @override
+  String get city;
 
   /// Name or abbreviation for the highest administrative division of the
   /// country, which may be a state, oblast, canton, prefecture, provice or
   /// region among many other names.
   /// Ex.: "SP" (State in Brazil), "MI" (State in the USA),
   /// "Черка́ська о́бласть" (Oblast in Ukraine), "沖縄県" (Prefecture in Japan)
-  String get state;
   @override
+  String get state;
 
   /// Localized name of the country, in the same language as the rest of the
   /// address. Ex.: "USA", "Brasil", "Ελλάδα"
-  String get country;
   @override
-  @JsonKey(ignore: true)
-  _$$_AddressCopyWith<_$_Address> get copyWith =>
+  String get country;
+
+  /// Create a copy of Address
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$AddressImplCopyWith<_$AddressImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
