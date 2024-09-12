@@ -8,6 +8,8 @@ import 'package:flutter_reference/data/repository/buyer_repository.dart';
 import 'package:flutter_reference/data/repository/product_repository.dart';
 import 'package:flutter_reference/data/service/app_data_service.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
+import 'package:flutter_reference/data/service/step_up_auth_service.dart';
+import 'package:flutter_reference/data/service/ui_modal_service.dart';
 import 'package:flutter_reference/view/nav/interop_navigator.dart';
 import 'package:get_it/get_it.dart';
 
@@ -50,6 +52,8 @@ void configureDependencies() {
   GetIt.I.registerSingleton<BuyerRepository>(BuyerRepository());
   GetIt.I.registerSingleton<LocalStorageService>(LocalStorageService());
   GetIt.I.registerSingleton<AddressRepository>(AddressRepository());
+  GetIt.I.registerSingleton<StepUpAuthService>(StepUpAuthService());
+  GetIt.I.registerFactory<UiModalService>(() => UiModalService());
 
   // Register singletons of blocs that inherit from InteropBloc, because
   // they need to always be available in case native code needs to use them.

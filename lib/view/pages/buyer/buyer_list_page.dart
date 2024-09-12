@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_reference/view/UI/organisms/buyer/buyer_list.dart';
+import 'package:flutter_reference/view/UI/organisms/buyer/buyer_settings.dart';
+import 'package:flutter_reference/view/templates/scrollable_template.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,19 +17,27 @@ import 'package:go_router/go_router.dart';
 /// See the product list page for a simpler example that does not need a second
 /// request. The product list page also has an example for adding a new item
 /// with a form.
+///
+/// Additionally, this page has a toggle for simulating a step-up authentication
+/// request. That causes the http client to show a new page requesting a code
+/// from the user when you tap an item to see details.
 class BuyerListPage extends StatelessWidget {
   const BuyerListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SimpleTemplate(
-        title: "Playground Buyer List",
-        child: BuyerList(
+    return ScrollableTemplate(
+      title: "Playground Buyer List",
+      children: [
+        BuyerList(
           onOpenDetails: (id) {
             // Check the product_list_page.dart file for more considerations
             // about this.
             context.push('/buyers/details/$id');
           },
-        ));
+        ),
+        const BuyerSettings(),
+      ],
+    );
   }
 }

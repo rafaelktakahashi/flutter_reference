@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_state.dart';
 import 'package:flutter_reference/domain/entity/buyer.dart';
+import 'package:flutter_reference/domain/error/playground_business_error.dart';
 import 'package:flutter_reference/view/UI/organisms/buyer/buyer_details_card.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
 
@@ -20,13 +21,23 @@ class BuyerDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<BuyerBloc, BuyerState>(
       builder: (context, state) {
-        final BuyerDetails? buyer = _selectBuyerDetails(state, buyerId);
+        final BuyerDetailsState buyerDetailsState =
+            _selectBuyerDetails(state, buyerId);
 
         return SimpleTemplate(
           title: _selectBuyerName(state, buyerId) ?? "Buyer's details",
           child: Padding(
             padding: const EdgeInsets.all(10),
-            child: BuyerDetailsCard(buyer: buyer),
+            child: switch (buyerDetailsState) {
+              BuyerDetailsStateSuccess(data: var data) => BuyerDetailsCard(
+                  buyer: data,
+                ),
+              BuyerDetailsStateLoading() => const BuyerDetailsCard(
+                  buyer: null,
+                ),
+              BuyerDetailsStateError(error: var e) => Text(e.errorMessage()),
+              (_) => const Text("An unknown error occurred."),
+            },
           ),
         );
       },
@@ -50,18 +61,17 @@ String? _selectBuyerName(BuyerState state, String buyerId) {
   return null;
 }
 
-BuyerDetails? _selectBuyerDetails(BuyerState state, String buyerId) {
+BuyerDetailsState _selectBuyerDetails(BuyerState state, String buyerId) {
   // The state contains a list of buyers, but we're not interested in it; we
   // want the map of buyer details. Both are only available when the bloc is in
   // the success state.
   if (state is BuyerStateSuccess) {
     // The map of details maps ids to buyer details. The details may be null, or
     // may be in an error, success or loading state.
-    final buyerDetails = state.details[buyerId];
-    if (buyerDetails is BuyerDetailsStateSuccess) {
-      return buyerDetails.data;
-    }
+    final buyerDetailsState = state.details[buyerId];
+    return buyerDetailsState ?? const BuyerDetailsStateLoading();
+  } else {
+    // Unexpected. Don't show this page when the parent state isn't a success.
+    return const BuyerDetailsStateLoading();
   }
-
-  return null;
 }

@@ -22,8 +22,6 @@ import 'package:get_it/get_it.dart';
 /// If you're using Flutter code as a module, you must ensure that this code
 /// properly runs at the start of the application.
 void main() {
-  // Register dependencies. This needs to be after the call to
-  // ensureInitialized because some classes open the method channel.
   configureDependencies();
 
   // This line should be as late as possible, because anything that happens

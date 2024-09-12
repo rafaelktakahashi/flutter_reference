@@ -22,6 +22,7 @@ enum SettingsKey {
   settingThreeKey,
   settingAbcKey,
   settingNumberKey,
+  settingSimulateStepUpRequestOnBuyersListKey,
 }
 
 /// This extension is only necessary if the names of keys don't correspond to
@@ -51,6 +52,11 @@ extension SettingsKeyNames on SettingsKey {
         return select(whenAndroid: "SETTING_ABC", whenIos: "settingAbc");
       case SettingsKey.settingNumberKey:
         return select(whenAndroid: "SETTING_NUMBER", whenIos: "settingNumber");
+      case SettingsKey.settingSimulateStepUpRequestOnBuyersListKey:
+        return select(
+          whenAndroid: "SETTING_SIMULATE_STEP_UP_REQUEST_ON_BUYERS_LIST",
+          whenIos: "settingSimulateStepUpRequestOnBuyersList",
+        );
     }
     // Note that this is just an example. There's no advantage to using
     // different strings depending on platform (or depending on other things).

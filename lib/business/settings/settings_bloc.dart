@@ -77,6 +77,7 @@ class SettingsState {
       SettingsKey.settingThreeKey: false,
       SettingsKey.settingAbcKey: 'A',
       SettingsKey.settingNumberKey: 40,
+      SettingsKey.settingSimulateStepUpRequestOnBuyersListKey: false,
     });
   }
 }
@@ -148,6 +149,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           localStorageService.read<bool>(SettingsKey.settingThreeKey.name),
           localStorageService.read<String>(SettingsKey.settingAbcKey.name),
           localStorageService.read<int>(SettingsKey.settingNumberKey.name),
+          localStorageService.read<bool>(
+              SettingsKey.settingSimulateStepUpRequestOnBuyersListKey.name),
         ]);
         // Now we have a list of eithers. For each either that's a right,
         // unwrap its value; for each either that's a left (not expected), use
@@ -175,6 +178,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
               SettingsKey.settingThreeKey: _safeCast<bool>(values[2]),
               SettingsKey.settingAbcKey: _safeCast<String>(values[3]),
               SettingsKey.settingNumberKey: _safeCast<int>(values[4]),
+              SettingsKey.settingSimulateStepUpRequestOnBuyersListKey:
+                  _safeCast<bool>(values[5]),
             },
             ignoreNull: true,
           ),
@@ -218,6 +223,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         case SettingsKey.settingOneKey:
         case SettingsKey.settingTwoKey:
         case SettingsKey.settingThreeKey:
+        case SettingsKey.settingSimulateStepUpRequestOnBuyersListKey:
           if (event.newValue is bool) {
             emitState();
             // There's no need to await this.

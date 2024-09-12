@@ -47,3 +47,33 @@ class PlaygroundClientError implements PlaygroundError {
     this.nestedException,
   });
 }
+
+class PlaygroundClientErrorStepUpAuthenticationRequired
+    implements PlaygroundError {
+  @override
+  Exception? cause() {
+    return null;
+  }
+
+  @override
+  String? developerMessage() {
+    return "Url $url requires step-up authentication.";
+  }
+
+  @override
+  String errorCode() {
+    return "STEP_UP_REQUIRED";
+  }
+
+  @override
+  String errorMessage() {
+    return "An authentication code is required.";
+  }
+
+  final String url;
+  final String sessionId;
+  const PlaygroundClientErrorStepUpAuthenticationRequired({
+    required this.url,
+    required this.sessionId,
+  });
+}

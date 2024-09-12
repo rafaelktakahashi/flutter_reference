@@ -218,3 +218,15 @@ These two cases are different kinds of dependency and are solved in different wa
 Be very careful with communication between blocs, and avoid it whenever it's not absolutely necessary. Always check if there are other ways of solving your problem, such as with listeners in the Widget tree, or using local storage. Using (and abusing) global events makes it harder to write unit tests.
 
 The `interblocs_communication_test.dart` file has an example of mocking global events for unit tests.
+
+### Step-Up Interceptor
+
+Page: Reuses the buyer page.
+
+Description: Suppose that any request from the backend server can fail with a step-up request; that is, an error message indicating that the client application needs to obtain an alphanumeric code from the user (sent by SMS, e-mail or another method) and redo the request sending that data in a header.
+
+If the requests that may require a step-up are few and known, it's best to build that logic into the BLoCs and repositories. However, this demo assumes a different scenario, where _any_ request from a specific backend server may fail with a step-up request.
+
+Since obtaining the alphanumeric code to complete the step-up authentication requires participation by the UI, some method of injecting at least the Flutter context has to be used to decouple the http client from UI logic. That's done with the `StepUpAuthService` in the data layer, which receives an instance of the Flutter context and uses it to navigate to the step up authentication widget.
+
+The point of this demo is intercepting such a request and showing a modal without modifying anything about the BLoC or the repository, thus theoretically not needing any UI or logic adjustments to add protection to any backend call.
