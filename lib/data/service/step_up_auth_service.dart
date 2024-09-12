@@ -15,7 +15,7 @@ class StepUpAuthService extends InteropService {
   /// with it.
   Future<StepUpResult> displayStepUpRequest(String sessionId) async {
     final result = await GetIt.I.get<UiModalService>().showModalPage(
-          (_) => const StepUpModalPage(),
+          (_) => StepUpModalPage(sessionId: sessionId),
         );
 
     return result.fold(

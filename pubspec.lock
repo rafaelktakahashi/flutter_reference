@@ -259,6 +259,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.22"
+  flutter_reference_step_up_auth:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "3a4f73bc675c07e38f56c070cdd7b49e8771d406"
+      url: "https://github.com/rafaelktakahashi/flutter_reference_step_up_auth"
+    source: git
+    version: "0.0.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
