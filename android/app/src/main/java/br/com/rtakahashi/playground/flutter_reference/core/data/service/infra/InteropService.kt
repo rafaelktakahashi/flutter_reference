@@ -34,9 +34,8 @@ abstract class InteropService(serviceName: String) {
     }
 
     suspend fun callSuspend(methodName: String, arguments: Any? = null): Any? {
-        return suspendCoroutine { continuation ->
-            runBlocking(Dispatchers.Main) {
-                // Replace the runBlocking with something else. But first check if it works.
+        return withContext(Dispatchers.Main) {
+            suspendCoroutine { continuation ->
                 call(methodName, arguments, {
                     error -> continuation.resumeWithException(error)
                 }) {
