@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_reference/data/infra/interop_service.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -18,7 +19,27 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// amounts of information (for example, a json that can be many kilobytes in
 /// size), then consider storing that information as files using a dedicated
 /// service for writing and reading local files.
-class LocalStorageService {
+class LocalStorageService extends InteropService {
+  LocalStorageService() : super("local-storage") {
+    // This exposed version of the read method is very unsafe and could probably
+    // be improved.
+    super.exposeMethod("read", (value) {
+      // The parameter is assumed to be the key.
+      if (value is! String) {
+        throw LocalStorageValueNotFoundError(valueName: "$value");
+      }
+
+      // final valueReadFromSecureStorage = await read(value);
+      final valueReadFromSecureStorage = Right(true);
+      // Turning Eithers into try/catch-style code is very awkward, sadly.
+      if (valueReadFromSecureStorage.isLeft()) {
+        throw LocalStorageValueNotFoundError(valueName: value);
+      } else {
+        return valueReadFromSecureStorage.getOrElse(() => false);
+      }
+    });
+  }
+
   // A NOTE ABOUT FLUTTER_SECURE_STORAGE:
   // The library is not trivial to use, and it makes some changes to the native
   // projects that you may not want, depending on the project's configuration.

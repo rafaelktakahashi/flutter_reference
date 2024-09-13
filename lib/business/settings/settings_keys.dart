@@ -23,6 +23,7 @@ enum SettingsKey {
   settingAbcKey,
   settingNumberKey,
   settingSimulateStepUpRequestOnBuyersListKey,
+  settingSimulateStepUpRequestOnNativeProductsListKey,
 }
 
 /// This extension is only necessary if the names of keys don't correspond to
@@ -56,6 +57,12 @@ extension SettingsKeyNames on SettingsKey {
         return select(
           whenAndroid: "SETTING_SIMULATE_STEP_UP_REQUEST_ON_BUYERS_LIST",
           whenIos: "settingSimulateStepUpRequestOnBuyersList",
+        );
+      case SettingsKey.settingSimulateStepUpRequestOnNativeProductsListKey:
+        return select(
+          whenAndroid:
+              "SETTING_SIMULATE_STEP_UP_REQUEST_ON_NATIVE_PRODUCTS_LIST",
+          whenIos: "settingSimulateStepUpRequestOnNativeProductsList",
         );
     }
     // Note that this is just an example. There's no advantage to using

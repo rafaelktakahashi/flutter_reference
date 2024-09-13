@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/product/product_list_bloc.dart';
 import 'package:flutter_reference/view/UI/molecules/product_entry.dart';
+import 'package:flutter_reference/view/UI/organisms/product/product_settings.dart';
 
 /// List that is specifically for products.
 ///
@@ -44,6 +45,7 @@ class ProductList extends StatelessWidget {
                 ),
             child: const Text("Refetch"),
           ),
+          const ProductSettings(),
         ],
       );
     });

@@ -1,7 +1,10 @@
 package br.com.rtakahashi.playground.flutter_reference.core.data.repository
 
 import br.com.rtakahashi.playground.flutter_reference.core.data.repository.infra.InteropRepository
+import br.com.rtakahashi.playground.flutter_reference.core.data.service.LocalStorageService
 import br.com.rtakahashi.playground.flutter_reference.core.domain.entity.Product
+import br.com.rtakahashi.playground.flutter_reference.core.injection.Injector
+import com.it_nomads.fluttersecurestorage.FlutterSecureStorage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -62,6 +65,18 @@ class ProductRepository : InteropRepository("product") {
      */
     private suspend fun fetchProducts(): List<Map<String,Any>> {
         delay(1500)
+
+        // Check if we're supposed to suspend execution and prompt the user for a
+        // step-up authentication code.
+        // This was added after the fact, and the main example is in the buyers
+        // page, so check there first.
+        val localStorageService = Injector.read<LocalStorageService>("localStorageService");
+        // TODO: An async call to the Dart side to read a setting does not work.
+        val shouldRequireStepUp = true;
+        if (shouldRequireStepUp) {
+            println("REQUIRING STEP UP");
+        }
+
         return products.map { it.toMap() }
     }
 

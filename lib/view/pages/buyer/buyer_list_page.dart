@@ -2,7 +2,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_reference/view/UI/organisms/buyer/buyer_list.dart';
 import 'package:flutter_reference/view/UI/organisms/buyer/buyer_settings.dart';
 import 'package:flutter_reference/view/templates/scrollable_template.dart';
-import 'package:flutter_reference/view/templates/simple_template.dart';
 import 'package:go_router/go_router.dart';
 
 /// List page that showcases a list whose details need to be fetched

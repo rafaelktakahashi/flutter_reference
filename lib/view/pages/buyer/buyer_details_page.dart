@@ -3,8 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_bloc.dart';
 import 'package:flutter_reference/business/buyer/buyer_state.dart';
-import 'package:flutter_reference/domain/entity/buyer.dart';
-import 'package:flutter_reference/domain/error/playground_business_error.dart';
 import 'package:flutter_reference/view/UI/organisms/buyer/buyer_details_card.dart';
 import 'package:flutter_reference/view/templates/simple_template.dart';
 
