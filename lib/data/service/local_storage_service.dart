@@ -22,20 +22,21 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class LocalStorageService extends InteropService {
   LocalStorageService() : super("local-storage") {
     // This exposed version of the read method is very unsafe and could probably
-    // be improved.
-    super.exposeMethod("read", (value) {
+    // be improved. Unlike the regular <T>read, this always returns
+    // the value as String? because we're unable to send generic type
+    // parameters through the channel.
+    super.exposeMethod("read", (value) async {
       // The parameter is assumed to be the key.
       if (value is! String) {
         throw LocalStorageValueNotFoundError(valueName: "$value");
       }
 
-      // final valueReadFromSecureStorage = await read(value);
-      final valueReadFromSecureStorage = Right(true);
+      final valueReadFromSecureStorage = await read<String>(value);
       // Turning Eithers into try/catch-style code is very awkward, sadly.
       if (valueReadFromSecureStorage.isLeft()) {
         throw LocalStorageValueNotFoundError(valueName: value);
       } else {
-        return valueReadFromSecureStorage.getOrElse(() => false);
+        return valueReadFromSecureStorage.getOrElse(() => null);
       }
     });
   }

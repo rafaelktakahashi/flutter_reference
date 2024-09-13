@@ -2,6 +2,12 @@ package br.com.rtakahashi.playground.flutter_reference.core.data.service.infra
 
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridgeException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 /**
  * Check the InteropRepository.kt file for a better explanation. This is the same thing, but
@@ -25,6 +31,19 @@ abstract class InteropService(serviceName: String) {
         // but I haven't been able to make it work. I believe coroutines don't work well because
         // the method channel does something with the main thread.
         bridgePort.call(methodName, arguments, errorCallback, callback)
+    }
+
+    suspend fun callSuspend(methodName: String, arguments: Any? = null): Any? {
+        return suspendCoroutine { continuation ->
+            runBlocking(Dispatchers.Main) {
+                // Replace the runBlocking with something else. But first check if it works.
+                call(methodName, arguments, {
+                    error -> continuation.resumeWithException(error)
+                }) {
+                    result -> continuation.resume(result)
+                }
+            }
+        }
     }
 
     /**

@@ -7,24 +7,23 @@ import kotlin.coroutines.suspendCoroutine
 
 /**
  * Adapter that lets this side of the bridge use the Dart side's local storage service.
+ *
+ * This is not a good practice and you should learn from my mistakes. I used the
+ * flutter_secure_storage package to store key-value data, but it doesn't expose a
+ * native API to read and write from the native side. I can't even use the secure
+ * storage API directly because of the extra stuff the package does. If you ever need
+ * to share preferences or other data between the native and the Flutter side, choose
+ * another option, such as implementing your own local storage services natively.
  */
 class LocalStorageService : InteropService("local-storage") {
-    // TODO: It would seem this call does not work. Something about suspend functions breaks with
-    // the method channel.
-    suspend fun <T> read(key: String): T {
-        return suspendCoroutine { cont ->
-            super.call("read", key, { error ->
-                {
-                    println(error)
-                    cont.resumeWithException(error);
-                }
-            }) { value ->
-                // T is an erased type (curse the JVM), so we just assume it's correct,
-                // and if it isn't, some error will happen later. That, however, can be
-                // considered a bug and not part of the program's intended operation.
-                cont.resume(value as T)
-            }
+    suspend fun read(key: String, default: String): String {
+        // On the Dart side, the read method has a generic type that determines conversion logic.
+        // However, we're unable to send generic type parameters through the method channel, so
+        // the read method always returns String?.
+        val result = super.callSuspend("read", key);
+        if (result == null || result !is String) {
+            return default;
         }
-
+        return result;
     }
 }

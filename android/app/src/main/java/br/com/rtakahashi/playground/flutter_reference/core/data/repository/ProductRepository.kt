@@ -4,13 +4,8 @@ import br.com.rtakahashi.playground.flutter_reference.core.data.repository.infra
 import br.com.rtakahashi.playground.flutter_reference.core.data.service.LocalStorageService
 import br.com.rtakahashi.playground.flutter_reference.core.domain.entity.Product
 import br.com.rtakahashi.playground.flutter_reference.core.injection.Injector
-import com.it_nomads.fluttersecurestorage.FlutterSecureStorage
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
-import java.util.concurrent.TimeUnit
 
 class ProductRepository : InteropRepository("product") {
 
@@ -63,7 +58,7 @@ class ProductRepository : InteropRepository("product") {
      * get turned to strings using their implementation of toString(), which is
      * pretty much useless for us.
      */
-    private suspend fun fetchProducts(): List<Map<String,Any>> {
+    private suspend fun fetchProducts(): List<Map<String, Any>> {
         delay(1500)
 
         // Check if we're supposed to suspend execution and prompt the user for a
@@ -71,10 +66,26 @@ class ProductRepository : InteropRepository("product") {
         // This was added after the fact, and the main example is in the buyers
         // page, so check there first.
         val localStorageService = Injector.read<LocalStorageService>("localStorageService");
-        // TODO: An async call to the Dart side to read a setting does not work.
-        val shouldRequireStepUp = true;
-        if (shouldRequireStepUp) {
-            println("REQUIRING STEP UP");
+
+        try {
+            val shouldRequireStepUpString = localStorageService.read(
+                "SETTING_SIMULATE_STEP_UP_REQUEST_ON_NATIVE_PRODUCTS_LIST",
+                default = "false"
+            );
+
+            val shouldRequireStepUp = when (shouldRequireStepUpString) {
+                "true" -> true
+                "false" -> false
+                else -> false
+            }
+
+            if (shouldRequireStepUp) {
+                println("REQUIRING STEP UP");
+            }
+
+        } catch (e: Exception) {
+            // The local storage service may throw.
+            println(e);
         }
 
         return products.map { it.toMap() }
