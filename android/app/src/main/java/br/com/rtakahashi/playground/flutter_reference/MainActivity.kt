@@ -4,6 +4,7 @@ import br.com.rtakahashi.playground.flutter_reference.core.bloc.CounterBlocAdapt
 import br.com.rtakahashi.playground.flutter_reference.core.bridge.MethodChannelBridge
 import br.com.rtakahashi.playground.flutter_reference.core.data.repository.ProductRepository
 import br.com.rtakahashi.playground.flutter_reference.core.data.service.LocalStorageService
+import br.com.rtakahashi.playground.flutter_reference.core.data.service.StepUpPromptService
 import br.com.rtakahashi.playground.flutter_reference.core.injection.Injector
 import br.com.rtakahashi.playground.flutter_reference.core.view.InteropNavigator
 import io.flutter.embedding.android.FlutterActivity
@@ -28,6 +29,7 @@ class MainActivity: FlutterActivity() {
         Injector.registerObject("counterBlocAdapter", CounterBlocAdapter());
         Injector.registerObject("productRepository", ProductRepository());
         Injector.registerObject("localStorageService", LocalStorageService());
+        Injector.registerObject("stepUpPromptService", StepUpPromptService());
     }
 
 }

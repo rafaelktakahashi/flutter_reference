@@ -1,9 +1,6 @@
 package br.com.rtakahashi.playground.flutter_reference.core.data.service
 
 import br.com.rtakahashi.playground.flutter_reference.core.data.service.infra.InteropService
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 /**
  * Adapter that lets this side of the bridge use the Dart side's local storage service.
@@ -20,7 +17,7 @@ class LocalStorageService : InteropService("local-storage") {
         // On the Dart side, the read method has a generic type that determines conversion logic.
         // However, we're unable to send generic type parameters through the method channel, so
         // the read method always returns String?.
-        val result = super.callSuspend("read", key);
+        val result = super.call("read", key);
         if (result == null || result !is String) {
             return default;
         }

@@ -4,8 +4,13 @@ import android.util.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 typealias SimpleBridgeHandlerFunction = (parameters: Any?) -> Any?
 typealias NonblockingBridgeHandlerFunction = (parameters: Any?, fulfill: (Any?) -> Unit, reject: (Any?) -> Unit) -> Unit
@@ -157,6 +162,8 @@ object MethodChannelBridge {
                         // Execute the handler and send the result back through the method channel.
                         result.success(handler.f.invoke(call.arguments))
                     } catch (e: Exception) {
+                        // TODO: We should declare a type of exception that's capable of sending
+                        // better information to the Dart side through the details object.
                         result.error(
                             "bridge-handler-execution-error",
                             "Android handler for method $methodName failed.",
@@ -164,6 +171,7 @@ object MethodChannelBridge {
                         )
                     }
                 }
+
                 is NonblockingBridgeHandler -> {
                     // A non-blocking handler is one that receives the parameters and also a fulfill
                     // and a reject callback, and it's expected to call one of them.
@@ -177,6 +185,7 @@ object MethodChannelBridge {
                         )
                     })
                 }
+
                 is SuspendBridgeHandler -> {
                     // A suspend handler needs to execute in the global scope.
                     GlobalScope.launch {
@@ -205,21 +214,15 @@ object MethodChannelBridge {
     private class AndroidMethodChannelBridgePortImpl(val name: String) :
         AndroidMethodChannelBridgePort {
 
-        // I originally intended this to be a suspend function, but that didn't work with the method
-        // channel for some reason I can't explain (the result callbacks were never called).
-        // It's possible to use some library like RxKotlin here to simplify the callbacks, but I wanted
-        // to avoid dependencies in this part of the project.
         override fun call(
             methodName: String,
             arguments: Any?,
             errorCallback: ((MethodChannelBridgeException) -> Any)?,
             callback: ((Any?) -> Any)?
         ) {
-            // This is just to enable a smart cast.
+            // This variable is just to enable a smart cast.
             val channel = sharedChannel
 
-            // This is the part I tried to do with a suspendCoroutine, but I couldn't get it to work.
-            // For some reason the callbacks would never get called.
             if (channel != null) {
                 channel.invokeMethod("$name.$methodName", arguments, object : MethodChannel.Result {
                     override fun success(result: Any?) {
@@ -243,7 +246,27 @@ object MethodChannelBridge {
             }
         }
 
-        override fun registerHandlerBlocking(callbackName: String, handler: (SimpleBridgeHandlerFunction)) {
+        override suspend fun call(methodName: String, arguments: Any?): Any? {
+            // When calling the method channel from Kotlin, it's important to do so from the
+            // main thread, otherwise the call simply will never complete (the callbacks will never
+            // be called).
+            // Simply making this a coroutine with `suspendCoroutine` would not ensure that the
+            // call happens in the method channel, so the call to `withContext` around it is needed.
+            return withContext(Dispatchers.Main) {
+                suspendCoroutine { continuation ->
+                    call(methodName, arguments, { error ->
+                        continuation.resumeWithException(error)
+                    }, { result ->
+                        continuation.resume(result)
+                    })
+                }
+            }
+        }
+
+        override fun registerHandlerBlocking(
+            callbackName: String,
+            handler: (SimpleBridgeHandlerFunction)
+        ) {
             _registerHandler(callbackName, SimpleBridgeHandler(handler))
         }
 
@@ -254,7 +277,10 @@ object MethodChannelBridge {
             _registerHandler(callbackName, NonblockingBridgeHandler(handler))
         }
 
-        override fun registerHandlerSuspend(callbackName: String, handler: SuspendBridgeHandlerFunction) {
+        override fun registerHandlerSuspend(
+            callbackName: String,
+            handler: SuspendBridgeHandlerFunction
+        ) {
             _registerHandler(callbackName, SuspendBridgeHandler(handler))
         }
 
@@ -287,7 +313,9 @@ object MethodChannelBridge {
  * Represents a port in our method channel bridge that can communicate with the Flutter side.
  *
  * A port can be used to send data to the Flutter side, and also register methods that the Flutter
- * side can call.
+ * side can call. Both a callback-based and a suspend version of the `call` method are provided,
+ * so that callers can choose to use straightforward try/catches with suspend functions and use
+ * callbacks from non-suspend functions if necessary.
  *
  * You can think of each port as only being able to communicate with the corresponding port (with
  * the same name) on the other side.
@@ -319,6 +347,13 @@ interface AndroidMethodChannelBridgePort {
         errorCallback: ((MethodChannelBridgeException) -> Any)? = null,
         callback: ((Any?) -> Any)? = null
     )
+
+    /**
+     * Send something through the shared channel.
+     *
+     * This works the same as the callback-based overload, except that it's a suspend function.
+     */
+    suspend fun call(methodName: String, arguments: Any? = null): Any?
 
     /**
      * Register a handler for a name. If a different handler was already registered for the same

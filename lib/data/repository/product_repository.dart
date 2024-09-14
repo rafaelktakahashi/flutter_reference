@@ -32,30 +32,38 @@ class ProductRepository extends InteropRepository {
         PlaygroundClientError("0010", "Induced error.", responseStatus: "0"),
       );
     }
-    final result = await super.callNativeMethod("fetchProducts");
+    try {
+      final result = await super.callNativeMethod("fetchProducts");
 
-    if (result is List) {
-      // These safety checks could probably be improved, especially when
-      // casting the list.
-      try {
-        final castResult = result.map((e) => Product.fromJson(e));
-        return Right(castResult.toList());
-      } on Error catch (_) {
+      if (result is List) {
+        // These safety checks could probably be improved, especially when
+        // casting the list.
+        try {
+          final castResult = result.map((e) => Product.fromJson(e));
+          return Right(castResult.toList());
+        } on Error catch (_) {
+          return const Left(
+            PlaygroundClientError(
+              "PRODUCT-0015",
+              "Error casting item in response.",
+              responseStatus: "0",
+            ),
+          );
+        }
+      } else {
         return const Left(
           PlaygroundClientError(
-            "0015",
-            "Error casting item in response.",
+            "PRODUCT-0016",
+            "Error casting response to list.",
             responseStatus: "0",
           ),
         );
       }
-    } else {
+    } catch (e) {
+      // e may be of type PlatformError. We should probably hold more optional
+      // info there to be able to identify the problem.
       return const Left(
-        PlaygroundClientError(
-          "0015",
-          "Error casting response to list.",
-          responseStatus: "0",
-        ),
+        PlaygroundClientError("0", "Pending analysis.", responseStatus: "403"),
       );
     }
 
@@ -76,7 +84,7 @@ class ProductRepository extends InteropRepository {
     } catch (exception) {
       return const Left(
         PlaygroundClientError(
-          "0199",
+          "PRODUCT-0199",
           "Error saving product natively.",
           // Presumably, you'll have this information in a real app:
           responseStatus: "0",

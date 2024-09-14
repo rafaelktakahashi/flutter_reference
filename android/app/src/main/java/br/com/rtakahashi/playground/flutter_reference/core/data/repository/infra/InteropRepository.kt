@@ -30,10 +30,11 @@ abstract class InteropRepository(repositoryName: String) : Repository() {
         errorCallback: ((MethodChannelBridgeException) -> Any)? = null,
         callback: ((Any?) -> Any)? = null
     ) {
-        // I think it should be possible to expose this function as suspend with a suspendCoroutine,
-        // but I haven't been able to make it work. I believe coroutines don't work well because
-        // the method channel does something with the main thread.
         bridgePort.call(methodName, arguments, errorCallback, callback)
+    }
+
+    suspend fun call(methodName: String, arguments: Any? = null): Any? {
+        return bridgePort.call(methodName, arguments);
     }
 
     /**

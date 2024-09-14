@@ -102,12 +102,15 @@ class ProductList extends StatelessWidget {
   Widget _renderError(BuildContext context, ProductStateError state) {
     return ListView(
       padding: const EdgeInsets.all(8),
+      shrinkWrap: true,
       children: <Widget>[
         Container(
           height: 50,
           color: Theme.of(context).colorScheme.surface,
-          child: Text(state.error.errorMessage(),
-              style: TextStyle(color: Theme.of(context).colorScheme.onError)),
+          child: Text(
+            state.error.errorMessage(),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
         ),
       ],
     );
