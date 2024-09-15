@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_reference/data/infra/interop_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
@@ -59,12 +60,28 @@ class ProductRepository extends InteropRepository {
           ),
         );
       }
-    } catch (e) {
-      // e may be of type PlatformError. We should probably hold more optional
-      // info there to be able to identify the problem.
-      return const Left(
-        PlaygroundClientError("0", "Pending analysis.", responseStatus: "403"),
-      );
+    } on PlatformException catch (e) {
+      if (e.details
+          case {
+            "developerMessage": String devMessage,
+            "statusCode": String status,
+          }) {
+        return Left(
+          PlaygroundClientError(
+            e.code,
+            devMessage,
+            responseStatus: status,
+          ),
+        );
+      } else {
+        return Left(
+          PlaygroundClientError(
+            e.code,
+            e.toString(),
+            responseStatus: "0",
+          ),
+        );
+      }
     }
 
     // Any processing that needs to be done on the data happens here in the

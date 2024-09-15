@@ -4,6 +4,7 @@ import br.com.rtakahashi.playground.flutter_reference.core.data.repository.infra
 import br.com.rtakahashi.playground.flutter_reference.core.data.service.LocalStorageService
 import br.com.rtakahashi.playground.flutter_reference.core.data.service.StepUpPromptService
 import br.com.rtakahashi.playground.flutter_reference.core.domain.entity.Product
+import br.com.rtakahashi.playground.flutter_reference.core.domain.error.PlaygroundClientException
 import br.com.rtakahashi.playground.flutter_reference.core.injection.Injector
 import kotlinx.coroutines.delay
 import org.json.JSONObject
@@ -85,7 +86,11 @@ class ProductRepository : InteropRepository("product") {
                 when (val result = stepUpPromptService.showStepUpPrompt("mock session id")) {
                     null -> {
                         // Unsuccessful: fail by throwing an error that simulates a failed request.
-                        throw Exception("Step-up request was required but did not succeed.")
+                        throw PlaygroundClientException(
+                            errorCode = "PRODUCT-0095",
+                            statusCode = "403",
+                            developerMessage = "Step-up request was required but did not succeed."
+                        )
                     }
 
                     else -> {
@@ -94,14 +99,17 @@ class ProductRepository : InteropRepository("product") {
                         // In this demo project, we just check that the token is the fixed string.
                         val stepUpAuthToken: String = result;
                         if (stepUpAuthToken != "諸行無常 諸行是苦 諸法無我") {
-                            throw Exception("Step-up request was required but the token was not accepted.")
+                            throw PlaygroundClientException(
+                                errorCode = "PRODUCT-0096",
+                                statusCode = "403",
+                                developerMessage = "Step-up request was required but the token was not accepted."
+                            )
                         }
                     }
                 }
             }
 
         } catch (e: Exception) {
-            // TODO: Should throw a specific subtype.
             println(e);
             throw e
         }

@@ -141,12 +141,19 @@ class FlutterMethodChannelBridgePort {
   /// If a corresponding port with a corresponding method handler doesn't
   /// exist in the native side, or if either side of the method channel hasn't
   /// finished initializing, a [MissingPluginException] will be thrown.
-  Future<dynamic> call(String methodName, {dynamic arguments}) {
+  dynamic call(String methodName, {dynamic arguments}) async {
     if (_sharedChannel == null) {
       throw MissingPluginException("Not initialized");
     } else {
-      return _sharedChannel!
+      final result = await _sharedChannel!
           .invokeMethod<dynamic>("$name.$methodName", arguments);
+      // It's possible that the result will be a PlatformException. In that
+      // case, we throw it instead.
+      if (result is PlatformException) {
+        throw result;
+      } else {
+        return result;
+      }
     }
   }
 

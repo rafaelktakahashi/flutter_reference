@@ -1,6 +1,7 @@
 package br.com.rtakahashi.playground.flutter_reference.core.bridge
 
 import android.util.Log
+import br.com.rtakahashi.playground.flutter_reference.core.domain.error.InteropException
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.JSONMethodCodec
 import io.flutter.plugin.common.MethodChannel
@@ -162,13 +163,7 @@ object MethodChannelBridge {
                         // Execute the handler and send the result back through the method channel.
                         result.success(handler.f.invoke(call.arguments))
                     } catch (e: Exception) {
-                        // TODO: We should declare a type of exception that's capable of sending
-                        // better information to the Dart side through the details object.
-                        result.error(
-                            "bridge-handler-execution-error",
-                            "Android handler for method $methodName failed.",
-                            e.toString(),
-                        )
+                        errorWithException(result, e)
                     }
                 }
 
@@ -178,11 +173,7 @@ object MethodChannelBridge {
                     handler.f.invoke(call.arguments, {
                         result.success(it)
                     }, {
-                        result.error(
-                            "bridge-handler-execution-error",
-                            "Android handler for method $methodName failed.",
-                            it.toString()
-                        )
+                        errorWithException(result, it)
                     })
                 }
 
@@ -193,11 +184,7 @@ object MethodChannelBridge {
                             val res = handler.f.invoke(call.arguments)
                             result.success(res)
                         } catch (e: Exception) {
-                            result.error(
-                                "bridge-handler-execution-error",
-                                "Android handler for method $methodName failed.",
-                                e.toString(),
-                            )
+                            errorWithException(result, e)
                         }
                     }
                 }
@@ -206,6 +193,30 @@ object MethodChannelBridge {
         }
 
         sharedChannel = newChannel
+    }
+
+    // Call the method channel's result with the information contained in the exception.
+    private fun errorWithException(methodChannelResult: MethodChannel.Result, e: Any?) {
+        if (e is InteropException) {
+            // In this case, we have additional information to send.
+            methodChannelResult.error(
+                e.errorCode,
+                e.message,
+                e.extra
+            );
+        } else if (e is Exception) {
+            methodChannelResult.error(
+                "bridge-handler-execution-error",
+                "Android handler has failed with exception: $e",
+                e.toString(),
+            );
+        } else {
+            methodChannelResult.error(
+                "bridge-handler-execution-error",
+                "Android handler has failed with unknown error: $e",
+                e?.toString(),
+            );
+        }
     }
 
 
