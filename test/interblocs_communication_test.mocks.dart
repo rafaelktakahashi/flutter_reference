@@ -3,14 +3,15 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i3;
 
-import 'package:dartz/dartz.dart' as _i2;
 import 'package:flutter_reference/data/repository/product_repository.dart'
-    as _i3;
+    as _i2;
 import 'package:flutter_reference/domain/entity/product.dart' as _i6;
 import 'package:flutter_reference/domain/error/playground_error.dart' as _i5;
+import 'package:fpdart/fpdart.dart' as _i4;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,22 +26,12 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeEither_0<L, R> extends _i1.SmartFake implements _i2.Either<L, R> {
-  _FakeEither_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
 /// A class which mocks [ProductRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
+class MockProductRepository extends _i1.Mock implements _i2.ProductRepository {
   @override
-  _i4.Future<_i2.Either<_i5.PlaygroundError, List<_i6.Product>>> fetchProduct(
+  _i3.Future<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>> fetchProduct(
           {bool? fail = false}) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -48,9 +39,9 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
           [],
           {#fail: fail},
         ),
-        returnValue: _i4
-            .Future<_i2.Either<_i5.PlaygroundError, List<_i6.Product>>>.value(
-            _FakeEither_0<_i5.PlaygroundError, List<_i6.Product>>(
+        returnValue: _i3
+            .Future<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>>.value(
+            _i7.dummyValue<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>>(
           this,
           Invocation.method(
             #fetchProduct,
@@ -58,9 +49,9 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
             {#fail: fail},
           ),
         )),
-        returnValueForMissingStub: _i4
-            .Future<_i2.Either<_i5.PlaygroundError, List<_i6.Product>>>.value(
-            _FakeEither_0<_i5.PlaygroundError, List<_i6.Product>>(
+        returnValueForMissingStub: _i3
+            .Future<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>>.value(
+            _i7.dummyValue<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>>(
           this,
           Invocation.method(
             #fetchProduct,
@@ -68,10 +59,10 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
             {#fail: fail},
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.PlaygroundError, List<_i6.Product>>>);
+      ) as _i3.Future<_i4.Either<_i5.PlaygroundError, List<_i6.Product>>>);
 
   @override
-  _i4.Future<_i2.Either<_i5.PlaygroundError, _i2.Unit>> saveProduct(
+  _i3.Future<_i4.Either<_i5.PlaygroundError, _i4.Unit>> saveProduct(
           _i6.Product? product) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -79,8 +70,8 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
           [product],
         ),
         returnValue:
-            _i4.Future<_i2.Either<_i5.PlaygroundError, _i2.Unit>>.value(
-                _FakeEither_0<_i5.PlaygroundError, _i2.Unit>(
+            _i3.Future<_i4.Either<_i5.PlaygroundError, _i4.Unit>>.value(
+                _i7.dummyValue<_i4.Either<_i5.PlaygroundError, _i4.Unit>>(
           this,
           Invocation.method(
             #saveProduct,
@@ -88,15 +79,15 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
           ),
         )),
         returnValueForMissingStub:
-            _i4.Future<_i2.Either<_i5.PlaygroundError, _i2.Unit>>.value(
-                _FakeEither_0<_i5.PlaygroundError, _i2.Unit>(
+            _i3.Future<_i4.Either<_i5.PlaygroundError, _i4.Unit>>.value(
+                _i7.dummyValue<_i4.Either<_i5.PlaygroundError, _i4.Unit>>(
           this,
           Invocation.method(
             #saveProduct,
             [product],
           ),
         )),
-      ) as _i4.Future<_i2.Either<_i5.PlaygroundError, _i2.Unit>>);
+      ) as _i3.Future<_i4.Either<_i5.PlaygroundError, _i4.Unit>>);
 
   @override
   void exposeMethod(
@@ -115,7 +106,7 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
       );
 
   @override
-  _i4.Future<dynamic> callNativeMethod(
+  _i3.Future<dynamic> callNativeMethod(
     String? methodName, [
     dynamic arguments,
   ]) =>
@@ -127,7 +118,7 @@ class MockProductRepository extends _i1.Mock implements _i3.ProductRepository {
             arguments,
           ],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-        returnValueForMissingStub: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i3.Future<dynamic>.value(),
+        returnValueForMissingStub: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
 }

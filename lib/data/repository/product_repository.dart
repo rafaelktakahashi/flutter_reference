@@ -1,9 +1,9 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_reference/data/infra/interop_repository.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// Repository for products.
 /// Remember always that repositories encapsulate (=hide) where the data is

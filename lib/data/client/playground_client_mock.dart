@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
-import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/data/client/playground_client.dart';
 import 'package:flutter_reference/data/service/local_storage_service.dart';
 import 'package:flutter_reference/data/service/platform_select.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_reference/domain/entity/buyer.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:get_it/get_it.dart';
 
 /// A mock implementation of the real client.
@@ -269,7 +269,7 @@ class PlaygroundClientMock extends PlaygroundClient {
           if (shouldContinue.isLeft()) {
             return shouldContinue;
           } else {
-            if (shouldContinue.getOrElse(() => false)) {
+            if (shouldContinue.getOrElse((_) => false)) {
               retryStrategies.removeAt(i);
               // At this point, the headers may have been changed by the
               // onRetryingRequest callback.

@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/domain/entity/buyer.dart';
 import 'package:flutter_reference/domain/entity/product.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// Example of a Client that points to the app's backend server.
 ///

@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reference/view/nav/router.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// A service that shows a modal page on top of the UI using a cached navigator.
 /// Uniquely, this lets a class from the data layer affect the UI. This is not

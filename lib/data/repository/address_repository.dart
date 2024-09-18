@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/data/client/viacep/viacep_client.dart';
 import 'package:flutter_reference/domain/entity/address.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:get_it/get_it.dart';
 
 /// Repository for everything related to addresses.

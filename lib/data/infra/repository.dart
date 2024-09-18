@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/domain/entity/playground_entity.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// Superclass for every repository in the application.
 ///

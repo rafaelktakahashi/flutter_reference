@@ -1,7 +1,7 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_reference/data/infra/interop_service.dart';
 import 'package:flutter_reference/domain/error/playground_error.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fpdart/fpdart.dart';
 
 /// Example of a service. This stores values of different kinds, such as
 /// booleans, strings and numbers in the local device (the smartphone).
@@ -36,7 +36,7 @@ class LocalStorageService extends InteropService {
       if (valueReadFromSecureStorage.isLeft()) {
         throw LocalStorageValueNotFoundError(valueName: value);
       } else {
-        return valueReadFromSecureStorage.getOrElse(() => null);
+        return valueReadFromSecureStorage.getOrElse((_) => null);
       }
     });
   }
