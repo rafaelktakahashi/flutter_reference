@@ -16,6 +16,8 @@ import 'package:flutter_reference/view/infra/app.dart';
 import 'package:flutter_reference/view/nav/nav_case_extension.dart';
 import 'package:flutter_reference/view/nav/nav_cases/redirection_nav_cases.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter_reference_step_up_auth/flutter_reference_step_up_auth.dart'
+    as step_up;
 
 /// Entry point of the application.
 ///
@@ -31,6 +33,9 @@ void main() {
 
   // Initialize the Flutter side of our method channel bridge.
   bridge.initializeBridge();
+
+  // Initialize the step-up modal library.
+  step_up.initialize(clientToken: "clientToken");
 
   // Here we connect all the blocs and run the app.
   // You can do this in a separate file if you prefer.

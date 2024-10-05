@@ -18,7 +18,7 @@ An example is provided in this reference architecture for a repository that need
 
 ## Method signatures
 
-This reference architecture uses `Either`s for the return types, and that's advisable for all repositories. This means that every operation does not return a `Future<Entity>`, but a `Future<Either<Error, Entity>>`. When a return does not exist (when the method would normally return void), use a `Unit`. Both `Either` and `Unit` and from the [dartz](https://pub.dev/packages/dartz) library.
+This reference architecture uses `Either`s for the return types, and that's advisable for all repositories. This means that every operation does not return a `Future<Entity>`, but a `Future<Either<Error, Entity>>`. When a return does not exist (when the method would normally return void), use a `Unit`. Both `Either` and `Unit` and from the [fpdart](https://pub.dev/packages/fpdart) library.
 
 It is not required to enforce specific method signatures. One may imagine that a generic repository interface could enforce add(), update(), delete() methods and so on with their own predefined inputs and outputs, but that ceases to be useful once we need any other kind of operation.  
 It is for that reason that we don't enforce interfaces for repositories. A repository may require any parameters and return any entity, as long as its methods make sense on their own (a repository should be a sensible piece of code on its own).

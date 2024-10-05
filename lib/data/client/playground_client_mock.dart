@@ -156,13 +156,9 @@ class PlaygroundClientMock extends PlaygroundClient {
     // be captured and modified.
     final Map<String, String> headers = {};
 
-    // Note: Originally the makeRequestFunction function returned an Either,
-    // but dartz's Eithers are very awkward with async operations. Flatmaps and
-    // left maps didn't work, and folding into Futures requires awaiting after
-    // every call, which makes it impractical to chain folds.
-    // I chose instead to use a list of retry strategies, but there are other
-    // solutions. It's probably possible to use interceptors, depending on the
-    // http client library.
+    // I'm using a list of retry strategies, but it's probably possible to chain
+    // functions on a TaskEither. The retry strategies are easier to copy into
+    // a project that's not using fpdart.
     final List<_RetryStrategy> retryStrategies = [
       // Retry when forbidden due to rejected access token.
       _RetryStrategy(
@@ -242,19 +238,17 @@ class PlaygroundClientMock extends PlaygroundClient {
       ),
     ];
 
-    // First, attempt to make the request with the standard headers.
-    // (Normally you would send at least an authorization header, but this
-    // demo doesn't have that.)
-    var response = await makeRequestFunction(headers);
-    if (response.statusCode ~/ 100 == 2) {
-      return Right(response.body);
-    }
+    _FakeHttpResponse response;
 
     // In case of any problem, we check if any of the retry strategies match.
     // If so, execute the strategy once and remove it from the list.
     whileLoop:
     while (true) {
-      // One of the end conditions, for a success:
+      // First, attempt to make the request with the standard headers.
+      // (Normally you would send at least an authorization header, but this
+      // demo doesn't have that.)
+      response = await makeRequestFunction(headers);
+      // End condition for a success:
       if (response.statusCode ~/ 100 == 2) {
         return Right(response.body);
       }

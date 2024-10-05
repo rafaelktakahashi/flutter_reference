@@ -3,13 +3,15 @@ import 'package:flutter_reference/data/service/ui_modal_service.dart';
 import 'package:flutter_reference/domain/error/playground_bridge_error.dart';
 import 'package:flutter_reference/domain/error/playground_client_error.dart';
 import 'package:flutter_reference/view/pages/step_up/step_up_modal.dart';
+import 'package:flutter_reference_step_up_auth/flutter_reference_step_up_auth.dart';
 import 'package:get_it/get_it.dart';
 
 class StepUpAuthService extends InteropService {
   StepUpAuthService() : super("step-up") {
     // This method expects a String and returns either String (in case of
     // success) or null (in case of failure). The String in case of success is
-    // the step-up authentication token.
+    // the step-up authentication token. Errors are returned in the form of
+    // thrown exceptions.
     exposeMethod("showStepUpPrompt", (sessionId) async {
       if (sessionId is String) {
         final result = await displayStepUpRequest(sessionId);
@@ -22,10 +24,10 @@ class StepUpAuthService extends InteropService {
           case StepUpFailure(reason: StepUpFailureReason.userDismissed):
           case StepUpFailure(reason: StepUpFailureReason.ranOutOfAttempts):
             return null;
-          case StepUpFailure(reason: StepUpFailureReason.unknown):
+          case StepUpFailure(reason: StepUpFailureReason.networkError):
             throw const PlaygroundClientError(
               "SUP1030",
-              "Step up failed with unknown reason.",
+              "Step up failed with a network error.",
               responseStatus: "403",
             );
           case _:
@@ -51,18 +53,38 @@ class StepUpAuthService extends InteropService {
   /// response only as a convenience for the native side; no decisions are made
   /// with it.
   Future<StepUpResult> displayStepUpRequest(String sessionId) async {
-    final result = await GetIt.I.get<UiModalService>().showModalPage(
+    final result = await GetIt.I
+        .get<UiModalService>()
+        .showModalPage<StepUpModalPageResult>(
           (_) => StepUpModalPage(sessionId: sessionId),
         );
 
     return result.fold(
       (l) => switch (l) {
+        // A Left means the UiModalService failed because the user dismissed
+        // the modal. It does not mean that the modal itself encountered a
+        // problem.
         UiModalServiceFailureReason.userDismissed => const StepUpFailure(
             reason: StepUpFailureReason.userDismissed,
           ),
-        _ => const StepUpFailure(reason: StepUpFailureReason.unknown),
+        _ => const StepUpFailure(reason: StepUpFailureReason.userDismissed),
       },
-      (r) => StepUpSuccess(authenticationToken: r, stepUpSessionId: sessionId),
+      (r) => switch (r) {
+        StepUpModalPageResultSuccess(token: var authToken) => StepUpSuccess(
+            authenticationToken: authToken,
+            stepUpSessionId: sessionId,
+          ),
+        StepUpModalPageResultFailure(reason: var pageFailureReason) =>
+          StepUpFailure(
+            reason: switch (pageFailureReason) {
+              StepUpPromptFailureReason.networkError =>
+                StepUpFailureReason.networkError,
+              StepUpPromptFailureReason.authServerConfigurationError =>
+                StepUpFailureReason.serverAuthError,
+              _ => StepUpFailureReason.unknown,
+            },
+          ),
+      },
     );
   }
 }
@@ -95,5 +117,7 @@ class StepUpFailure extends StepUpResult {
 enum StepUpFailureReason {
   userDismissed,
   ranOutOfAttempts,
+  networkError,
+  serverAuthError,
   unknown,
 }
