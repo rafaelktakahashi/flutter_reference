@@ -254,9 +254,11 @@ packages:
   flutter_reference_step_up_auth:
     dependency: "direct main"
     description:
-      path: "../flutter_reference_step_up_auth"
-      relative: true
-    source: path
+      path: "."
+      ref: "0.1.0"
+      resolved-ref: "2665fc9eef42d0bc789406272cab37f7fac78222"
+      url: "https://github.com/rafaelktakahashi/flutter_reference_step_up_auth"
+    source: git
     version: "0.0.1"
   flutter_secure_storage:
     dependency: "direct main"
